@@ -1,0 +1,12 @@
+version: "3"
+services:
+  postgres:
+    image: 'postgres:15-alpine'
+    container_name: advertisement
+    environment:
+      - POSTGRES_DB=advertisement
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5454:5432"
+    restart: unless-stopped
