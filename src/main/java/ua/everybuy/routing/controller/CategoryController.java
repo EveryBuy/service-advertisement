@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ua.everybuy.buisnesslogic.service.CategoryService;
+import ua.everybuy.buisnesslogic.service.SubCategoryService;
 import ua.everybuy.database.entity.Category;
+import ua.everybuy.database.entity.SubCategory;
 import ua.everybuy.routing.dto.StatusResponse;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final SubCategoryService subCategoryService;
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
@@ -33,6 +36,16 @@ public class CategoryController {
         return ResponseEntity.ok(StatusResponse.builder()
                 .status(HttpStatus.OK.value())
                 .data(ukrCategories)
+                .build());
+    }
+
+    @GetMapping("/list/subcategory")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<StatusResponse> getAllSubcategory() {
+        List<SubCategory> subCategories = subCategoryService.getAllSubCategories();
+        return ResponseEntity.ok(StatusResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data(subCategories)
                 .build());
     }
 }
