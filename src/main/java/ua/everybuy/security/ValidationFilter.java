@@ -1,6 +1,7 @@
 package ua.everybuy.security;
 
 import org.springframework.lang.NonNull;
+import org.springframework.web.client.HttpStatusCodeException;
 import ua.everybuy.buisnesslogic.service.AuthService;
 import ua.everybuy.errorhandling.ErrorResponse;
 import ua.everybuy.errorhandling.MessageResponse;
@@ -24,7 +25,7 @@ public class ValidationFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
     private final AuthService authService;
-    private static final Set<String> EXCLUDED_PATHS = Set.of("/ad/categories/list", "/ad/categories/list/ukr");
+    private static final Set<String> EXCLUDED_PATHS = Set.of("/ad/category/list", "/ad/category/list/ukr", "/ad/city/list");
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -42,7 +43,7 @@ public class ValidationFilter extends OncePerRequestFilter {
 
         } catch (HttpClientErrorException ex) {
             handleClientError(response, ex);
-        } catch (RuntimeException ex) {
+        } catch (HttpStatusCodeException ex) {
             handleServerError(response, ex);
         }
     }
@@ -55,8 +56,8 @@ public class ValidationFilter extends OncePerRequestFilter {
         extractErrorMessage(response, e, e.getStatusCode().value());
     }
 
-    private void handleServerError(HttpServletResponse response, RuntimeException e) throws IOException {
-        extractErrorMessage(response, e, HttpStatus.SERVICE_UNAVAILABLE.value());
+    private void handleServerError(HttpServletResponse response, HttpStatusCodeException e) throws IOException {
+        extractErrorMessage(response, e, e.getStatusCode().value());
     }
 
     private void extractErrorMessage(HttpServletResponse response, Exception e, int statusCode) throws IOException {
