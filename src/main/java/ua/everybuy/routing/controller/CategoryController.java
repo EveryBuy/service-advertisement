@@ -14,7 +14,7 @@ import ua.everybuy.routing.dto.StatusResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ad/categories")
+@RequestMapping("/ad/category")
 @RequiredArgsConstructor
 public class CategoryController {
 
@@ -23,7 +23,7 @@ public class CategoryController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     public List<Category> getAllCategory() {
-        return categoryService.getAllCategory();
+        return categoryService.getAllCategories();
     }
 
     @GetMapping("/list/ukr")
