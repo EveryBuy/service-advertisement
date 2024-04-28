@@ -1,0 +1,29 @@
+package ua.everybuy.database.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Date;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "advertisement_photos")
+public class AdvertisementPhoto {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "advertisement_id", nullable = false)
+    private Advertisement advertisement;
+
+    @Column(name = "photo_url", nullable = false, length = 500)
+    private String photoUrl;
+
+    @Column(name = "creation_date", nullable = false)
+    private Date creationDate;
+
+}
