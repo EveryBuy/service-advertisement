@@ -3,6 +3,7 @@ package ua.everybuy.database.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,18 +25,19 @@ public class Advertisement {
     private String price;
 
     @Column(name = "creation_date", nullable = false)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime creationDate;
 
     @Column(name = "is_enabled", insertable = false)
     private Boolean isEnabled;
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
-    @Column(name = "location", nullable = false)
-    private String location;
+    @ManyToOne
+    @JoinColumn(name="city_id", nullable = false)
+    private City city;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @JoinColumn(name = "subcategory_id", nullable = false)
+    private SubCategory subCategory;
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<AdvertisementPhoto> photos;
 
@@ -44,8 +46,7 @@ public class Advertisement {
     private ProductType productType;
 
     private enum ProductType {
-        NEW,
-        USED
+        NEW, USED
     }
 
     @Enumerated(EnumType.STRING)
