@@ -1,8 +1,8 @@
 package ua.everybuy.database.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +10,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "advertisements")
 public class Advertisement {
     @Id
@@ -18,24 +21,25 @@ public class Advertisement {
     private Long id;
     @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "description", nullable = false, length = 1000)
+    @Column(name = "description", nullable = false, length = 3000)
     private String description;
     @Column(name = "price", nullable = false, length = 55)
     private String price;
 
     @Column(name = "creation_date", nullable = false)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime creationDate;
 
-    @Column(name = "is_enabled", insertable = false)
+    @Column(name = "is_enabled")
     private Boolean isEnabled;
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
-    @Column(name = "location", nullable = false)
-    private String location;
+    @ManyToOne
+    @JoinColumn(name="city_id", nullable = false)
+    private City city;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @JoinColumn(name = "subcategory_id", nullable = false)
+    private SubCategory subCategory;
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<AdvertisementPhoto> photos;
 
@@ -43,16 +47,15 @@ public class Advertisement {
     @Column(name = "product_type", nullable = false, length = 10)
     private ProductType productType;
 
-    private enum ProductType {
-        NEW,
-        USED
+    public enum ProductType {
+        NEW, USED
     }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "delivery_method", nullable = false, length = 25)
     private DeliveryMethod deliveryMethod;
 
-    private enum DeliveryMethod {
+    public enum DeliveryMethod {
         NOVA_POST,
         UKR_POST,
         MEEST_EXPRESS
