@@ -8,7 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ua.everybuy.routing.dto.ValidResponse;
+import ua.everybuy.routing.dto.request.ValidRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class AuthService {
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTH_HEADER_PREFIX, authHeader);
         HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(headers);
-        restTemplate.exchange(authServiceUrl, HttpMethod.GET, requestEntity, ValidResponse.class);
+        restTemplate.exchange(authServiceUrl, HttpMethod.GET, requestEntity, ValidRequest.class);
     }
 }
 
