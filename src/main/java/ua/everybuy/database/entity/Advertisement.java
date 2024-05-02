@@ -1,8 +1,7 @@
 package ua.everybuy.database.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -11,6 +10,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "advertisements")
 public class Advertisement {
     @Id
@@ -19,7 +21,7 @@ public class Advertisement {
     private Long id;
     @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "description", nullable = false, length = 1000)
+    @Column(name = "description", nullable = false, length = 3000)
     private String description;
     @Column(name = "price", nullable = false, length = 55)
     private String price;
@@ -28,7 +30,7 @@ public class Advertisement {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime creationDate;
 
-    @Column(name = "is_enabled", insertable = false)
+    @Column(name = "is_enabled")
     private Boolean isEnabled;
     @Column(name = "user_id", nullable = false)
     private Long userId;
@@ -45,7 +47,7 @@ public class Advertisement {
     @Column(name = "product_type", nullable = false, length = 10)
     private ProductType productType;
 
-    private enum ProductType {
+    public enum ProductType {
         NEW, USED
     }
 
@@ -53,7 +55,7 @@ public class Advertisement {
     @Column(name = "delivery_method", nullable = false, length = 25)
     private DeliveryMethod deliveryMethod;
 
-    private enum DeliveryMethod {
+    public enum DeliveryMethod {
         NOVA_POST,
         UKR_POST,
         MEEST_EXPRESS
