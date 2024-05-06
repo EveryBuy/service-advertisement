@@ -1,11 +1,9 @@
 package ua.everybuy.database.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -13,6 +11,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "advertisement_photos")
 public class AdvertisementPhoto {
 
@@ -28,6 +27,6 @@ public class AdvertisementPhoto {
     private String photoUrl;
 
     @Column(name = "creation_date", nullable = false)
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
 }

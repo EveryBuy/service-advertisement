@@ -1,41 +1,35 @@
 package ua.everybuy.routing.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ua.everybuy.buisnesslogic.service.AdvertisementPhotoService;
-import ua.everybuy.database.entity.AdvertisementPhoto;
+import ua.everybuy.buisnesslogic.service.AdvertisementService;
+import ua.everybuy.routing.dto.StatusResponse;
+import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/ad")
 @RequiredArgsConstructor
 public class AdvertisementController {
 
-    private final AdvertisementPhotoService photoService;
+    private final AdvertisementService advertisementService;
 
-    @PostMapping("/photo")
-    public ResponseEntity<?> createAdvertisement(
-            @RequestParam("photos") MultipartFile[] photos,
-            @RequestParam ("id") Long advertisementId
-            ) {
+    @PostMapping("/create")
+    public ResponseEntity<StatusResponse> createAdvertisement(
+            @Valid @RequestPart("request") CreateAdvertisementRequest request,
+            @RequestPart("photos") MultipartFile[] photos) throws IOException {
 
-        try {
-            List<AdvertisementPhoto> uploadedPhotos = photoService.handlePhotoUpload(photos, advertisementId);
-            return ResponseEntity.ok(uploadedPhotos);
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError().body("Error uploading photos: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error creating advertisement: " + e.getMessage());
-        }
+        StatusResponse response = advertisementService.createAdvertisement(request, photos);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }
-
 
 
 

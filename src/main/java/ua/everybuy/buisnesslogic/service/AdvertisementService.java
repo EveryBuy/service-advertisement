@@ -1,53 +1,62 @@
 package ua.everybuy.buisnesslogic.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementRepository;
-import ua.everybuy.database.repository.CityRepository;
-import ua.everybuy.database.repository.SubCategoryRepository;
+
+import ua.everybuy.routing.dto.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AdvertisementService {
     private final AdvertisementRepository advertisementRepository;
-    private final CityRepository cityRepository;
-    private final SubCategoryRepository subCategoryRepository;
+    private final CityService cityService;
     private final AdvertisementPhotoService advertisementPhotoService;
+    private final SubCategoryService subCategoryService;
 
-    @Transactional
-    public Advertisement createAdvertisement(CreateAdvertisementRequest request, Long userId, MultipartFile[] photos) throws IOException {
-        Advertisement advertisement = mapToEntity(request, userId);
+    public StatusResponse createAdvertisement(CreateAdvertisementRequest request, MultipartFile[] photos) throws IOException {
 
-        Advertisement savedAdvertisement = advertisementRepository.save(advertisement);
+        Advertisement savedAdvertisement = mapToEntity(request);
+        savedAdvertisement = advertisementRepository.save(savedAdvertisement);
 
-        List<AdvertisementPhoto> advertisementPhotos = advertisementPhotoService.handlePhotoUpload(photos, savedAdvertisement.getId());
+        List<AdvertisementPhoto> advertisementPhotos = advertisementPhotoService.handlePhotoUpload(photos,
+                        savedAdvertisement.getId(),
+                        subCategoryService.findById(request.subCategoryId()).toString());
         savedAdvertisement.setPhotos(advertisementPhotos);
 
-
-        return advertisementRepository.save(savedAdvertisement);
+        return StatusResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data(savedAdvertisement)
+                .build();
+    }
+    public Advertisement findById(Long id) {
+        return advertisementRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
     }
 
-    private Advertisement mapToEntity(CreateAdvertisementRequest request, Long userId) {
+    private Advertisement mapToEntity(CreateAdvertisementRequest request) {
 
         Advertisement advertisement = Advertisement.builder()
                 .title(request.title())
                 .description(request.description())
                 .price(request.price())
                 .creationDate(LocalDateTime.now())
-                .userId(userId)
-                .city(cityRepository.findById(request.cityId()).orElseThrow(() -> new EntityNotFoundException("City not found")))
-                .subCategory(subCategoryRepository.findById(request.subCategoryId()).orElseThrow(() -> new EntityNotFoundException("Subcategory not found")))
+                .userId(request.userId())
+                .city(cityService.findById(request.cityId()))
+                .subCategory(subCategoryService.findById(request.subCategoryId()))
                 .productType(request.productType())
                 .deliveryMethod(request.deliveryMethod())
+                .isEnabled(true)
+                .creationDate(LocalDateTime.now())
                 .build();
         return advertisement;
     }

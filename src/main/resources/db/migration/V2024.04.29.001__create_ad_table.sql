@@ -10,7 +10,7 @@ CREATE TABLE advertisements
     is_enabled      BOOLEAN DEFAULT TRUE,
     user_id         BIGINT        NOT NULL,
     city_id         INT           NOT NULL,
-    delivery_method VARCHAR(25)   NOT NULL CHECK (product_type IN ('NOVA_POST', 'UKR_POST', 'MEEST_EXPRESS')),
+    delivery_method VARCHAR(25)   NOT NULL CHECK (delivery_method IN ('NOVA_POST', 'UKR_POST', 'MEEST_EXPRESS')),
     FOREIGN KEY (subcategory_id) REFERENCES subcategories (id),
     FOREIGN KEY (city_id) REFERENCES cities (id)
 );
