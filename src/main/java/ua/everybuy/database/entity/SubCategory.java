@@ -18,8 +18,8 @@ public class SubCategory {
     private String subCategoryName;
 
     @Column(name = "name_ukr", nullable = false, length = 100)
-    private String nameUkr;
-    @ManyToOne()
+    private String subCategoryNameUkr;
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="category_id")
     private Category category;
 }
