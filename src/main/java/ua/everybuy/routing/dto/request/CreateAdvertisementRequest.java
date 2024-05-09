@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import ua.everybuy.database.entity.Advertisement;
 
+import java.util.Set;
+
 public record CreateAdvertisementRequest(
         @NotBlank(message = "Title is required")
         @Size(max = 255, message = "Title must be less than 255 characters")
@@ -30,7 +32,7 @@ public record CreateAdvertisementRequest(
         @NotNull(message = "Product type is required")
         Advertisement.ProductType productType,
 
-        @NotNull(message = "Delivery method is required")
-        Advertisement.DeliveryMethod deliveryMethod
+        @NotNull(message = "Delivery methods are required")
+        Set<Advertisement.DeliveryMethod> deliveryMethods
 ) {
 }

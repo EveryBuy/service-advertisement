@@ -21,12 +21,19 @@ public class AdvertisementController {
     private final AdvertisementService advertisementService;
 
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<StatusResponse> createAdvertisement(
             @Valid @RequestPart("request") CreateAdvertisementRequest request,
             @RequestPart("photos") MultipartFile[] photos) throws IOException {
 
         StatusResponse response = advertisementService.createAdvertisement(request, photos);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<StatusResponse> getAdvertisementById(@PathVariable Long id) {
+        StatusResponse response = advertisementService.getAdvertisement(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
 }
