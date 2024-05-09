@@ -5,7 +5,9 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -19,10 +21,13 @@ public class Advertisement {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "title", nullable = false)
     private String title;
+
     @Column(name = "description", nullable = false, length = 3000)
     private String description;
+
     @Column(name = "price", nullable = false, length = 55)
     private String price;
 
@@ -32,16 +37,17 @@ public class Advertisement {
 
     @Column(name = "is_enabled")
     private Boolean isEnabled;
+
     @Column(name = "user_id", nullable = false)
     private Long userId;
+
     @ManyToOne
     @JoinColumn(name="city_id", nullable = false)
     private City city;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subcategory_id", nullable = false)
     private SubCategory subCategory;
-    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<AdvertisementPhoto> photos;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_type", nullable = false, length = 10)
@@ -51,9 +57,11 @@ public class Advertisement {
         NEW, USED
     }
 
+    @ElementCollection(targetClass = DeliveryMethod.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @Column(name = "delivery_method", nullable = false, length = 25)
-    private DeliveryMethod deliveryMethod;
+    @CollectionTable(name = "advertisement_delivery_methods", joinColumns = @JoinColumn(name = "advertisement_id"))
+    @Column(name = "delivery_method")
+    private Set<DeliveryMethod> deliveryMethods = new HashSet<>();
 
     public enum DeliveryMethod {
         NOVA_POST,

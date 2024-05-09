@@ -25,6 +25,5 @@ public class Category {
 
     @Column(name = "name_ukr")
     private String nameUkr;
-//    @OneToMany(mappedBy = "category")
-//    private List<SubCategory> subCategory;
+
 }

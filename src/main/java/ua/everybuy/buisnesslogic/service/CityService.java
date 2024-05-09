@@ -1,5 +1,6 @@
 package ua.everybuy.buisnesslogic.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.City;
@@ -16,4 +17,9 @@ public class CityService {
     public List<City> getAllCities (){
         return cityRepository.findAll();
     }
+
+    public City findById(Long id){
+       return cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("City not found"));
+    }
+
 }
