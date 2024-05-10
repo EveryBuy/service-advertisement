@@ -25,8 +25,8 @@ public class ValidationFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
     private final AuthService authService;
-    private static final Set<String> EXCLUDED_PATHS = Set.of("/ad/category/list", "/ad/category/list/ukr",
-            "/ad/category/list/subcategory", "/ad/city/list");
+    private static final Set<String> EXCLUDED_PATHS = Set.of("/ad/category/", "/ad/category/ukr",
+            "/ad/category/subcategory", "/ad/city");
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
