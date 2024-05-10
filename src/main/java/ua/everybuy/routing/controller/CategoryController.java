@@ -23,13 +23,13 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final SubCategoryService subCategoryService;
 
-    @GetMapping("/list")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public List<Category> getAllCategory() {
         return categoryService.getAllCategories();
     }
 
-    @GetMapping("/list/ukr")
+    @GetMapping("/ukr")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<StatusResponse> getAllUkrNames() {
         List<String> ukrCategories = categoryService.getAllUkrCategories();
@@ -39,7 +39,7 @@ public class CategoryController {
                 .build());
     }
 
-    @GetMapping("/list/subcategory")
+    @GetMapping("/subcategory")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<StatusResponse> getAllSubcategory() {
         List<SubCategory> subCategories = subCategoryService.getAllSubCategories();
