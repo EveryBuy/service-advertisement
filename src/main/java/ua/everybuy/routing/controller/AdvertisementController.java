@@ -10,7 +10,6 @@ import ua.everybuy.buisnesslogic.service.AdvertisementService;
 import ua.everybuy.routing.dto.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
-
 import java.io.IOException;
 
 @RestController
@@ -29,6 +28,7 @@ public class AdvertisementController {
         StatusResponse response = advertisementService.createAdvertisement(request, photos);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<StatusResponse> getAdvertisementById(@PathVariable Long id) {
@@ -36,6 +36,12 @@ public class AdvertisementController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<StatusResponse> deleteAdvertisementById(@PathVariable Long id) throws IOException {
+        StatusResponse response = advertisementService.deleteAdvertisement(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
 }
 
 

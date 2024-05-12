@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class AdvertisementDTO {
+public class AdvertisementDto {
     private Long id;
     private String title;
     private String description;
