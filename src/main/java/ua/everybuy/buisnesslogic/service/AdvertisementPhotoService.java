@@ -80,7 +80,7 @@ public class AdvertisementPhotoService {
 
     private String uploadPhotoToS3(MultipartFile photo, String subcategory) throws IOException {
         String uuid = UUID.randomUUID().toString();
-        String photoKey = subcategory.replaceAll("\\s+", "") + "/" + uuid;
+        String photoKey = subcategory.replaceAll("\\s+", "") + uuid;
         String photoUrl = awsUrl + photoKey;
 
         ObjectMetadata metadata = new ObjectMetadata();

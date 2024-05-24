@@ -38,10 +38,22 @@ public class AdvertisementController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<StatusResponse> deleteAdvertisementById(@PathVariable Long id) throws IOException {
-        StatusResponse response = advertisementService.deleteAdvertisement(id);
-        return ResponseEntity.status(response.getStatus()).body(response);
+    public void deleteAdvertisementById(@PathVariable Long id) throws IOException {
+        advertisementService.deleteAdvertisement(id);
     }
+
+    @PutMapping("/enable/{id}")
+    public ResponseEntity<StatusResponse> enableAdvertisement(@PathVariable Long id) {
+        StatusResponse response = advertisementService.enableAdvertisement(id);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+    }
+
+    @PutMapping("/disable/{id}")
+    public ResponseEntity<StatusResponse> disableAdvertisement(@PathVariable Long id) {
+        StatusResponse response = advertisementService.disableAdvertisement(id);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+    }
+
 }
 
 
