@@ -1,5 +1,6 @@
 package ua.everybuy.routing.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,8 @@ public class AdvertisementController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<StatusResponse> getAdvertisementById(@PathVariable Long id) {
-        StatusResponse response = advertisementService.getAdvertisement(id);
+    public ResponseEntity<StatusResponse> getAdvertisementById(@PathVariable Long id, HttpServletRequest request) {
+        StatusResponse response = advertisementService.getAdvertisement(id, request);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

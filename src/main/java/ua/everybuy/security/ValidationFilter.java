@@ -1,5 +1,6 @@
 package ua.everybuy.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.web.client.HttpStatusCodeException;
 import ua.everybuy.buisnesslogic.service.AuthService;
@@ -15,6 +16,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ua.everybuy.routing.dto.request.ValidRequest;
 
 import java.io.IOException;
 import java.util.Set;
@@ -25,6 +27,7 @@ public class ValidationFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
     private final AuthService authService;
+
     private static final Set<String> EXCLUDED_PATHS = Set.of("/ad/category/", "/ad/category/ukr",
             "/ad/category/subcategory", "/ad/city");
 
@@ -39,7 +42,7 @@ public class ValidationFilter extends OncePerRequestFilter {
             return;
         }
         try {
-            authService.validateRequest(request);
+            authService.validRequest(request);
             filterChain.doFilter(request, response);
 
         } catch (HttpClientErrorException ex) {

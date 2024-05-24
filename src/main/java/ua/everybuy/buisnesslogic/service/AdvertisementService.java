@@ -1,6 +1,7 @@
 package ua.everybuy.buisnesslogic.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import ua.everybuy.database.repository.AdvertisementRepository;
 
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.StatusResponse;
+import ua.everybuy.routing.dto.UserDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
@@ -24,6 +26,7 @@ public class AdvertisementService {
     private final AdvertisementPhotoService advertisementPhotoService;
     private final AdvertisementMapper advertisementMapper;
     private final SubCategoryService subCategoryService;
+    private final UserService userService;
 
     public StatusResponse createAdvertisement(CreateAdvertisementRequest request, MultipartFile[] photos) throws IOException {
 
@@ -51,11 +54,12 @@ public class AdvertisementService {
         return advertisementPhotos;
     }
 
-    public StatusResponse getAdvertisement(Long id) {
+    public StatusResponse getAdvertisement(Long id, HttpServletRequest request) {
         Advertisement advertisement = findById(id);
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(advertisement.getId());
 
         AdvertisementDto advertisementDTO = advertisementMapper.mapToDto(advertisement, photoUrls);
+        advertisementDTO.setUserDto(userService.getUserInfo(request));
 
         return StatusResponse.builder()
                 .status(HttpStatus.OK.value())
