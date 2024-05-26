@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.AdvertisementService;
+import ua.everybuy.buisnesslogic.service.UserService;
+import ua.everybuy.routing.dto.ShortUserInfoDto;
 import ua.everybuy.routing.dto.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
@@ -20,6 +22,7 @@ import java.security.Principal;
 public class AdvertisementController {
 
     private final AdvertisementService advertisementService;
+    private final UserService userService;
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -71,7 +74,6 @@ public class AdvertisementController {
                 .data(advertisementService.getNeededUsersAdvertisements(principal.getName(), false))
                 .build());
     }
-
 }
 
 

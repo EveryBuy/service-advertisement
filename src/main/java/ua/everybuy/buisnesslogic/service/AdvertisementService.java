@@ -61,7 +61,7 @@ public class AdvertisementService {
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(advertisement.getId());
 
         AdvertisementDto advertisementDTO = advertisementMapper.mapToDto(advertisement, photoUrls);
-        advertisementDTO.setUserDto(userService.getUserInfo(request));
+        advertisementDTO.setUserDto(userService.getShortUserInfo(request, advertisement.getUserId()));
 
         return StatusResponse.builder()
                 .status(HttpStatus.OK.value())
