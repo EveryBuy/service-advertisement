@@ -74,7 +74,7 @@ public class ValidationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    public boolean shouldNotFilter(HttpServletRequest request) {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         return EXCLUDED_PATHS.contains(request.getRequestURI());
     }
 

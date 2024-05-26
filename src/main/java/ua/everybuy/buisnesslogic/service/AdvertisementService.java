@@ -11,6 +11,7 @@ import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementRepository;
 
 import ua.everybuy.routing.dto.AdvertisementDto;
+import ua.everybuy.routing.dto.AdvertisementStatusResponse;
 import ua.everybuy.routing.dto.StatusResponse;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
@@ -77,25 +78,14 @@ public class AdvertisementService {
 
     }
 
-    public StatusResponse enableAdvertisement(Long id) {
+    public StatusResponse setAdvertisementStatus(Long id, boolean enable) {
         Advertisement advertisement = findById(id);
-        advertisement.setIsEnabled(true);
+        advertisement.setIsEnabled(enable);
         advertisementRepository.save(advertisement);
 
         return StatusResponse.builder()
                 .status(HttpStatus.OK.value())
-                .data("Advertisement enabled successfully.")
-                .build();
-    }
-
-    public StatusResponse disableAdvertisement(Long id) {
-        Advertisement advertisement = findById(id);
-        advertisement.setIsEnabled(false);
-        advertisementRepository.save(advertisement);
-
-        return StatusResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data("Advertisement disabled successfully.")
+                .data(new AdvertisementStatusResponse(advertisement.getId(), advertisement.getIsEnabled()))
                 .build();
     }
 
