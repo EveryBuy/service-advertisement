@@ -12,6 +12,7 @@ import ua.everybuy.routing.dto.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/ad")
@@ -24,9 +25,9 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<StatusResponse> createAdvertisement(
             @Valid @RequestPart("request") CreateAdvertisementRequest request,
-            @RequestPart("photos") MultipartFile[] photos) throws IOException {
+            @RequestPart("photos") MultipartFile[] photos, Principal principal) throws IOException {
 
-        StatusResponse response = advertisementService.createAdvertisement(request, photos);
+        StatusResponse response = advertisementService.createAdvertisement(request, photos, principal.getName());
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

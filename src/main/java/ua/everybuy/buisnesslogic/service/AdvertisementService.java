@@ -12,7 +12,6 @@ import ua.everybuy.database.repository.AdvertisementRepository;
 
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.StatusResponse;
-import ua.everybuy.routing.dto.UserDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
@@ -28,9 +27,10 @@ public class AdvertisementService {
     private final SubCategoryService subCategoryService;
     private final UserService userService;
 
-    public StatusResponse createAdvertisement(CreateAdvertisementRequest request, MultipartFile[] photos) throws IOException {
+    public StatusResponse createAdvertisement(CreateAdvertisementRequest request, MultipartFile[] photos, String userId) throws IOException {
 
         Advertisement savedAdvertisement = advertisementMapper.mapToEntity(request);
+        savedAdvertisement.setUserId(Long.parseLong(userId));
         savedAdvertisement = advertisementRepository.save(savedAdvertisement);
 
         List<AdvertisementPhoto> advertisementPhotos = uploadPhotosAndLinkToAdvertisement(photos, savedAdvertisement, request.subCategoryId());
@@ -46,7 +46,9 @@ public class AdvertisementService {
                 .build();
     }
 
-    private List<AdvertisementPhoto> uploadPhotosAndLinkToAdvertisement(MultipartFile[] photos, Advertisement advertisement, Long subCategoryId) throws IOException {
+    private List<AdvertisementPhoto> uploadPhotosAndLinkToAdvertisement(MultipartFile[] photos,
+                                                                        Advertisement advertisement,
+                                                                        Long subCategoryId) throws IOException {
         String subCategoryName = subCategoryService.findById(subCategoryId).getSubCategoryName();
         List<AdvertisementPhoto> advertisementPhotos = advertisementPhotoService.handlePhotoUpload(photos, subCategoryName);
 
