@@ -24,7 +24,6 @@ public class AdvertisementMapper {
                 .description(request.description())
                 .price(request.price())
                 .creationDate(LocalDateTime.now())
-                .userId(request.userId())
                 .city(cityService.findById(request.cityId()))
                 .subCategory(subCategoryService.findById(request.subCategoryId()))
                 .productType(request.productType())

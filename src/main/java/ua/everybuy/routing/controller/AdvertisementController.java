@@ -1,5 +1,6 @@
 package ua.everybuy.routing.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import ua.everybuy.routing.dto.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/ad")
@@ -23,16 +25,16 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<StatusResponse> createAdvertisement(
             @Valid @RequestPart("request") CreateAdvertisementRequest request,
-            @RequestPart("photos") MultipartFile[] photos) throws IOException {
+            @RequestPart("photos") MultipartFile[] photos, Principal principal) throws IOException {
 
-        StatusResponse response = advertisementService.createAdvertisement(request, photos);
+        StatusResponse response = advertisementService.createAdvertisement(request, photos, principal.getName());
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<StatusResponse> getAdvertisementById(@PathVariable Long id) {
-        StatusResponse response = advertisementService.getAdvertisement(id);
+    public ResponseEntity<StatusResponse> getAdvertisementById(@PathVariable Long id, HttpServletRequest request) {
+        StatusResponse response = advertisementService.getAdvertisement(id, request);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
