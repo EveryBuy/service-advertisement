@@ -103,5 +103,17 @@ public class AdvertisementService {
         return advertisementRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
     }
 
+    private List<Advertisement> getAllUsersAdvertisement(String userId){
+        return advertisementRepository.findAll()
+                .stream()
+                .filter(adv -> adv.getUserId() == Long.parseLong(userId))
+                .toList();
+    }
+    public List<Advertisement> getNeededUsersAdvertisements(String userId, boolean isEnabled){
+        return getAllUsersAdvertisement(userId)
+                .stream()
+                .filter(adv -> adv.getIsEnabled() == isEnabled)
+                .toList();
+    }
 
 }

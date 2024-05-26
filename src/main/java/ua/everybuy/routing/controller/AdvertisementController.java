@@ -56,6 +56,22 @@ public class AdvertisementController {
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
+    @GetMapping("/get-all-active-users-ads")
+    public ResponseEntity<StatusResponse> getAllActiveUsersAds(Principal principal){
+        return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
+                .status(200)
+                .data(advertisementService.getNeededUsersAdvertisements(principal.getName(), true))
+                .build());
+    }
+
+    @GetMapping("/get-all-not-active-users-ads")
+    public ResponseEntity<StatusResponse> getAllNotActiveUsersAds(Principal principal){
+        return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
+                .status(200)
+                .data(advertisementService.getNeededUsersAdvertisements(principal.getName(), false))
+                .build());
+    }
+
 }
 
 
