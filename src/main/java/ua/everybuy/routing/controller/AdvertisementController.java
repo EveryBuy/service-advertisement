@@ -44,13 +44,13 @@ public class AdvertisementController {
         advertisementService.deleteAdvertisement(id);
     }
 
-    @PutMapping("/enable/{id}")
+    @PutMapping("/{id}/enable")
     public ResponseEntity<StatusResponse> enableAdvertisement(@PathVariable Long id) {
         StatusResponse response = advertisementService.enableAdvertisement(id);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
-    @PutMapping("/disable/{id}")
+    @PutMapping("/{id}/disable")
     public ResponseEntity<StatusResponse> disableAdvertisement(@PathVariable Long id) {
         StatusResponse response = advertisementService.disableAdvertisement(id);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
