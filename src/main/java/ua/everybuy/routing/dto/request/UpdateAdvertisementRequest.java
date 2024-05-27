@@ -35,6 +35,5 @@ public record UpdateAdvertisementRequest(
         @NotNull(message = "Delivery methods are required")
         Set<Advertisement.DeliveryMethod> deliveryMethods
 
-
 ) {
 }

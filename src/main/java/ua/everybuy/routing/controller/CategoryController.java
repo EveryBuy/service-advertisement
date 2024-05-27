@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ua.everybuy.buisnesslogic.service.CategoryService;
 import ua.everybuy.database.entity.Category;
-import ua.everybuy.routing.dto.StatusResponse;
+import ua.everybuy.routing.dto.response.StatusResponse;
 
 import java.util.List;
 
@@ -22,8 +22,12 @@ public class CategoryController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<Category> getAllCategory() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<StatusResponse> getAllCategory() {
+        List<Category> categoryList = categoryService.getAllCategories();
+        return ResponseEntity.ok(StatusResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data(categoryList)
+                .build());
     }
 
     @GetMapping("/ukr")

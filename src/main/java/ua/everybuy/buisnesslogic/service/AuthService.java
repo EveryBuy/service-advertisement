@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ua.everybuy.routing.dto.ValidResponse;
+import ua.everybuy.routing.dto.response.ValidResponse;
 
 @Service
 @RequiredArgsConstructor
