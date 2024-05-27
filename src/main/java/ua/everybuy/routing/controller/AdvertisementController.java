@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.AdvertisementService;
+import ua.everybuy.buisnesslogic.service.UserService;
+import ua.everybuy.routing.dto.ShortUserInfoDto;
 import ua.everybuy.routing.dto.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
@@ -56,6 +58,29 @@ public class AdvertisementController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/get-all-active-users-ads")
+    public ResponseEntity<StatusResponse> getAllActiveUsersAds(Principal principal){
+        return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
+                .status(200)
+                .data(advertisementService.getNeededUsersAdvertisements(principal.getName(), true))
+                .build());
+    }
+
+    @GetMapping("/get-all-not-active-users-ads")
+    public ResponseEntity<StatusResponse> getAllNotActiveUsersAds(Principal principal){
+        return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
+                .status(200)
+                .data(advertisementService.getNeededUsersAdvertisements(principal.getName(), false))
+                .build());
+    }
+
+    @GetMapping("/get-all-users-ads")
+    public ResponseEntity<StatusResponse> getAllUsersAds(Principal principal){
+        return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
+                .status(200)
+                .data(advertisementService.getAllUsersAdvertisement(principal.getName()))
+                .build());
+    }
 }
 
 

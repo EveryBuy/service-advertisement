@@ -27,6 +27,6 @@ public class AdvertisementDto {
     private String productType;
     private Set<Advertisement.DeliveryMethod> deliveryMethods;
     private List<String> photoUrls;
-    private UserDto userDto;
+    private ShortUserInfoDto userDto;
 
 }
