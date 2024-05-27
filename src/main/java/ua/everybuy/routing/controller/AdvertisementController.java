@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.AdvertisementService;
-import ua.everybuy.buisnesslogic.service.UserService;
-import ua.everybuy.routing.dto.ShortUserInfoDto;
-import ua.everybuy.routing.dto.StatusResponse;
+import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
 import java.io.IOException;
@@ -42,45 +40,24 @@ public class AdvertisementController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAdvertisementById(@PathVariable Long id) throws IOException {
+    public ResponseEntity<?> deleteAdvertisementById(@PathVariable Long id) throws IOException {
         advertisementService.deleteAdvertisement(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/enable")
     public ResponseEntity<StatusResponse> enableAdvertisement(@PathVariable Long id) {
-        StatusResponse response = advertisementService.setAdvertisementStatus(id, true);
+        StatusResponse response = advertisementService.setAdvertisementEnabledStatus(id, true);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/disable")
     public ResponseEntity<StatusResponse> disableAdvertisement(@PathVariable Long id) {
-        StatusResponse response = advertisementService.setAdvertisementStatus(id, false);
+        StatusResponse response = advertisementService.setAdvertisementEnabledStatus(id, false);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/get-all-active-users-ads")
-    public ResponseEntity<StatusResponse> getAllActiveUsersAds(Principal principal){
-        return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
-                .status(200)
-                .data(advertisementService.getNeededUsersAdvertisements(principal.getName(), true))
-                .build());
-    }
 
-    @GetMapping("/get-all-not-active-users-ads")
-    public ResponseEntity<StatusResponse> getAllNotActiveUsersAds(Principal principal){
-        return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
-                .status(200)
-                .data(advertisementService.getNeededUsersAdvertisements(principal.getName(), false))
-                .build());
-    }
-
-    @GetMapping("/get-all-users-ads")
-    public ResponseEntity<StatusResponse> getAllUsersAds(Principal principal){
-        return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
-                .status(200)
-                .data(advertisementService.getAllUsersAdvertisement(principal.getName()))
-                .build());
-    }
 }
 
 
