@@ -42,7 +42,7 @@ public class AdvertisementService {
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(advertisementDTO)
+                .data(savedAdvertisement.getId())
                 .build();
     }
 
@@ -103,7 +103,7 @@ public class AdvertisementService {
         return advertisementRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
     }
 
-    private List<Advertisement> getAllUsersAdvertisement(String userId){
+    public List<Advertisement> getAllUsersAdvertisement(String userId){
         return advertisementRepository.findAll()
                 .stream()
                 .filter(adv -> adv.getUserId() == Long.parseLong(userId))

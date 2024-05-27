@@ -22,7 +22,6 @@ import java.security.Principal;
 public class AdvertisementController {
 
     private final AdvertisementService advertisementService;
-    private final UserService userService;
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -72,6 +71,14 @@ public class AdvertisementController {
         return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
                 .status(200)
                 .data(advertisementService.getNeededUsersAdvertisements(principal.getName(), false))
+                .build());
+    }
+
+    @GetMapping("/get-all-users-ads")
+    public ResponseEntity<StatusResponse> getAllUsersAds(Principal principal){
+        return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
+                .status(200)
+                .data(advertisementService.getAllUsersAdvertisement(principal.getName()))
                 .build());
     }
 }
