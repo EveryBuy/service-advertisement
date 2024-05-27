@@ -43,7 +43,7 @@ public class AdvertisementService {
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(advertisementDTO)
+                .data(savedAdvertisement.getId())
                 .build();
     }
 
@@ -62,7 +62,7 @@ public class AdvertisementService {
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(advertisement.getId());
 
         AdvertisementDto advertisementDTO = advertisementMapper.mapToDto(advertisement, photoUrls);
-        advertisementDTO.setUserDto(userService.getUserInfo(request));
+        advertisementDTO.setUserDto(userService.getShortUserInfo(request, advertisement.getUserId()));
 
         return StatusResponse.builder()
                 .status(HttpStatus.OK.value())
@@ -93,5 +93,17 @@ public class AdvertisementService {
         return advertisementRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
     }
 
+    public List<Advertisement> getAllUsersAdvertisement(String userId){
+        return advertisementRepository.findAll()
+                .stream()
+                .filter(adv -> adv.getUserId() == Long.parseLong(userId))
+                .toList();
+    }
+    public List<Advertisement> getNeededUsersAdvertisements(String userId, boolean isEnabled){
+        return getAllUsersAdvertisement(userId)
+                .stream()
+                .filter(adv -> adv.getIsEnabled() == isEnabled)
+                .toList();
+    }
 
 }
