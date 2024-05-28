@@ -20,7 +20,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ua.everybuy.routing.dto.ValidResponse;
+import ua.everybuy.routing.dto.response.ValidResponse;
 
 import java.io.IOException;
 import java.util.List;

@@ -3,9 +3,8 @@ package ua.everybuy.database.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -23,5 +22,4 @@ public class FavouriteAdvertisement {
     @JoinColumn(name = "advertisement_id", nullable = false)
     private Advertisement advertisement;
 
-    // Getters, Setters, Constructors
 }

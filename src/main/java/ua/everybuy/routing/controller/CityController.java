@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.everybuy.buisnesslogic.service.CityService;
 import ua.everybuy.database.entity.City;
-import ua.everybuy.routing.dto.StatusResponse;
+import ua.everybuy.routing.dto.response.StatusResponse;
 
 import java.util.List;
 

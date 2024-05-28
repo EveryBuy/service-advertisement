@@ -1,4 +1,4 @@
-package ua.everybuy.routing.dto;
+package ua.everybuy.routing.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

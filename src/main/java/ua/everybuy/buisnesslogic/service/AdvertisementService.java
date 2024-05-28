@@ -11,8 +11,8 @@ import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementRepository;
 
 import ua.everybuy.routing.dto.AdvertisementDto;
-import ua.everybuy.routing.dto.AdvertisementStatusResponse;
-import ua.everybuy.routing.dto.StatusResponse;
+import ua.everybuy.routing.dto.response.AdvertisementStatusResponse;
+import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
@@ -37,13 +37,9 @@ public class AdvertisementService {
         List<AdvertisementPhoto> advertisementPhotos = uploadPhotosAndLinkToAdvertisement(photos, savedAdvertisement, request.subCategoryId());
         advertisementPhotos.forEach(advertisementPhotoService::createAdvertisementPhoto);
 
-        List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(savedAdvertisement.getId());
-
-        AdvertisementDto advertisementDTO = advertisementMapper.mapToDto(savedAdvertisement, photoUrls);
-
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(savedAdvertisement.getId())
+                .data(savedAdvertisement)
                 .build();
     }
 
@@ -78,7 +74,7 @@ public class AdvertisementService {
 
     }
 
-    public StatusResponse setAdvertisementStatus(Long id, boolean enable) {
+    public StatusResponse setAdvertisementEnabledStatus(Long id, boolean enable) {
         Advertisement advertisement = findById(id);
         advertisement.setIsEnabled(enable);
         advertisementRepository.save(advertisement);
@@ -90,20 +86,18 @@ public class AdvertisementService {
     }
 
     public Advertisement findById(Long id) {
-        return advertisementRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
+        return advertisementRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Advertisement not found"));
     }
 
-    public List<Advertisement> getAllUsersAdvertisement(String userId){
-        return advertisementRepository.findAll()
-                .stream()
-                .filter(adv -> adv.getUserId() == Long.parseLong(userId))
-                .toList();
-    }
-    public List<Advertisement> getNeededUsersAdvertisements(String userId, boolean isEnabled){
-        return getAllUsersAdvertisement(userId)
-                .stream()
-                .filter(adv -> adv.getIsEnabled() == isEnabled)
-                .toList();
+    public List<Advertisement> findAllUserAdvertisement(String userId) {
+        return advertisementRepository.findByUserId(Long.parseLong(userId));
     }
 
+    public List<Advertisement> getUserAdvertisementsByEnabledStatus(String userId, boolean isEnabled) {
+        return findAllUserAdvertisement(userId)
+                .stream()
+                .filter(ad -> ad.getIsEnabled() == isEnabled)
+                .toList();
+    }
 }
