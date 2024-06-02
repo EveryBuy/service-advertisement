@@ -74,9 +74,10 @@ public class AdvertisementService {
 
     }
 
-    public StatusResponse setAdvertisementEnabledStatus(Long id, boolean enable) {
+    public StatusResponse setAdvertisementEnabledStatus(Long id) {
         Advertisement advertisement = findById(id);
-        advertisement.setIsEnabled(enable);
+        boolean currentStatus = advertisement.getIsEnabled();
+        advertisement.setIsEnabled(!currentStatus);
         advertisementRepository.save(advertisement);
 
         return StatusResponse.builder()
@@ -84,6 +85,7 @@ public class AdvertisementService {
                 .data(new AdvertisementStatusResponse(advertisement.getId(), advertisement.getIsEnabled()))
                 .build();
     }
+
 
     public Advertisement findById(Long id) {
         return advertisementRepository.findById(id).orElseThrow(() ->

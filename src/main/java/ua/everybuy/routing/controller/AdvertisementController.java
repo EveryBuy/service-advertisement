@@ -45,18 +45,11 @@ public class AdvertisementController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/enable")
-    public ResponseEntity<StatusResponse> enableAdvertisement(@PathVariable Long id) {
-        StatusResponse response = advertisementService.setAdvertisementEnabledStatus(id, true);
+    @PutMapping("/{id}/change-status")
+    public ResponseEntity<StatusResponse> enableAdvertisement(@PathVariable @Valid Long id) {
+        StatusResponse response = advertisementService.setAdvertisementEnabledStatus(id);
         return ResponseEntity.ok(response);
     }
-
-    @PutMapping("/{id}/disable")
-    public ResponseEntity<StatusResponse> disableAdvertisement(@PathVariable Long id) {
-        StatusResponse response = advertisementService.setAdvertisementEnabledStatus(id, false);
-        return ResponseEntity.ok(response);
-    }
-
 
 }
 
