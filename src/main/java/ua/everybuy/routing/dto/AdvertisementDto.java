@@ -26,6 +26,7 @@ public class AdvertisementDto {
     private SubCategory subCategoryName;
     private String productType;
     private Set<Advertisement.DeliveryMethod> deliveryMethods;
+    private String mainPhotoUrl;
     private List<String> photoUrls;
     private ShortUserInfoDto userDto;
 

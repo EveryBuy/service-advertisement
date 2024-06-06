@@ -39,6 +39,7 @@ public class AdvertisementMapper {
                 .title(advertisement.getTitle())
                 .description(advertisement.getDescription())
                 .price(advertisement.getPrice())
+                .mainPhotoUrl(advertisement.getMainPhotoUrl())
                 .creationDate(advertisement.getCreationDate())
                 .isEnabled(advertisement.getIsEnabled())
                 .userId(advertisement.getUserId())

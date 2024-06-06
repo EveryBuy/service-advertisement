@@ -17,6 +17,7 @@ import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,6 +36,12 @@ public class AdvertisementService {
         savedAdvertisement = advertisementRepository.save(savedAdvertisement);
 
         List<AdvertisementPhoto> advertisementPhotos = uploadPhotosAndLinkToAdvertisement(photos, savedAdvertisement, request.subCategoryId());
+
+        if (photos != null) {
+            String mainPhotoUrl = advertisementPhotos.get(0).getPhotoUrl();
+            savedAdvertisement.setMainPhotoUrl(mainPhotoUrl);
+        }
+
         advertisementPhotos.forEach(advertisementPhotoService::createAdvertisementPhoto);
 
         return StatusResponse.builder()
@@ -78,11 +85,15 @@ public class AdvertisementService {
         Advertisement advertisement = findById(id);
         boolean currentStatus = advertisement.getIsEnabled();
         advertisement.setIsEnabled(!currentStatus);
+        advertisement.setUpdateDate(LocalDateTime.now());
         advertisementRepository.save(advertisement);
 
         return StatusResponse.builder()
                 .status(HttpStatus.OK.value())
-                .data(new AdvertisementStatusResponse(advertisement.getId(), advertisement.getIsEnabled()))
+                .data(new AdvertisementStatusResponse(
+                        advertisement.getId(),
+                        advertisement.getIsEnabled(),
+                        advertisement.getUpdateDate()))
                 .build();
     }
 

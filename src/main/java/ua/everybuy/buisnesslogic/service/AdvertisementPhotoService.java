@@ -34,6 +34,10 @@ public class AdvertisementPhotoService {
     public List<AdvertisementPhoto> handlePhotoUpload(MultipartFile[] photos, String subcategory) throws IOException {
         List<AdvertisementPhoto> advertisementPhotos = new ArrayList<>();
 
+        if (photos == null) {
+            return advertisementPhotos;
+        }
+
         for (MultipartFile photo : photos) {
             String photoUrl = uploadPhotoToS3(photo, subcategory);
             advertisementPhotos.add(AdvertisementPhoto.builder()

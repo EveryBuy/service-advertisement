@@ -25,7 +25,7 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<StatusResponse> createAdvertisement(
             @Valid @RequestPart("request") CreateAdvertisementRequest request,
-            @RequestPart("photos") MultipartFile[] photos, Principal principal) throws IOException {
+            @RequestPart(value = "photos", required = false) MultipartFile[] photos, Principal principal) throws IOException {
 
         StatusResponse response = advertisementService.createAdvertisement(request, photos, principal.getName());
         return ResponseEntity.status(response.getStatus()).body(response);
