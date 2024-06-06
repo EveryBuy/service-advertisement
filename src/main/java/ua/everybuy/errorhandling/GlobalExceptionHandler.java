@@ -22,14 +22,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidationExceptions(HttpClientErrorException ex) {
         return ResponseEntity
                 .badRequest()
-                .body(new ErrorResponse(ex.getStatusCode().value(), new MessageResponse(ex.getMessage())));
+                .body(new ErrorResponse(ex.getStatusCode().value(), ex.getMessage()));
     }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(HttpMessageNotReadableException ex) {
         return ResponseEntity
                 .badRequest()
-                .body(new ErrorResponse(HttpStatus.SC_BAD_REQUEST, new MessageResponse(ex.getMessage())));
+                .body(new ErrorResponse(HttpStatus.SC_BAD_REQUEST, ex.getMessage()));
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException exception) {
@@ -40,14 +42,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(HttpStatus.SC_BAD_REQUEST,
-                        new MessageResponse(String.join("; ", errors))));
+                        String.join("; ", errors)));
     }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNoElementExceptions(EntityNotFoundException ex, HttpServletResponse response) {
 
         return ResponseEntity
                 .status(HttpStatus.SC_NOT_FOUND)
-                .body(new ErrorResponse(HttpStatus.SC_NOT_FOUND, new MessageResponse(ex.getMessage())));
+                .body(new ErrorResponse(HttpStatus.SC_NOT_FOUND, ex.getMessage()));
     }
 
     @ExceptionHandler(IOException.class)
@@ -56,6 +59,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR,
-                        new MessageResponse(ex.getMessage())));
+                        ex.getMessage()));
     }
 }
