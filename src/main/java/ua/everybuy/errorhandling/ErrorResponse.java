@@ -1,5 +1,8 @@
 package ua.everybuy.errorhandling;
 
+import lombok.Getter;
+
+@Getter
 public class ErrorResponse {
     private int status;
     private MessageResponse messageResponse;
