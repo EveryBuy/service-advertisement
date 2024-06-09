@@ -22,8 +22,8 @@ public class AdvertisementDto {
     private LocalDateTime creationDate;
     private Boolean isEnabled;
     private Long userId;
-    private City cityName;
-    private SubCategory subCategoryName;
+    private City city;
+    private SubCategory subCategory;
     private String productType;
     private Set<Advertisement.DeliveryMethod> deliveryMethods;
     private String mainPhotoUrl;

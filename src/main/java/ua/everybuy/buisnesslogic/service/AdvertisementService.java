@@ -11,9 +11,9 @@ import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementRepository;
 
 import ua.everybuy.routing.dto.AdvertisementDto;
+import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.response.AdvertisementStatusResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
-import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
 import java.io.IOException;
@@ -37,10 +37,9 @@ public class AdvertisementService {
 
         List<AdvertisementPhoto> advertisementPhotos = uploadPhotosAndLinkToAdvertisement(photos, savedAdvertisement, request.subCategoryId());
 
-        if (photos != null) {
-            String mainPhotoUrl = advertisementPhotos.get(0).getPhotoUrl();
-            savedAdvertisement.setMainPhotoUrl(mainPhotoUrl);
-        }
+        String mainPhotoUrl = advertisementPhotos.get(0).getPhotoUrl();
+        savedAdvertisement.setMainPhotoUrl(mainPhotoUrl);
+        advertisementRepository.save(savedAdvertisement);
 
         advertisementPhotos.forEach(advertisementPhotoService::createAdvertisementPhoto);
 
@@ -103,11 +102,11 @@ public class AdvertisementService {
                 new EntityNotFoundException("Advertisement not found"));
     }
 
-    public List<Advertisement> findAllUserAdvertisement(String userId) {
-        return advertisementRepository.findByUserId(Long.parseLong(userId));
+    public List<Advertisement> findAllUserAdvertisement(Long userId) {
+        return advertisementRepository.findByUserId(userId);
     }
 
-    public List<Advertisement> getUserAdvertisementsByEnabledStatus(String userId, boolean isEnabled) {
+    public List<Advertisement> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
         return findAllUserAdvertisement(userId)
                 .stream()
                 .filter(ad -> ad.getIsEnabled() == isEnabled)

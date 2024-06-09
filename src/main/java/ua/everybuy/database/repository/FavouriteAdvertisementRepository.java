@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface FavouriteAdvertisementRepository extends JpaRepository<FavouriteAdvertisement, Long> {
     List<FavouriteAdvertisement> findByUserId(long userId);
 
-
     Optional<FavouriteAdvertisement> findByUserIdAndAdvertisement(long userId, Advertisement advertisement);
+    Boolean existsByUserIdAndAdvertisement(Long userId, Advertisement advertisement);
+
 }
