@@ -13,6 +13,7 @@ import ua.everybuy.database.repository.AdvertisementRepository;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.response.AdvertisementStatusResponse;
+import ua.everybuy.routing.dto.response.CreateAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
@@ -29,23 +30,27 @@ public class AdvertisementService {
     private final SubCategoryService subCategoryService;
     private final UserService userService;
 
-    public StatusResponse createAdvertisement(CreateAdvertisementRequest request, MultipartFile[] photos, String userId) throws IOException {
+    public StatusResponse createAdvertisement(CreateAdvertisementRequest createRequest,
+                                              HttpServletRequest request,
+                                              MultipartFile[] photos,
+                                              String userId) throws IOException {
 
-        Advertisement savedAdvertisement = advertisementMapper.mapToEntity(request);
+        Advertisement savedAdvertisement = advertisementMapper.mapToEntity(createRequest);
         savedAdvertisement.setUserId(Long.parseLong(userId));
         savedAdvertisement = advertisementRepository.save(savedAdvertisement);
 
-        List<AdvertisementPhoto> advertisementPhotos = uploadPhotosAndLinkToAdvertisement(photos, savedAdvertisement, request.subCategoryId());
+        List<AdvertisementPhoto> advertisementPhotos = uploadPhotosAndLinkToAdvertisement(photos, savedAdvertisement, createRequest.subCategoryId());
 
         String mainPhotoUrl = advertisementPhotos.get(0).getPhotoUrl();
         savedAdvertisement.setMainPhotoUrl(mainPhotoUrl);
         advertisementRepository.save(savedAdvertisement);
+        List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(savedAdvertisement.getId());
 
-        advertisementPhotos.forEach(advertisementPhotoService::createAdvertisementPhoto);
+        CreateAdvertisementResponse createAdvertisementResponse = advertisementMapper.mapToCreateAdvertisementResponse(savedAdvertisement, photoUrls);
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(savedAdvertisement)
+                .data(createAdvertisementResponse)
                 .build();
     }
 
@@ -56,6 +61,8 @@ public class AdvertisementService {
         List<AdvertisementPhoto> advertisementPhotos = advertisementPhotoService.handlePhotoUpload(photos, subCategoryName);
 
         advertisementPhotos.forEach(photo -> photo.setAdvertisement(advertisement));
+        advertisementPhotos.forEach(advertisementPhotoService::createAdvertisementPhoto);
+
         return advertisementPhotos;
     }
 

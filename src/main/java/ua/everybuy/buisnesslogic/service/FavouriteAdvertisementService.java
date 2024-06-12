@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
 import ua.everybuy.database.repository.FavouriteAdvertisementRepository;
-import ua.everybuy.routing.dto.mapper.FavouriteAdvertisementMapper;
+import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.response.ShortAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FavouriteAdvertisementService {
     private final FavouriteAdvertisementRepository favouriteAdvertisementRepository;
-    private final FavouriteAdvertisementMapper mapper = FavouriteAdvertisementMapper.INSTANCE;
+    private final AdvertisementMapper mapper;
     private final AdvertisementService advertisementService;
 
     public List<ShortAdvertisementResponse> findAllUserFavouriteAdvertisements(String userId) {
@@ -25,7 +25,7 @@ public class FavouriteAdvertisementService {
                 .findByUserId(Long.parseLong(userId))
                 .stream()
                 .map(favouriteAdvertisement -> favouriteAdvertisement.getAdvertisement())
-                .map(mapper::toShortAdvertisementResponse)
+                .map(mapper::mapToShortAdvertisementResponse)
                 .toList();
     }
 
@@ -44,7 +44,7 @@ public class FavouriteAdvertisementService {
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(mapper.toFavouriteAdvertisementResponse(favouriteAdvertisement))
+                .data(mapper.mapToFavouriteAdvertisementResponse(favouriteAdvertisement))
                 .build();
     }
 
