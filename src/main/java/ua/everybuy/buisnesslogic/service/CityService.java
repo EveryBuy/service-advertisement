@@ -17,7 +17,6 @@ public class CityService {
     public List<City> getAllCities (){
         return cityRepository.findAll();
     }
-
     public City findById(Long id){
        return cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("City not found"));
     }

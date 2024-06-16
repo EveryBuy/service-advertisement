@@ -24,10 +24,11 @@ public class AdvertisementController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<StatusResponse> createAdvertisement(
-            @Valid @RequestPart("request") CreateAdvertisementRequest request,
-            @RequestPart("photos") MultipartFile[] photos, Principal principal) throws IOException {
+            @Valid @RequestPart("request") CreateAdvertisementRequest createRequest,
+            @RequestPart(value = "photos") MultipartFile[] photos,
+            Principal principal) throws IOException {
 
-        StatusResponse response = advertisementService.createAdvertisement(request, photos, principal.getName());
+        StatusResponse response = advertisementService.createAdvertisement(createRequest, photos, principal.getName());
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

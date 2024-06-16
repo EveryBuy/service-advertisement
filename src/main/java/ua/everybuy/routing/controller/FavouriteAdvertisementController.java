@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.everybuy.buisnesslogic.service.FavouriteAdvertisementService;
-import ua.everybuy.database.entity.Advertisement;
+import ua.everybuy.routing.dto.response.ShortAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 
 import java.security.Principal;
@@ -34,7 +34,7 @@ public class FavouriteAdvertisementController {
     @GetMapping("/user/favourite-ads")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<StatusResponse> getAllUsersFavouriteAdvertisements(Principal principal) {
-        List<Advertisement> favouriteUsersAdvertisements = favouriteAdvertisementService.findAllUserFavouriteAdvertisements(principal.getName());
+        List<ShortAdvertisementResponse> favouriteUsersAdvertisements = favouriteAdvertisementService.findAllUserFavouriteAdvertisements(principal.getName());
 
         return ResponseEntity.ok(StatusResponse.builder()
                 .status(HttpStatus.OK.value())

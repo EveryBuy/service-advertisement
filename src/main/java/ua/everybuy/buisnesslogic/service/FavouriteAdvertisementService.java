@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
 import ua.everybuy.database.repository.FavouriteAdvertisementRepository;
-import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
+import ua.everybuy.errorhandling.custom.DuplicateDataException;
+import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
+import ua.everybuy.routing.dto.response.ShortAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 
 import java.util.List;
@@ -16,25 +18,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FavouriteAdvertisementService {
     private final FavouriteAdvertisementRepository favouriteAdvertisementRepository;
+    private final AdvertisementMapper mapper;
     private final AdvertisementService advertisementService;
 
-    public List<Advertisement> findAllUserFavouriteAdvertisements(String userId) {
+    public List<ShortAdvertisementResponse> findAllUserFavouriteAdvertisements(String userId) {
         return favouriteAdvertisementRepository
                 .findByUserId(Long.parseLong(userId))
                 .stream()
-                .map(FavouriteAdvertisement::getAdvertisement)
+                .map(favouriteAdvertisement -> favouriteAdvertisement.getAdvertisement())
+                .map(mapper::mapToShortAdvertisementResponse)
                 .toList();
     }
 
     public StatusResponse addToFavorites(String userId, Long adId) {
+        Long userIdLong = Long.parseLong(userId);
+        Advertisement advertisement = advertisementService.findById(adId);
+
+        if (favouriteAdvertisementRepository.existsByUserIdAndAdvertisement(userIdLong, advertisement)) {
+            throw new DuplicateDataException("Advertisement is already added to favorites");
+        }
+
         FavouriteAdvertisement favouriteAdvertisement = new FavouriteAdvertisement();
-        favouriteAdvertisement.setUserId(Long.parseLong(userId));
-        favouriteAdvertisement.setAdvertisement(advertisementService.findById(adId));
+        favouriteAdvertisement.setUserId(userIdLong);
+        favouriteAdvertisement.setAdvertisement(advertisement);
         favouriteAdvertisementRepository.save(favouriteAdvertisement);
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(mapToFavouriteAdvertisementResponse(favouriteAdvertisement))
+                .data(mapper.mapToFavouriteAdvertisementResponse(favouriteAdvertisement))
                 .build();
     }
 
@@ -49,12 +60,6 @@ public class FavouriteAdvertisementService {
                         advertisementService.findById(adId))
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Favourite advertisement with id " + adId + " and user id " + userId + " not found"));
-    }
-
-    private FavouriteAdvertisementResponse mapToFavouriteAdvertisementResponse(FavouriteAdvertisement favouriteAdvertisement) {
-        return new FavouriteAdvertisementResponse(favouriteAdvertisement.getId(),
-                favouriteAdvertisement.getUserId(),
-                favouriteAdvertisement.getAdvertisement().getId());
     }
 
 }

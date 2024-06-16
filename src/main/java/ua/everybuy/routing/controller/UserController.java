@@ -3,10 +3,7 @@ package ua.everybuy.routing.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ua.everybuy.buisnesslogic.service.AdvertisementService;
 import ua.everybuy.routing.dto.response.StatusResponse;
 
@@ -18,12 +15,12 @@ import java.security.Principal;
 public class UserController {
     private final AdvertisementService advertisementService;
 
-    @GetMapping("/active-ads")
+    @GetMapping("/{id}/active-ads")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<StatusResponse> getAllActiveUsersAds(Principal principal) {
+    public ResponseEntity<StatusResponse> getAllActiveUsersAds(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
                 .status(HttpStatus.OK.value())
-                .data(advertisementService.getUserAdvertisementsByEnabledStatus(principal.getName(), true))
+                .data(advertisementService.getUserAdvertisementsByEnabledStatus(id, true))
                 .build());
     }
 
@@ -32,7 +29,7 @@ public class UserController {
     public ResponseEntity<StatusResponse> getAllNotActiveUsersAds(Principal principal) {
         return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
                 .status(HttpStatus.OK.value())
-                .data(advertisementService.getUserAdvertisementsByEnabledStatus(principal.getName(), false))
+                .data(advertisementService.getUserAdvertisementsByEnabledStatus(Long.parseLong(principal.getName()), false))
                 .build());
     }
 
@@ -41,7 +38,7 @@ public class UserController {
     public ResponseEntity<StatusResponse> getAllUsersAds(Principal principal) {
         return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
                 .status(HttpStatus.OK.value())
-                .data(advertisementService.findAllUserAdvertisement(principal.getName()))
+                .data(advertisementService.findAllUserAdvertisement(Long.parseLong(principal.getName())))
                 .build());
     }
 }

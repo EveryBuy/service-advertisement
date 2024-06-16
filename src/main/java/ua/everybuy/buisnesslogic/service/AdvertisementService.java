@@ -11,12 +11,14 @@ import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementRepository;
 
 import ua.everybuy.routing.dto.AdvertisementDto;
-import ua.everybuy.routing.dto.response.AdvertisementStatusResponse;
-import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
+import ua.everybuy.routing.dto.response.AdvertisementStatusResponse;
+import ua.everybuy.routing.dto.response.CreateAdvertisementResponse;
+import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,18 +30,26 @@ public class AdvertisementService {
     private final SubCategoryService subCategoryService;
     private final UserService userService;
 
-    public StatusResponse createAdvertisement(CreateAdvertisementRequest request, MultipartFile[] photos, String userId) throws IOException {
+    public StatusResponse createAdvertisement(CreateAdvertisementRequest createRequest,
+                                              MultipartFile[] photos,
+                                              String userId) throws IOException {
 
-        Advertisement savedAdvertisement = advertisementMapper.mapToEntity(request);
+        Advertisement savedAdvertisement = advertisementMapper.mapToEntity(createRequest);
         savedAdvertisement.setUserId(Long.parseLong(userId));
         savedAdvertisement = advertisementRepository.save(savedAdvertisement);
 
-        List<AdvertisementPhoto> advertisementPhotos = uploadPhotosAndLinkToAdvertisement(photos, savedAdvertisement, request.subCategoryId());
-        advertisementPhotos.forEach(advertisementPhotoService::createAdvertisementPhoto);
+        List<AdvertisementPhoto> advertisementPhotos = uploadPhotosAndLinkToAdvertisement(photos, savedAdvertisement, createRequest.subCategoryId());
+
+        String mainPhotoUrl = advertisementPhotos.get(0).getPhotoUrl();
+        savedAdvertisement.setMainPhotoUrl(mainPhotoUrl);
+        advertisementRepository.save(savedAdvertisement);
+        List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(savedAdvertisement.getId());
+
+        CreateAdvertisementResponse createAdvertisementResponse = advertisementMapper.mapToCreateAdvertisementResponse(savedAdvertisement, photoUrls);
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(savedAdvertisement)
+                .data(createAdvertisementResponse)
                 .build();
     }
 
@@ -50,6 +60,8 @@ public class AdvertisementService {
         List<AdvertisementPhoto> advertisementPhotos = advertisementPhotoService.handlePhotoUpload(photos, subCategoryName);
 
         advertisementPhotos.forEach(photo -> photo.setAdvertisement(advertisement));
+        advertisementPhotos.forEach(advertisementPhotoService::createAdvertisementPhoto);
+
         return advertisementPhotos;
     }
 
@@ -78,11 +90,15 @@ public class AdvertisementService {
         Advertisement advertisement = findById(id);
         boolean currentStatus = advertisement.getIsEnabled();
         advertisement.setIsEnabled(!currentStatus);
+        advertisement.setUpdateDate(LocalDateTime.now());
         advertisementRepository.save(advertisement);
 
         return StatusResponse.builder()
                 .status(HttpStatus.OK.value())
-                .data(new AdvertisementStatusResponse(advertisement.getId(), advertisement.getIsEnabled()))
+                .data(new AdvertisementStatusResponse(
+                        advertisement.getId(),
+                        advertisement.getIsEnabled(),
+                        advertisement.getUpdateDate()))
                 .build();
     }
 
@@ -92,11 +108,11 @@ public class AdvertisementService {
                 new EntityNotFoundException("Advertisement not found"));
     }
 
-    public List<Advertisement> findAllUserAdvertisement(String userId) {
-        return advertisementRepository.findByUserId(Long.parseLong(userId));
+    public List<Advertisement> findAllUserAdvertisement(Long userId) {
+        return advertisementRepository.findByUserId(userId);
     }
 
-    public List<Advertisement> getUserAdvertisementsByEnabledStatus(String userId, boolean isEnabled) {
+    public List<Advertisement> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
         return findAllUserAdvertisement(userId)
                 .stream()
                 .filter(ad -> ad.getIsEnabled() == isEnabled)

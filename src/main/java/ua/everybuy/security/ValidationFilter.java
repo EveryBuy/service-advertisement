@@ -9,7 +9,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.client.HttpStatusCodeException;
 import ua.everybuy.buisnesslogic.service.AuthService;
 import ua.everybuy.errorhandling.ErrorResponse;
-import ua.everybuy.errorhandling.MessageResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -88,7 +87,7 @@ public class ValidationFilter extends OncePerRequestFilter {
 
     private void extractErrorMessage(HttpServletResponse response, Exception e, int statusCode) throws IOException {
         String message = e.getMessage();
-        ErrorResponse errorResponse = new ErrorResponse(statusCode, new MessageResponse(message));
+        ErrorResponse errorResponse = new ErrorResponse(statusCode, message);
         String json = objectMapper.writeValueAsString(errorResponse);
         response.setStatus(statusCode);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

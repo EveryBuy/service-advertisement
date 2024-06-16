@@ -34,11 +34,18 @@ public class Advertisement {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime creationDate;
 
+    @Column(name = "update_date", nullable = false)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime updateDate;
+
     @Column(name = "is_enabled")
     private Boolean isEnabled;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
+
+    @Column (name = "main_photo_url")
+    private String mainPhotoUrl;
 
     @ManyToOne
     @JoinColumn(name="city_id", nullable = false)

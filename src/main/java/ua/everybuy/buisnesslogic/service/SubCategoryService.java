@@ -16,7 +16,6 @@ public class SubCategoryService {
     public List<SubCategory> getAllSubCategories() {
         return subCategoryRepository.findAll();
     }
-
     public SubCategory findById(Long id) {
         return subCategoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Subcategory not found"));
     }
