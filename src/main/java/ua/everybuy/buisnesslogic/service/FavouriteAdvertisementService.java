@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
 import ua.everybuy.database.repository.FavouriteAdvertisementRepository;
+import ua.everybuy.errorhandling.custom.DuplicateDataException;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.response.ShortAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
@@ -34,7 +35,7 @@ public class FavouriteAdvertisementService {
         Advertisement advertisement = advertisementService.findById(adId);
 
         if (favouriteAdvertisementRepository.existsByUserIdAndAdvertisement(userIdLong, advertisement)) {
-            throw new IllegalArgumentException("Advertisement is already added to favorites");
+            throw new DuplicateDataException("Advertisement is already added to favorites");
         }
 
         FavouriteAdvertisement favouriteAdvertisement = new FavouriteAdvertisement();

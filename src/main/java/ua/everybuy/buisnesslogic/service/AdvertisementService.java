@@ -31,7 +31,6 @@ public class AdvertisementService {
     private final UserService userService;
 
     public StatusResponse createAdvertisement(CreateAdvertisementRequest createRequest,
-                                              HttpServletRequest request,
                                               MultipartFile[] photos,
                                               String userId) throws IOException {
 

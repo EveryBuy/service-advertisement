@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementPhotoRepository;
+import ua.everybuy.errorhandling.custom.FileFormatException;
 
+import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -34,11 +36,12 @@ public class AdvertisementPhotoService {
     public List<AdvertisementPhoto> handlePhotoUpload(MultipartFile[] photos, String subcategory) throws IOException {
         List<AdvertisementPhoto> advertisementPhotos = new ArrayList<>();
 
-        if (photos == null) {
-            return advertisementPhotos;
+        if (photos == null || photos.length < 1 || photos.length > 8) {
+            throw new IllegalArgumentException("Number of photos must be between 1 and 8");
         }
 
         for (MultipartFile photo : photos) {
+            isImage(photo);
             String photoUrl = uploadPhotoToS3(photo, subcategory);
             advertisementPhotos.add(AdvertisementPhoto.builder()
                     .photoUrl(photoUrl)
@@ -100,5 +103,11 @@ public class AdvertisementPhotoService {
         }
 
         return photoUrl;
+    }
+
+    private void isImage(MultipartFile file) throws IOException {
+        if (ImageIO.read(file.getInputStream()) == null) {
+            throw new FileFormatException("File should be image");
+        }
     }
 }

@@ -25,11 +25,10 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<StatusResponse> createAdvertisement(
             @Valid @RequestPart("request") CreateAdvertisementRequest createRequest,
-            HttpServletRequest request,
-            @RequestPart(value = "photos", required = false) MultipartFile[] photos,
+            @RequestPart(value = "photos") MultipartFile[] photos,
             Principal principal) throws IOException {
 
-        StatusResponse response = advertisementService.createAdvertisement(createRequest, request, photos, principal.getName());
+        StatusResponse response = advertisementService.createAdvertisement(createRequest, photos, principal.getName());
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
