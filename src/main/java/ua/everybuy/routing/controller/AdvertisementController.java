@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.AdvertisementService;
@@ -25,7 +26,7 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<StatusResponse> createAdvertisement(
             @Valid @RequestPart("request") CreateAdvertisementRequest createRequest,
-            @RequestPart(value = "photos") MultipartFile[] photos,
+            @Nullable @RequestPart(value = "photos", required = false) MultipartFile[] photos,
             Principal principal) throws IOException {
 
         StatusResponse response = advertisementService.createAdvertisement(createRequest, photos, principal.getName());
