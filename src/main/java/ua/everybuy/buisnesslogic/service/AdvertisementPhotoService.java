@@ -36,10 +36,11 @@ public class AdvertisementPhotoService {
     public List<AdvertisementPhoto> handlePhotoUpload(MultipartFile[] photos, String subcategory) throws IOException {
         List<AdvertisementPhoto> advertisementPhotos = new ArrayList<>();
 
-        if (photos == null || photos.length < 1 || photos.length > 8) {
+        if (photos == null || photos.length < 1 || photos.length > 8 || photos[0].isEmpty()) {
             throw new IllegalArgumentException("Number of photos must be between 1 and 8");
-        }
 
+        }
+        System.out.println(photos + " " + photos.length);
         for (MultipartFile photo : photos) {
             isImage(photo);
             String photoUrl = uploadPhotoToS3(photo, subcategory);
