@@ -3,9 +3,6 @@ package ua.everybuy.routing.dto.response;
 import lombok.Getter;
 import lombok.Setter;
 import ua.everybuy.database.entity.Advertisement;
-import ua.everybuy.database.entity.City;
-import ua.everybuy.database.entity.SubCategory;
-import ua.everybuy.routing.dto.ShortUserInfoDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +14,7 @@ public class CreateAdvertisementResponse {
     private Long id;
     private String title;
     private String description;
-    private String price;
+    private Double price;
     private LocalDateTime creationDate;
     private Boolean isEnabled;
     private Long userId;

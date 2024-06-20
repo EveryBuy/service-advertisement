@@ -16,9 +16,8 @@ public record CreateAdvertisementRequest(
         @Size(max = 3000, message = "Description must be less than 1000 characters")
         String description,
 
-        @NotBlank(message = "Price is required")
-        @Size(max = 55, message = "Price must be less than 55 characters")
-        String price,
+        @NotNull(message = "Price is required")
+        Double price,
         @NotNull(message = "City ID is required")
         Long cityId,
 

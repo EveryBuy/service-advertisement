@@ -6,9 +6,7 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
-import ua.everybuy.routing.dto.response.CreateAdvertisementResponse;
-import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
-import ua.everybuy.routing.dto.response.ShortAdvertisementResponse;
+import ua.everybuy.routing.dto.response.*;
 
 import java.util.List;
 
@@ -27,6 +25,11 @@ public interface AdvertisementMapper {
     @Mapping(source = "photos", target = "photoUrls")
     AdvertisementDto mapToDto(Advertisement advertisement, List<String> photos);
 
+    @Mapping(source = "advertisement.id", target = "advertisementId")
+    @Mapping(source = "advertisement.isEnabled", target = "status")
+    @Mapping(source = "advertisement.updateDate", target = "updateDate")
+    AdvertisementStatusResponse mapToAdvertisementStatusResponse (Advertisement advertisement);
+
     @Mapping(source = "advertisement.city.cityName", target = "cityName")
     @Mapping(source = "advertisement.subCategory.subCategoryName", target = "subCategoryName")
     @Mapping(source = "photos", target = "photoUrls")
@@ -44,5 +47,7 @@ public interface AdvertisementMapper {
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "advertisement.id", target = "advertisementId")
     FavouriteAdvertisementResponse mapToFavouriteAdvertisementResponse(FavouriteAdvertisement favouriteAdvertisement);
+
+
 
 }

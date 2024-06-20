@@ -28,7 +28,7 @@ public class Advertisement {
     private String description;
 
     @Column(name = "price", nullable = false, length = 55)
-    private String price;
+    private Double price;
 
     @Column(name = "creation_date", nullable = false)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
