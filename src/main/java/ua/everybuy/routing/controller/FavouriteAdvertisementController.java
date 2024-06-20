@@ -31,7 +31,7 @@ public class FavouriteAdvertisementController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/user/favourite-ads")
+    @GetMapping("/favourite-ads")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<StatusResponse> getAllUsersFavouriteAdvertisements(Principal principal) {
         List<ShortAdvertisementResponse> favouriteUsersAdvertisements = favouriteAdvertisementService.findAllUserFavouriteAdvertisements(principal.getName());
