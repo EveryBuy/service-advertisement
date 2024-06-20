@@ -34,13 +34,9 @@ public class AdvertisementPhotoService {
     private String bucketName;
 
     public List<AdvertisementPhoto> handlePhotoUpload(MultipartFile[] photos, String subcategory) throws IOException {
+        validatePhotos(photos);
         List<AdvertisementPhoto> advertisementPhotos = new ArrayList<>();
 
-        if (photos == null || photos.length < 1 || photos.length > 8 || photos[0].isEmpty()) {
-            throw new IllegalArgumentException("Number of photos must be between 1 and 8");
-
-        }
-        System.out.println(photos + " " + photos.length);
         for (MultipartFile photo : photos) {
             isImage(photo);
             String photoUrl = uploadPhotoToS3(photo, subcategory);
@@ -49,7 +45,6 @@ public class AdvertisementPhotoService {
                     .creationDate(LocalDateTime.now())
                     .build());
         }
-
         return advertisementPhotos;
     }
 
@@ -109,6 +104,12 @@ public class AdvertisementPhotoService {
     private void isImage(MultipartFile file) throws IOException {
         if (ImageIO.read(file.getInputStream()) == null) {
             throw new FileFormatException("File should be image");
+        }
+    }
+
+    private void validatePhotos(MultipartFile[] photos) {
+        if (photos == null || photos.length < 1 || photos.length > 8 || photos[0].isEmpty()) {
+            throw new IllegalArgumentException("Number of photos must be between 1 and 8");
         }
     }
 }
