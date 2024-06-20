@@ -33,7 +33,7 @@ public class AdvertisementController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/show")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<StatusResponse> getAdvertisementById(@PathVariable Long id, HttpServletRequest request) {
         StatusResponse response = advertisementService.getAdvertisement(id, request);
