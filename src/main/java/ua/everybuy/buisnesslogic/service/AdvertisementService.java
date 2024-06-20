@@ -14,6 +14,7 @@ import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.response.AdvertisementStatusResponse;
 import ua.everybuy.routing.dto.response.CreateAdvertisementResponse;
+import ua.everybuy.routing.dto.response.ShortAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
@@ -63,6 +64,7 @@ public class AdvertisementService {
         advertisementPhotos.forEach(advertisementPhotoService::createAdvertisementPhoto);
 
         return advertisementPhotos;
+
     }
 
     public StatusResponse getAdvertisement(Long id, HttpServletRequest request) {
@@ -92,16 +94,14 @@ public class AdvertisementService {
         advertisement.setIsEnabled(!currentStatus);
         advertisement.setUpdateDate(LocalDateTime.now());
         advertisementRepository.save(advertisement);
+        AdvertisementStatusResponse advertisementStatusResponse =
+                advertisementMapper.mapToAdvertisementStatusResponse(advertisement);
 
         return StatusResponse.builder()
                 .status(HttpStatus.OK.value())
-                .data(new AdvertisementStatusResponse(
-                        advertisement.getId(),
-                        advertisement.getIsEnabled(),
-                        advertisement.getUpdateDate()))
+                .data(advertisementStatusResponse)
                 .build();
     }
-
 
     public Advertisement findById(Long id) {
         return advertisementRepository.findById(id).orElseThrow(() ->
@@ -112,10 +112,11 @@ public class AdvertisementService {
         return advertisementRepository.findByUserId(userId);
     }
 
-    public List<Advertisement> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
+    public List<ShortAdvertisementResponse> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
         return findAllUserAdvertisement(userId)
                 .stream()
                 .filter(ad -> ad.getIsEnabled() == isEnabled)
+                .map(advertisementMapper::mapToShortAdvertisementResponse)
                 .toList();
     }
 }
