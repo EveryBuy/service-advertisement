@@ -6,6 +6,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.client.HttpStatusCodeException;
 import ua.everybuy.buisnesslogic.service.AuthService;
 import ua.everybuy.errorhandling.ErrorResponse;
@@ -23,14 +25,18 @@ import ua.everybuy.routing.dto.response.ValidResponse;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class ValidationFilter extends OncePerRequestFilter {
-    private static final Set<String> EXCLUDED_PATHS =
-            Set.of("/ad/category", "/ad/category/ukr",
-                    "/ad/subcategory", "/ad/city", "/ad/keep-alive");
+    private static final List<RequestMatcher> EXCLUDED_PATH_MATCHERS = List.of(
+            new AntPathRequestMatcher("/ad/category/**"),
+            new AntPathRequestMatcher("/ad/subcategory/**"),
+            new AntPathRequestMatcher("/ad/city/**"),
+            new AntPathRequestMatcher("/ad/keep-alive"),
+            new AntPathRequestMatcher("/ad/user/*/active-ads/**"),
+            new AntPathRequestMatcher("/ad/*/show")
+    );
 
     private final ObjectMapper objectMapper;
     private final AuthService authService;
@@ -74,7 +80,8 @@ public class ValidationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return EXCLUDED_PATHS.contains(request.getRequestURI());
+        return EXCLUDED_PATH_MATCHERS.stream()
+                .anyMatch(matcher -> matcher.matches(request));
     }
 
     private void handleClientError(HttpServletResponse response, HttpClientErrorException e) throws IOException {

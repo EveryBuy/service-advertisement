@@ -109,7 +109,12 @@ public class AdvertisementService {
     }
 
     public List<Advertisement> findAllUserAdvertisement(Long userId) {
-        return advertisementRepository.findByUserId(userId);
+        List<Advertisement> userAdvertisement = advertisementRepository.findByUserId(userId);
+        if (userAdvertisement == null || userAdvertisement.isEmpty()) {
+            System.out.println(userAdvertisement);
+            throw new EntityNotFoundException("No advertisements found for the given user " + userId);
+        }
+        return userAdvertisement;
     }
 
     public List<ShortAdvertisementResponse> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
