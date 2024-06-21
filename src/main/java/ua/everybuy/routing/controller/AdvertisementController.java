@@ -42,8 +42,8 @@ public class AdvertisementController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> deleteAdvertisementById(@PathVariable Long id) throws IOException {
-        advertisementService.deleteAdvertisement(id);
+    public ResponseEntity<?> deleteAdvertisementById(@PathVariable Long id, Principal principal) throws IOException {
+        advertisementService.deleteAdvertisement(id, principal);
         return ResponseEntity.noContent().build();
     }
 

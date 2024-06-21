@@ -19,6 +19,7 @@ import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -80,8 +81,8 @@ public class AdvertisementService {
                 .build();
     }
 
-    public void deleteAdvertisement(Long id) throws IOException {
-        Advertisement advertisement = findById(id);
+    public void deleteAdvertisement(Long advertisementId, Principal principal) throws IOException {
+        Advertisement advertisement = findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(principal.getName()));
 
         advertisementPhotoService.deletePhotosByAdvertisementId(advertisement.getId());
         advertisementRepository.delete(advertisement);
@@ -103,20 +104,6 @@ public class AdvertisementService {
                 .build();
     }
 
-    public Advertisement findById(Long id) {
-        return advertisementRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Advertisement not found"));
-    }
-
-    public List<Advertisement> findAllUserAdvertisement(Long userId) {
-        List<Advertisement> userAdvertisement = advertisementRepository.findByUserId(userId);
-        if (userAdvertisement == null || userAdvertisement.isEmpty()) {
-            System.out.println(userAdvertisement);
-            throw new EntityNotFoundException("No advertisements found for the given user " + userId);
-        }
-        return userAdvertisement;
-    }
-
     public List<ShortAdvertisementResponse> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
         return findAllUserAdvertisement(userId)
                 .stream()
@@ -124,4 +111,31 @@ public class AdvertisementService {
                 .map(advertisementMapper::mapToShortAdvertisementResponse)
                 .toList();
     }
+
+    public Advertisement findById(Long id) {
+        return advertisementRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
+    }
+
+    public List<Advertisement> findAllUserAdvertisement(Long userId) {
+        List<Advertisement> userAdvertisement = advertisementRepository.findByUserId(userId);
+        if (userAdvertisement == null || userAdvertisement.isEmpty()) {
+            throw new EntityNotFoundException("No advertisements found for the given user " + userId);
+        }
+        return userAdvertisement;
+    }
+
+    public Advertisement findAdvertisementByIdAndUserId(Long advertisementId, Long userId) {
+        return advertisementRepository.findByIdAndUserId(advertisementId, userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "User with id "
+                                + userId
+                                + " does not have an advertisement with the id "
+                                + advertisementId
+                                + " or advertisement not found."));
+
+    }
+
+
 }
