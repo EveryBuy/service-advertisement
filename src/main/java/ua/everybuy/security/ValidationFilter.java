@@ -25,17 +25,20 @@ import ua.everybuy.routing.dto.response.ValidResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class ValidationFilter extends OncePerRequestFilter {
-    private static final List<RequestMatcher> EXCLUDED_PATH_MATCHERS = List.of(
+    private static final Set<RequestMatcher> EXCLUDED_PATH_MATCHERS = Set.of(
             new AntPathRequestMatcher("/ad/category/**"),
             new AntPathRequestMatcher("/ad/subcategory/**"),
             new AntPathRequestMatcher("/ad/city/**"),
             new AntPathRequestMatcher("/ad/keep-alive"),
             new AntPathRequestMatcher("/ad/user/*/active-ads/**"),
-            new AntPathRequestMatcher("/ad/*/show")
+            new AntPathRequestMatcher("/ad/*/show"),
+            new AntPathRequestMatcher("/ad/filter")
+
     );
 
     private final ObjectMapper objectMapper;
