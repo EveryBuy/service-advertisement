@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.database.entity.Advertisement;
@@ -70,6 +71,9 @@ public class AdvertisementService {
 
     public StatusResponse getAdvertisement(Long id, HttpServletRequest request) {
         Advertisement advertisement = findById(id);
+        if (!advertisement.getIsEnabled()) {
+            throw new AccessDeniedException("Advertisement is inactive");
+        }
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(advertisement.getId());
 
         AdvertisementDto advertisementDTO = advertisementMapper.mapToDto(advertisement, photoUrls);
@@ -136,6 +140,8 @@ public class AdvertisementService {
                                 + " or advertisement not found."));
 
     }
-
+    public List <Advertisement> findAll (){
+        return advertisementRepository.findAll();
+    }
 
 }
