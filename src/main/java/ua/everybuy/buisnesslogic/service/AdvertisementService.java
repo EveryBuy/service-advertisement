@@ -61,7 +61,6 @@ public class AdvertisementService {
                                                                         Long subCategoryId) throws IOException {
         String subCategoryName = subCategoryService.findById(subCategoryId).getSubCategoryName();
         List<AdvertisementPhoto> advertisementPhotos = advertisementPhotoService.handlePhotoUpload(photos, subCategoryName);
-
         advertisementPhotos.forEach(photo -> photo.setAdvertisement(advertisement));
         advertisementPhotos.forEach(advertisementPhotoService::createAdvertisementPhoto);
 
@@ -69,21 +68,42 @@ public class AdvertisementService {
 
     }
 
-    public StatusResponse getAdvertisement(Long id, HttpServletRequest request) {
+    public StatusResponse getActiveAdvertisement(Long id, HttpServletRequest request) {
         Advertisement advertisement = findById(id);
         if (!advertisement.getIsEnabled()) {
             throw new AccessDeniedException("Advertisement is inactive");
         }
-        List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(advertisement.getId());
-
-        AdvertisementDto advertisementDTO = advertisementMapper.mapToDto(advertisement, photoUrls);
-        advertisementDTO.setUserDto(userService.getShortUserInfo(request, advertisement.getUserId()));
+        AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement, advertisement.getUserId(), request);
 
         return StatusResponse.builder()
                 .status(HttpStatus.OK.value())
                 .data(advertisementDTO)
                 .build();
     }
+
+    public StatusResponse getUserAdvertisement(Long id, HttpServletRequest request, Principal principal) {
+
+        Long userId = Long.parseLong(principal.getName());
+        Advertisement advertisement = findAdvertisementByIdAndUserId(id, userId);
+        AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement, userId, request);
+
+        return StatusResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data(advertisementDTO)
+                .build();
+    }
+
+    private AdvertisementDto createAdvertisementDto(Advertisement advertisement,
+                                                    Long userId,
+                                                    HttpServletRequest request) {
+
+        List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(advertisement.getId());
+        AdvertisementDto advertisementDTO = advertisementMapper.mapToDto(advertisement, photoUrls);
+        advertisementDTO.setUserDto(userService.getShortUserInfo(request, userId));
+
+        return advertisementDTO;
+    }
+
 
     public void deleteAdvertisement(Long advertisementId, Principal principal) throws IOException {
         Advertisement advertisement = findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(principal.getName()));
@@ -140,7 +160,8 @@ public class AdvertisementService {
                                 + " or advertisement not found."));
 
     }
-    public List <Advertisement> findAll (){
+
+    public List<Advertisement> findAll() {
         return advertisementRepository.findAll();
     }
 

@@ -35,10 +35,19 @@ public class AdvertisementController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @GetMapping("/{id}/show")
+    @GetMapping("/{id}/active")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<StatusResponse> getAdvertisementById(@PathVariable Long id, HttpServletRequest request) {
-        StatusResponse response = advertisementService.getAdvertisement(id, request);
+        StatusResponse response = advertisementService.getActiveAdvertisement(id, request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping("/{id}/user")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<StatusResponse> getUserAdvertisement(@PathVariable Long id,
+                                                               HttpServletRequest request,
+                                                               Principal principal) {
+        StatusResponse response = advertisementService.getUserAdvertisement(id, request, principal);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
