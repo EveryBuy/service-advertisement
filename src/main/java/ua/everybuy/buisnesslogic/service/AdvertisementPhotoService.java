@@ -1,24 +1,19 @@
 package ua.everybuy.buisnesslogic.service;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementPhotoRepository;
 import ua.everybuy.errorhandling.custom.FileFormatException;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,20 +21,19 @@ import java.util.stream.Collectors;
 public class AdvertisementPhotoService {
 
     private final AdvertisementPhotoRepository advertisementPhotoRepository;
-    private final AmazonS3 s3Client;
+    private final SubCategoryService subCategoryService;
+    private final AmazonS3Service amazonS3Service;
 
-    @Value("${aws.photo.url}")
-    private String awsUrl;
-    @Value("${aws.bucket.name}")
-    private String bucketName;
+    private static final int MIN_PHOTOS = 1;
+    private static final int MAX_PHOTOS = 8;
 
-    public List<AdvertisementPhoto> handlePhotoUpload(MultipartFile[] photos, String subcategory) throws IOException {
+    private List<AdvertisementPhoto> handlePhotoUpload(MultipartFile[] photos, String subcategory) throws IOException {
         validatePhotos(photos);
         List<AdvertisementPhoto> advertisementPhotos = new ArrayList<>();
 
         for (MultipartFile photo : photos) {
             isImage(photo);
-            String photoUrl = uploadPhotoToS3(photo, subcategory);
+            String photoUrl = amazonS3Service.uploadPhoto(photo, subcategory);
             advertisementPhotos.add(AdvertisementPhoto.builder()
                     .photoUrl(photoUrl)
                     .creationDate(LocalDateTime.now())
@@ -48,67 +42,55 @@ public class AdvertisementPhotoService {
         return advertisementPhotos;
     }
 
+    public List<AdvertisementPhoto> uploadPhotosAndLinkToAdvertisement(MultipartFile[] photos,
+                                                                       Advertisement advertisement,
+                                                                       Long subCategoryId) throws IOException {
+        String subCategoryName = subCategoryService.findById(subCategoryId).getSubCategoryName();
+        List<AdvertisementPhoto> advertisementPhotos = handlePhotoUpload(photos, subCategoryName);
+        advertisementPhotos.forEach(photo -> photo.setAdvertisement(advertisement));
+        advertisementPhotos.forEach(this::saveAdvertisementPhoto);
+
+        return advertisementPhotos;
+    }
+
     public void deletePhotosByAdvertisementId(Long advertisementId) throws IOException {
-        List<AdvertisementPhoto> photos = advertisementPhotoRepository.findByAdvertisementId(advertisementId);
-
-        for (AdvertisementPhoto photo : photos) {
-            String photoUrl = photo.getPhotoUrl();
-            String s3Key = photoUrl.replace(awsUrl, "");
-
-            try {
-                s3Client.deleteObject(bucketName, s3Key);
-            } catch (AmazonServiceException e) {
-                throw new IOException("Failed to upload photo to S3: " + e.getErrorMessage(), e);
-            } catch (SdkClientException e) {
-                throw new IOException("Failed to upload photo to S3: " + e.getMessage(), e);
-            }
-        }
-
+        List<AdvertisementPhoto> photos = findPhotosByAdvertisementId(advertisementId);
+        amazonS3Service.deletePhotos(photos);
         advertisementPhotoRepository.deleteAll(photos);
     }
 
     public List<String> getPhotoUrlsByAdvertisementId(Long advertisementId) {
-        return advertisementPhotoRepository.findByAdvertisementId(advertisementId)
+        return findPhotosByAdvertisementId(advertisementId)
                 .stream()
                 .map(AdvertisementPhoto::getPhotoUrl)
                 .collect(Collectors.toList());
     }
 
-    public void createAdvertisementPhoto(AdvertisementPhoto advertisementPhoto) {
+    public void saveAdvertisementPhoto(AdvertisementPhoto advertisementPhoto) {
         if (advertisementPhoto == null) {
             throw new IllegalArgumentException("AdvertisementPhoto object cannot be null");
         }
         advertisementPhotoRepository.save(advertisementPhoto);
     }
 
-    private String uploadPhotoToS3(MultipartFile photo, String subcategory) throws IOException {
-        String uuid = UUID.randomUUID().toString();
-        String photoKey = subcategory.replaceAll("\\s+", "") + uuid;
-        String photoUrl = awsUrl + photoKey;
+    private List<AdvertisementPhoto> findPhotosByAdvertisementId(Long advertisementId) {
+        List<AdvertisementPhoto> photos = advertisementPhotoRepository.findByAdvertisementId(advertisementId);
 
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(photo.getContentType());
-        metadata.setContentLength(photo.getSize());
+//        if (photos == null || photos.isEmpty()) {
+//            throw new EntityNotFoundException("Advertisement photos not found");
+//        }
 
-        try (InputStream inputStream = photo.getInputStream()) {
-            s3Client.putObject(bucketName, photoKey, inputStream, metadata);
-        } catch (AmazonServiceException e) {
-            throw new IOException("Failed to upload photo to S3: " + e.getErrorMessage(), e);
-        } catch (SdkClientException e) {
-            throw new IOException("Failed to upload photo to S3: " + e.getMessage(), e);
-        }
-
-        return photoUrl;
+        return photos;
     }
 
     private void isImage(MultipartFile file) throws IOException {
         if (ImageIO.read(file.getInputStream()) == null) {
-            throw new FileFormatException("File should be image");
+            throw new FileFormatException("File should be an image");
         }
     }
 
     private void validatePhotos(MultipartFile[] photos) {
-        if (photos == null || photos.length < 1 || photos.length > 8 || photos[0].isEmpty()) {
+        if (photos == null || photos.length < MIN_PHOTOS || photos.length > MAX_PHOTOS || photos[0].isEmpty()) {
             throw new IllegalArgumentException("Number of photos must be between 1 and 8");
         }
     }

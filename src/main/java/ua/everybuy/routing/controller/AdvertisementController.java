@@ -9,6 +9,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.AdvertisementService;
+import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
@@ -33,17 +34,39 @@ public class AdvertisementController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @GetMapping("/{id}/show")
+    @PutMapping("/{id}/update")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<StatusResponse> updateAdvertisement(
+            @PathVariable Long id,
+            @Valid @RequestPart("request") UpdateAdvertisementRequest updateRequest,
+            @Nullable @RequestPart(value = "photos", required = false) MultipartFile[] photos,
+            Principal principal) throws IOException {
+
+        StatusResponse response = advertisementService.updateAdvertisement(id, updateRequest, photos, principal.getName());
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+
+    @GetMapping("/{id}/active")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<StatusResponse> getAdvertisementById(@PathVariable Long id, HttpServletRequest request) {
-        StatusResponse response = advertisementService.getAdvertisement(id, request);
+        StatusResponse response = advertisementService.getActiveAdvertisement(id, request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping("/{id}/user")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<StatusResponse> getUserAdvertisement(@PathVariable Long id,
+                                                               HttpServletRequest request,
+                                                               Principal principal) {
+        StatusResponse response = advertisementService.getUserAdvertisement(id, request, principal);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> deleteAdvertisementById(@PathVariable Long id) throws IOException {
-        advertisementService.deleteAdvertisement(id);
+    public ResponseEntity<?> deleteAdvertisementById(@PathVariable Long id, Principal principal) throws IOException {
+        advertisementService.deleteAdvertisement(id, principal);
         return ResponseEntity.noContent().build();
     }
 

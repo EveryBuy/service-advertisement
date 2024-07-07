@@ -6,6 +6,7 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
+import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.*;
 
 import java.util.List;
@@ -19,6 +20,17 @@ public interface AdvertisementMapper {
     @Mapping(target = "isEnabled", constant = "true")
     Advertisement mapToEntity(CreateAdvertisementRequest request);
 
+    @Mapping(source = "request.title", target = "title")
+    @Mapping(source = "request.description", target = "description")
+    @Mapping(source = "request.price", target = "price")
+    @Mapping(source = "request.productType", target = "productType")
+    @Mapping(source = "request.deliveryMethods", target = "deliveryMethods")
+    @Mapping(source = "request.cityId", target = "city", qualifiedByName = "cityIdToCity")
+    @Mapping(source = "request.subCategoryId", target = "subCategory", qualifiedByName = "subCategoryIdToSubCategory")
+    @Mapping(target = "updateDate", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "isEnabled", constant = "true")
+    Advertisement mapToEntity(UpdateAdvertisementRequest request, Advertisement advertisement);
+
     @Mapping(source = "advertisement.city", target = "city")
     @Mapping(source = "advertisement.subCategory", target = "subCategory")
     @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
@@ -28,13 +40,17 @@ public interface AdvertisementMapper {
     @Mapping(source = "advertisement.id", target = "advertisementId")
     @Mapping(source = "advertisement.isEnabled", target = "status")
     @Mapping(source = "advertisement.updateDate", target = "updateDate")
-    AdvertisementStatusResponse mapToAdvertisementStatusResponse (Advertisement advertisement);
+    AdvertisementStatusResponse mapToAdvertisementStatusResponse(Advertisement advertisement);
 
     @Mapping(source = "advertisement.city.cityName", target = "cityName")
     @Mapping(source = "advertisement.subCategory.subCategoryName", target = "subCategoryName")
     @Mapping(source = "photos", target = "photoUrls")
-    CreateAdvertisementResponse mapToCreateAdvertisementResponse(Advertisement advertisement, List<String> photos);
+    CreateAdvertisementResponse mapToAdvertisementCreateResponse(Advertisement advertisement, List<String> photos);
 
+    @Mapping(source = "advertisement.city.cityName", target = "cityName")
+    @Mapping(source = "advertisement.subCategory.subCategoryName", target = "subCategoryName")
+    @Mapping(source = "photos", target = "photoUrls")
+    UpdateAdvertisementResponse mapToAdvertisementUpdateResponse(Advertisement advertisement, List<String> photos);
 
     @Mapping(source = "advertisement.id", target = "id")
     @Mapping(source = "advertisement.title", target = "title")
@@ -47,7 +63,6 @@ public interface AdvertisementMapper {
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "advertisement.id", target = "advertisementId")
     FavouriteAdvertisementResponse mapToFavouriteAdvertisementResponse(FavouriteAdvertisement favouriteAdvertisement);
-
 
 
 }
