@@ -8,6 +8,8 @@ import ua.everybuy.database.entity.Advertisement;
 import java.util.Set;
 
 public record UpdateAdvertisementRequest(
+//        @NotNull(message = "Advertisement ID is required")
+//        Long id,
         @NotBlank(message = "Title is required")
         @Size(max = 255, message = "Title must be less than 255 characters")
         String title,
@@ -16,12 +18,8 @@ public record UpdateAdvertisementRequest(
         @Size(max = 3000, message = "Description must be less than 1000 characters")
         String description,
 
-        @NotBlank(message = "Price is required")
-        @Size(max = 55, message = "Price must be less than 55 characters")
-        String price,
-
-        @NotNull(message = "User ID is required")
-        Long userId,
+        @NotNull(message = "Price is required")
+        Double price,
 
         @NotNull(message = "City ID is required")
         Long cityId,

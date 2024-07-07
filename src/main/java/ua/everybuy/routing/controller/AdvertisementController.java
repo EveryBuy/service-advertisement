@@ -9,13 +9,12 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.AdvertisementService;
-import ua.everybuy.database.entity.Advertisement;
+import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/ad")
@@ -34,6 +33,19 @@ public class AdvertisementController {
         StatusResponse response = advertisementService.createAdvertisement(createRequest, photos, principal.getName());
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
+    @PutMapping("/{id}/update")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<StatusResponse> updateAdvertisement(
+            @PathVariable Long id,
+            @Valid @RequestPart("request") UpdateAdvertisementRequest updateRequest,
+            @Nullable @RequestPart(value = "photos", required = false) MultipartFile[] photos,
+            Principal principal) throws IOException {
+
+        StatusResponse response = advertisementService.updateAdvertisement(id, updateRequest, photos, principal.getName());
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
 
     @GetMapping("/{id}/active")
     @ResponseStatus(HttpStatus.OK)
