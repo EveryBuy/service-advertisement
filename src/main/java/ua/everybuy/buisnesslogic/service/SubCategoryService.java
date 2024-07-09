@@ -19,5 +19,4 @@ public class SubCategoryService {
     public SubCategory findById(Long id) {
         return subCategoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Subcategory not found"));
     }
-
 }

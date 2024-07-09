@@ -20,7 +20,7 @@ public class FilterController {
 
     @GetMapping("/filter")
     public List<Advertisement> doFilter(@RequestParam(required = false) Double price,
-                                        @RequestParam(required = false) Integer cityId,
+                                        @RequestParam(required = false) Long cityId,
                                         @RequestParam(required = false) Long subCategoryId,
                                         @RequestParam(required = false) Long categoryId,
                                         @RequestParam(required = false) String productType){
