@@ -19,13 +19,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AdvertisementPhotoService {
+    private static final int MIN_PHOTOS = 1;
+    private static final int MAX_PHOTOS = 8;
 
     private final AdvertisementPhotoRepository advertisementPhotoRepository;
     private final SubCategoryService subCategoryService;
     private final AmazonS3Service amazonS3Service;
-
-    private static final int MIN_PHOTOS = 1;
-    private static final int MAX_PHOTOS = 8;
 
     private List<AdvertisementPhoto> handlePhotoUpload(MultipartFile[] photos, String subcategory) throws IOException {
         validatePhotos(photos);
@@ -94,4 +93,5 @@ public class AdvertisementPhotoService {
             throw new IllegalArgumentException("Number of photos must be between 1 and 8");
         }
     }
+    
 }

@@ -70,20 +70,24 @@ public class AdvertisementService {
                 .build();
     }
 
-    private void savedAdvertisement(MultipartFile[] newPhotos, Advertisement existingAdvertisement, Long advertisementId) throws IOException {
-        List<AdvertisementPhoto> existingPhotos = advertisementPhotoService.uploadPhotosAndLinkToAdvertisement(newPhotos, existingAdvertisement, advertisementId);
+    private void savedAdvertisement(MultipartFile[] newPhotos,
+                                    Advertisement existingAdvertisement,
+                                    Long advertisementId) throws IOException {
+        List<AdvertisementPhoto> existingPhotos = advertisementPhotoService
+                .uploadPhotosAndLinkToAdvertisement(newPhotos, existingAdvertisement, advertisementId);
 
         String mainPhotoUrl = existingPhotos.get(0).getPhotoUrl();
         existingAdvertisement.setMainPhotoUrl(mainPhotoUrl);
         advertisementRepository.save(existingAdvertisement);
     }
 
-
     public StatusResponse getActiveAdvertisement(Long id, HttpServletRequest request) {
         Advertisement advertisement = findById(id);
         if (!advertisement.getIsEnabled()) {
             throw new AccessDeniedException("Advertisement is inactive");
         }
+
+        incrementViewsAndSave(id);
         AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement, advertisement.getUserId(), request);
 
         return StatusResponse.builder()
@@ -102,6 +106,14 @@ public class AdvertisementService {
                 .status(HttpStatus.OK.value())
                 .data(advertisementDTO)
                 .build();
+    }
+
+    private void incrementViewsAndSave(Long advertisementId) {
+        Advertisement advertisement = findById(advertisementId);
+        if (advertisement != null) {
+            advertisement.setViews(advertisement.getViews() + 1);
+            advertisementRepository.save(advertisement);
+        }
     }
 
     private AdvertisementDto createAdvertisementDto(Advertisement advertisement,
