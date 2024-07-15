@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.everybuy.buisnesslogic.service.FavouriteAdvertisementService;
-import ua.everybuy.routing.dto.response.ShortAdvertisementResponse;
+import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 
 import java.security.Principal;
@@ -19,7 +19,7 @@ public class FavouriteAdvertisementController {
 
     @PostMapping("/{id}/add-to-favourite")
     public ResponseEntity<StatusResponse> addToFavourite(Principal principal,
-                                                         @PathVariable(name = "id") Long advertisementId){
+                                                         @PathVariable(name = "id") Long advertisementId) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(favouriteAdvertisementService.addToFavorites(principal.getName(), advertisementId));
     }
@@ -33,8 +33,10 @@ public class FavouriteAdvertisementController {
 
     @GetMapping("/favourite-ads")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<StatusResponse> getAllUsersFavouriteAdvertisements(Principal principal) {
-        List<ShortAdvertisementResponse> favouriteUsersAdvertisements = favouriteAdvertisementService.findAllUserFavouriteAdvertisements(principal.getName());
+    public ResponseEntity<StatusResponse> getAllUsersFavouriteAdvertisementsWithCategory(
+            @RequestParam(required = false) Long categoryId, Principal principal) {
+        List<FavouriteAdvertisementResponse> favouriteUsersAdvertisements = favouriteAdvertisementService
+                .findAllUserFavouriteAdvertisementsWithCategory(principal.getName(), categoryId);
 
         return ResponseEntity.ok(StatusResponse.builder()
                 .status(HttpStatus.OK.value())
