@@ -8,7 +8,7 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
 import ua.everybuy.database.repository.FavouriteAdvertisementRepository;
 import ua.everybuy.errorhandling.custom.DuplicateDataException;
-import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
+import ua.everybuy.routing.dto.mapper.FavouriteAdvertisementMapper;
 import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FavouriteAdvertisementService {
     private final FavouriteAdvertisementRepository favouriteAdvertisementRepository;
-    private final AdvertisementMapper mapper;
+    private final FavouriteAdvertisementMapper favouriteAdvertisementMapper;
     private final AdvertisementService advertisementService;
     private final CategoryService categoryService;
 
@@ -49,7 +49,7 @@ public class FavouriteAdvertisementService {
         List<Advertisement> filteredAdvertisements = filterAdvertisementsByCategory(userAdvertisements, categoryId);
 
         return filteredAdvertisements.stream()
-                .map(mapper::mapToFavouriteAdvertisementResponse)
+                .map(favouriteAdvertisementMapper::mapToFavouriteAdvertisementResponse)
                 .collect(Collectors.toList());
     }
 
@@ -68,7 +68,7 @@ public class FavouriteAdvertisementService {
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(mapper.mapToAddToFavouriteResponse(favouriteAdvertisement))
+                .data(favouriteAdvertisementMapper.mapToAddToFavouriteResponse(favouriteAdvertisement))
                 .build();
     }
 
