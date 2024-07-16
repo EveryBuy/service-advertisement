@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Region {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column (name="region_name")
     private String regionName;
 
