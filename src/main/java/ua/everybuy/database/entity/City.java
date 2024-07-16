@@ -11,7 +11,7 @@ import lombok.Setter;
 public class City {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column (name="city_name")
     private String cityName;
     @ManyToOne

@@ -8,26 +8,49 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
 import ua.everybuy.database.repository.FavouriteAdvertisementRepository;
 import ua.everybuy.errorhandling.custom.DuplicateDataException;
-import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
-import ua.everybuy.routing.dto.response.ShortAdvertisementResponse;
+import ua.everybuy.routing.dto.mapper.FavouriteAdvertisementMapper;
+import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FavouriteAdvertisementService {
     private final FavouriteAdvertisementRepository favouriteAdvertisementRepository;
-    private final AdvertisementMapper mapper;
+    private final FavouriteAdvertisementMapper favouriteAdvertisementMapper;
     private final AdvertisementService advertisementService;
+    private final CategoryService categoryService;
 
-    public List<ShortAdvertisementResponse> findAllUserFavouriteAdvertisements(String userId) {
-        return favouriteAdvertisementRepository
-                .findByUserId(Long.parseLong(userId))
-                .stream()
-                .map(favouriteAdvertisement -> favouriteAdvertisement.getAdvertisement())
-                .map(mapper::mapToShortAdvertisementResponse)
-                .toList();
+    public List<Advertisement> findAllUserFavouriteAdvertisements(String userId) {
+        List<FavouriteAdvertisement> favouriteAdvertisements = favouriteAdvertisementRepository
+                .findByUserId(Long.parseLong(userId));
+
+        return favouriteAdvertisements.stream()
+                .map(FavouriteAdvertisement::getAdvertisement)
+                .collect(Collectors.toList());
+    }
+
+    public List<Advertisement> filterAdvertisementsByCategory(List<Advertisement> advertisements, Long categoryId) {
+        if (categoryId != null) {
+            categoryService.findById(categoryId);
+            advertisements = advertisements.stream()
+                    .filter(advertisement ->
+                            categoryId.equals(advertisement.getSubCategory().getCategory().getId()))
+                    .collect(Collectors.toList());
+        }
+
+        return advertisements;
+    }
+    public List<FavouriteAdvertisementResponse> findAllUserFavouriteAdvertisementsWithCategory(String userId, Long categoryId) {
+        List<Advertisement> userAdvertisements = findAllUserFavouriteAdvertisements(userId);
+
+        List<Advertisement> filteredAdvertisements = filterAdvertisementsByCategory(userAdvertisements, categoryId);
+
+        return filteredAdvertisements.stream()
+                .map(favouriteAdvertisementMapper::mapToFavouriteAdvertisementResponse)
+                .collect(Collectors.toList());
     }
 
     public StatusResponse addToFavorites(String userId, Long adId) {
@@ -45,7 +68,7 @@ public class FavouriteAdvertisementService {
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(mapper.mapToFavouriteAdvertisementResponse(favouriteAdvertisement))
+                .data(favouriteAdvertisementMapper.mapToAddToFavouriteResponse(favouriteAdvertisement))
                 .build();
     }
 

@@ -47,6 +47,9 @@ public class Advertisement {
     @Column (name = "main_photo_url")
     private String mainPhotoUrl;
 
+    @Column(name = "views", nullable = false)
+    private Integer views = 0;
+
     @ManyToOne
     @JoinColumn(name="city_id", nullable = false)
     private City city;
