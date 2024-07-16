@@ -34,7 +34,7 @@ public class FilterService {
 
     private List<Advertisement> filterAdvertisements(Double minPrice, Double maxPrice, String sortOrder,
                                                      Long cityId, Long subCategoryId, Long categoryId, String productType) {
-        List<Advertisement> advertisements = advertisementService.findAll();
+        List<Advertisement> advertisements = advertisementService.findAllEnableAds();
 
         advertisements = filterByMinPrice(advertisements, minPrice);
         advertisements = filterByMaxPrice(advertisements, maxPrice);

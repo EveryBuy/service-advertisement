@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +43,8 @@ public class AdvertisementService {
 
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(savedAdvertisement.getId());
 
-        CreateAdvertisementResponse advertisementResponse = advertisementMapper.mapToAdvertisementCreateResponse(savedAdvertisement, photoUrls);
+        CreateAdvertisementResponse advertisementResponse = advertisementMapper.
+                mapToAdvertisementCreateResponse(savedAdvertisement, photoUrls);
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
@@ -62,7 +64,8 @@ public class AdvertisementService {
         savedAdvertisement(newPhotos, existingAdvertisement, updateRequest.subCategoryId());
         List<String> updatedPhotos = advertisementPhotoService.getPhotoUrlsByAdvertisementId(existingAdvertisement.getId());
 
-        UpdateAdvertisementResponse updateAdvertisementResponse = advertisementMapper.mapToAdvertisementUpdateResponse(existingAdvertisement, updatedPhotos);
+        UpdateAdvertisementResponse updateAdvertisementResponse = advertisementMapper
+                .mapToAdvertisementUpdateResponse(existingAdvertisement, updatedPhotos);
 
         return StatusResponse.builder()
                 .status(HttpStatus.OK.value())
@@ -187,5 +190,10 @@ public class AdvertisementService {
     public List<Advertisement> findAll() {
         return advertisementRepository.findAll();
     }
-
+    public List<Advertisement> findAllEnableAds() {
+        return findAll()
+                .stream()
+                .filter(Advertisement::getIsEnabled)
+                .collect(Collectors.toList());
+    }
 }
