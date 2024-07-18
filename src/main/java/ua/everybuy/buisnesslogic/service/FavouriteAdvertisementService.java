@@ -64,6 +64,7 @@ public class FavouriteAdvertisementService {
         FavouriteAdvertisement favouriteAdvertisement = new FavouriteAdvertisement();
         favouriteAdvertisement.setUserId(userIdLong);
         favouriteAdvertisement.setAdvertisement(advertisement);
+        advertisement.setFavouriteCount(advertisement.getFavouriteCount()+1);
         favouriteAdvertisementRepository.save(favouriteAdvertisement);
 
         return StatusResponse.builder()
