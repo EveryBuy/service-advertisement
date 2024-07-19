@@ -13,6 +13,4 @@ public class ShortAdvertisementResponse {
     private String mainPhotoUrl;
     private Integer favouriteCount;
     private Integer views;
-
-
 }

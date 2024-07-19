@@ -40,9 +40,9 @@ public class FavouriteAdvertisementService {
                             categoryId.equals(advertisement.getSubCategory().getCategory().getId()))
                     .collect(Collectors.toList());
         }
-
         return advertisements;
     }
+
     public List<FavouriteAdvertisementResponse> findAllUserFavouriteAdvertisementsWithCategory(String userId, Long categoryId) {
         List<Advertisement> userAdvertisements = findAllUserFavouriteAdvertisements(userId);
 
@@ -61,15 +61,15 @@ public class FavouriteAdvertisementService {
             throw new DuplicateDataException("Advertisement is already added to favorites");
         }
 
-        FavouriteAdvertisement favouriteAdvertisement = new FavouriteAdvertisement();
-        favouriteAdvertisement.setUserId(userIdLong);
-        favouriteAdvertisement.setAdvertisement(advertisement);
-        advertisement.setFavouriteCount(advertisement.getFavouriteCount()+1);
-        favouriteAdvertisementRepository.save(favouriteAdvertisement);
+        FavouriteAdvertisement newFavouriteAdvertisement = favouriteAdvertisementMapper
+                .mapToFavouriteAdvertisementEntity(userIdLong, advertisement);
+
+        newFavouriteAdvertisement = favouriteAdvertisementRepository.save(newFavouriteAdvertisement);
+        advertisementService.incrementFavouriteCountAndSave(advertisement);
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data(favouriteAdvertisementMapper.mapToAddToFavouriteResponse(favouriteAdvertisement))
+                .data(favouriteAdvertisementMapper.mapToAddToFavouriteResponse(newFavouriteAdvertisement))
                 .build();
     }
 
@@ -85,5 +85,4 @@ public class FavouriteAdvertisementService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Favourite advertisement with id " + adId + " and user id " + userId + " not found"));
     }
-
 }

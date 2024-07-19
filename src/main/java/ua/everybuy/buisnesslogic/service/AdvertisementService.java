@@ -35,8 +35,7 @@ public class AdvertisementService {
                                               MultipartFile[] photos,
                                               String userId) throws IOException {
 
-        Advertisement savedAdvertisement = advertisementMapper.mapToEntity(createRequest);
-        savedAdvertisement.setUserId(Long.parseLong(userId));
+        Advertisement savedAdvertisement = advertisementMapper.mapToEntity(createRequest, Long.parseLong(userId));
         savedAdvertisement = advertisementRepository.save(savedAdvertisement);
 
         savedAdvertisement(photos, savedAdvertisement, createRequest.subCategoryId());
@@ -115,6 +114,12 @@ public class AdvertisementService {
         Advertisement advertisement = findById(advertisementId);
         if (advertisement != null) {
             advertisement.setViews(advertisement.getViews() + 1);
+            advertisementRepository.save(advertisement);
+        }
+    }
+    public void incrementFavouriteCountAndSave(Advertisement advertisement) {
+        if (advertisement != null) {
+            advertisement.setFavouriteCount(advertisement.getFavouriteCount()+1);
             advertisementRepository.save(advertisement);
         }
     }

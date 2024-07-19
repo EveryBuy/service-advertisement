@@ -35,10 +35,9 @@ public class ValidationFilter extends OncePerRequestFilter {
             new AntPathRequestMatcher("/ad/subcategory/**"),
             new AntPathRequestMatcher("/ad/city/**"),
             new AntPathRequestMatcher("/ad/keep-alive"),
-            new AntPathRequestMatcher("/ad/user/*/active-ads/**"),
             new AntPathRequestMatcher("/ad/*/active"),
-            new AntPathRequestMatcher("/ad/filter")
-
+            new AntPathRequestMatcher("/ad/filter"),
+            new AntPathRequestMatcher("/chat/**")
     );
 
     private final ObjectMapper objectMapper;
@@ -82,7 +81,7 @@ public class ValidationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         return EXCLUDED_PATH_MATCHERS.stream()
                 .anyMatch(matcher -> matcher.matches(request));
     }
