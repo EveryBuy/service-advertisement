@@ -15,12 +15,12 @@ import java.security.Principal;
 public class UserController {
     private final AdvertisementService advertisementService;
 
-    @GetMapping("/{id}/active-ads")
+    @GetMapping("/active-ads")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<StatusResponse> getAllActiveUsersAds(@PathVariable Long id) {
+    public ResponseEntity<StatusResponse> getAllActiveUsersAds(Principal principal) {
         return ResponseEntity.status(HttpStatus.OK).body(StatusResponse.builder()
                 .status(HttpStatus.OK.value())
-                .data(advertisementService.getUserAdvertisementsByEnabledStatus(id, true))
+                .data(advertisementService.getUserAdvertisementsByEnabledStatus(Long.parseLong(principal.getName()), true))
                 .build());
     }
 

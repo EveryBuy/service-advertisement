@@ -50,6 +50,9 @@ public class Advertisement {
     @Column(name = "views", nullable = false)
     private Integer views = 0;
 
+    @Column (name = "favourite_count", nullable = false)
+    private Integer favouriteCount = 0;
+
     @ManyToOne
     @JoinColumn(name="city_id", nullable = false)
     private City city;

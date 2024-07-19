@@ -19,7 +19,9 @@ public interface AdvertisementMapper {
     @Mapping(target = "updateDate", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "isEnabled", constant = "true")
     @Mapping(target = "views", constant = "0")
-    Advertisement mapToEntity(CreateAdvertisementRequest request);
+    @Mapping(target = "favouriteCount", constant = "0")
+    @Mapping(source = "userId", target = "userId")
+    Advertisement mapToEntity(CreateAdvertisementRequest request, Long userId);
 
     @Mapping(source = "request.title", target = "title")
     @Mapping(source = "request.description", target = "description")

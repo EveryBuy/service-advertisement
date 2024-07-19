@@ -9,6 +9,10 @@ import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 
 @Mapper(componentModel = "spring")
 public interface FavouriteAdvertisementMapper {
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "advertisement", target = "advertisement")
+    FavouriteAdvertisement mapToFavouriteAdvertisementEntity(Long userId, Advertisement advertisement);
+
     @Mapping(source = "advertisement.userId", target = "userId")
     @Mapping(source = "advertisement.id", target = "advertisementId")
     @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")

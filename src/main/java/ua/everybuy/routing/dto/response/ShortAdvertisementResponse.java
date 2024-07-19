@@ -11,4 +11,6 @@ public class ShortAdvertisementResponse {
     private String price;
     private Long userId;
     private String mainPhotoUrl;
+    private Integer favouriteCount;
+    private Integer views;
 }
