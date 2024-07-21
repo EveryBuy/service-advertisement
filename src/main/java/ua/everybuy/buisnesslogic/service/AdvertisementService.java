@@ -39,7 +39,7 @@ public class AdvertisementService {
         Advertisement newAdvertisement = advertisementMapper.mapToEntity(createRequest, Long.parseLong(userId));
         newAdvertisement = advertisementRepository.save(newAdvertisement);
 
-        savedAdvertisement(photos, newAdvertisement, createRequest.subCategoryId());
+        savedAdvertisementPhotos(photos, newAdvertisement, createRequest.subCategoryId());
 
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(newAdvertisement.getId());
 
@@ -61,7 +61,7 @@ public class AdvertisementService {
         existingAdvertisement = advertisementMapper.mapToEntity(updateRequest, existingAdvertisement);
         advertisementPhotoService.deletePhotosByAdvertisementId(existingAdvertisement.getId());
 
-        savedAdvertisement(newPhotos, existingAdvertisement, updateRequest.subCategoryId());
+        savedAdvertisementPhotos(newPhotos, existingAdvertisement, updateRequest.subCategoryId());
         List<String> updatedPhotos = advertisementPhotoService.getPhotoUrlsByAdvertisementId(existingAdvertisement.getId());
 
         UpdateAdvertisementResponse updateAdvertisementResponse = advertisementMapper
@@ -73,11 +73,11 @@ public class AdvertisementService {
                 .build();
     }
 
-    private void savedAdvertisement(MultipartFile[] newPhotos,
-                                    Advertisement existingAdvertisement,
-                                    Long advertisementId) throws IOException {
+    private void savedAdvertisementPhotos(MultipartFile[] newPhotos,
+                                          Advertisement existingAdvertisement,
+                                          Long advertisementId) throws IOException {
         List<AdvertisementPhoto> existingPhotos = advertisementPhotoService
-                .uploadPhotosAndLinkToAdvertisement(newPhotos, existingAdvertisement, advertisementId);
+                .uploadAndLinkPhotos(newPhotos, existingAdvertisement, advertisementId);
 
         String mainPhotoUrl = existingPhotos.get(0).getPhotoUrl();
         existingAdvertisement.setMainPhotoUrl(mainPhotoUrl);
@@ -106,9 +106,10 @@ public class AdvertisementService {
             advertisementRepository.save(advertisement);
         }
     }
+
     public void incrementFavouriteCountAndSave(Advertisement advertisement) {
         if (advertisement != null) {
-            advertisement.setFavouriteCount(advertisement.getFavouriteCount()+1);
+            advertisement.setFavouriteCount(advertisement.getFavouriteCount() + 1);
             advertisementRepository.save(advertisement);
         }
     }
@@ -175,6 +176,7 @@ public class AdvertisementService {
     public List<Advertisement> findAll() {
         return advertisementRepository.findAll();
     }
+
     public List<Advertisement> findAllEnableAds() {
         return findAll()
                 .stream()
