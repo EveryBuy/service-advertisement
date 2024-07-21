@@ -9,7 +9,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.client.HttpStatusCodeException;
-import ua.everybuy.buisnesslogic.service.AuthService;
+import ua.everybuy.buisnesslogic.service.integration.AuthValidationService;
 import ua.everybuy.errorhandling.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -41,7 +41,7 @@ public class ValidationFilter extends OncePerRequestFilter {
     );
 
     private final ObjectMapper objectMapper;
-    private final AuthService authService;
+    private final AuthValidationService authValidationService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -55,7 +55,7 @@ public class ValidationFilter extends OncePerRequestFilter {
         }
 
         try {
-            ValidResponse validResponse = authService.getValidRequest(request);
+            ValidResponse validResponse = authValidationService.getValidRequest(request);
             if (validResponse != null) {
                 String userId = String.valueOf(validResponse.getData().getUserId());
                 List<SimpleGrantedAuthority> grantedAuthorities = validResponse.getData().getRoles()

@@ -1,4 +1,4 @@
-package ua.everybuy.buisnesslogic.service;
+package ua.everybuy.buisnesslogic.service.integration;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import ua.everybuy.routing.dto.response.UserShortInfoResponse;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserProfileService {
     private final ExchangeService exchangeService;
 
     @Value("${user.service.url}")
@@ -22,5 +22,4 @@ public class UserService {
         UserShortInfoResponse response = exchangeService.exchangeRequest(request, shortUserInfoUrl, UserShortInfoResponse.class).getBody();
         return response != null ? response.getData() : null;
     }
-
 }

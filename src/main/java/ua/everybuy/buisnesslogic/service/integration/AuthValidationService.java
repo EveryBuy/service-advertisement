@@ -1,4 +1,4 @@
-package ua.everybuy.buisnesslogic.service;
+package ua.everybuy.buisnesslogic.service.integration;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import ua.everybuy.routing.dto.response.ValidResponse;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthValidationService {
    private final ExchangeService exchangeService;
 
     @Value("${auth.service.url}")
@@ -20,4 +20,3 @@ public class AuthService {
         return response.getBody();
     }
 }
-
