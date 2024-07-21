@@ -54,15 +54,6 @@ public class AdvertisementController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @GetMapping("/{id}/user")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<StatusResponse> getUserAdvertisement(@PathVariable Long id,
-                                                               HttpServletRequest request,
-                                                               Principal principal) {
-        StatusResponse response = advertisementService.getUserAdvertisement(id, request, principal);
-        return ResponseEntity.status(response.getStatus()).body(response);
-    }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> deleteAdvertisementById(@PathVariable Long id, Principal principal) throws IOException {
@@ -77,7 +68,3 @@ public class AdvertisementController {
     }
 
 }
-
-
-
-

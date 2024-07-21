@@ -1,6 +1,5 @@
 package ua.everybuy.buisnesslogic.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 public class AdvertisementPhotoService {
     private static final int MIN_PHOTOS = 1;
     private static final int MAX_PHOTOS = 8;
-
     private final AdvertisementPhotoRepository advertisementPhotoRepository;
     private final SubCategoryService subCategoryService;
     private final AmazonS3Service amazonS3Service;
@@ -93,5 +91,4 @@ public class AdvertisementPhotoService {
             throw new IllegalArgumentException("Number of photos must be between 1 and 8");
         }
     }
-    
 }
