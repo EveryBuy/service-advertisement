@@ -16,7 +16,8 @@ public class AuthValidationService {
     private String authServiceUrl;
 
     public ValidResponse getValidRequest(HttpServletRequest request) {
-        ResponseEntity<ValidResponse> response = exchangeService.exchangeRequest(request, authServiceUrl, ValidResponse.class);
+        ResponseEntity<ValidResponse> response = exchangeService
+                .exchangeGetRequest(request, authServiceUrl, ValidResponse.class);
         return response.getBody();
     }
 }
