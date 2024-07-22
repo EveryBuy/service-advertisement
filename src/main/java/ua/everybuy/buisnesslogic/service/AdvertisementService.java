@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,16 +39,12 @@ public class AdvertisementService {
         newAdvertisement = advertisementRepository.save(newAdvertisement);
 
         savedAdvertisementPhotos(photos, newAdvertisement, createRequest.subCategoryId());
-
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(newAdvertisement.getId());
 
         CreateAdvertisementResponse advertisementResponse = advertisementMapper.
                 mapToAdvertisementCreateResponse(newAdvertisement, photoUrls);
 
-        return StatusResponse.builder()
-                .status(HttpStatus.CREATED.value())
-                .data(advertisementResponse)
-                .build();
+        return new StatusResponse(HttpStatus.CREATED.value(), advertisementResponse);
     }
 
     public StatusResponse updateAdvertisement(Long advertisementId,
@@ -67,10 +62,7 @@ public class AdvertisementService {
         UpdateAdvertisementResponse updateAdvertisementResponse = advertisementMapper
                 .mapToAdvertisementUpdateResponse(existingAdvertisement, updatedPhotos);
 
-        return StatusResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(updateAdvertisementResponse)
-                .build();
+        return new StatusResponse(HttpStatus.OK.value(), updateAdvertisementResponse);
     }
 
     private void savedAdvertisementPhotos(MultipartFile[] newPhotos,
@@ -90,17 +82,13 @@ public class AdvertisementService {
             throw new AccessDeniedException("Advertisement is inactive");
         }
 
-        incrementViewsAndSave(id);
+        incrementViewsAndSave(advertisement);
         AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement, advertisement.getUserId(), request);
 
-        return StatusResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(advertisementDTO)
-                .build();
+        return new StatusResponse(HttpStatus.OK.value(), advertisementDTO);
     }
 
-    private void incrementViewsAndSave(Long advertisementId) {
-        Advertisement advertisement = findById(advertisementId);
+    private void incrementViewsAndSave(Advertisement advertisement) {
         if (advertisement != null) {
             advertisement.setViews(advertisement.getViews() + 1);
             advertisementRepository.save(advertisement);
@@ -127,7 +115,6 @@ public class AdvertisementService {
 
     public void deleteAdvertisement(Long advertisementId, Principal principal) throws IOException {
         Advertisement advertisement = findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(principal.getName()));
-
         advertisementPhotoService.deletePhotosByAdvertisementId(advertisement.getId());
         advertisementRepository.delete(advertisement);
 
@@ -135,17 +122,16 @@ public class AdvertisementService {
 
     public StatusResponse setAdvertisementEnabledStatus(Long id) {
         Advertisement advertisement = findById(id);
+
         boolean currentStatus = advertisement.getIsEnabled();
         advertisement.setIsEnabled(!currentStatus);
         advertisement.setUpdateDate(LocalDateTime.now());
         advertisementRepository.save(advertisement);
+
         AdvertisementStatusResponse advertisementStatusResponse =
                 advertisementMapper.mapToAdvertisementStatusResponse(advertisement);
 
-        return StatusResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(advertisementStatusResponse)
-                .build();
+        return new StatusResponse(HttpStatus.OK.value(), advertisementStatusResponse);
     }
 
     public Advertisement findById(Long id) {
@@ -173,14 +159,7 @@ public class AdvertisementService {
 
     }
 
-    public List<Advertisement> findAll() {
-        return advertisementRepository.findAll();
-    }
-
     public List<Advertisement> findAllEnableAds() {
-        return findAll()
-                .stream()
-                .filter(Advertisement::getIsEnabled)
-                .collect(Collectors.toList());
+        return advertisementRepository.findByIsEnabledTrue();
     }
 }
