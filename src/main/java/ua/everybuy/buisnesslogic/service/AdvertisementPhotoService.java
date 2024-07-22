@@ -1,6 +1,5 @@
 package ua.everybuy.buisnesslogic.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,35 +20,37 @@ import java.util.stream.Collectors;
 public class AdvertisementPhotoService {
     private static final int MIN_PHOTOS = 1;
     private static final int MAX_PHOTOS = 8;
-
     private final AdvertisementPhotoRepository advertisementPhotoRepository;
     private final SubCategoryService subCategoryService;
     private final AmazonS3Service amazonS3Service;
 
-    private List<AdvertisementPhoto> handlePhotoUpload(MultipartFile[] photos, String subcategory) throws IOException {
+    public List<AdvertisementPhoto> uploadAndLinkPhotos(MultipartFile[] photos,
+                                                        Advertisement advertisement,
+                                                        Long subCategoryId) throws IOException {
         validatePhotos(photos);
+        String subCategoryName = subCategoryService.findById(subCategoryId).getSubCategoryName();
+
         List<AdvertisementPhoto> advertisementPhotos = new ArrayList<>();
 
         for (MultipartFile photo : photos) {
-            isImage(photo);
-            String photoUrl = amazonS3Service.uploadPhoto(photo, subcategory);
-            advertisementPhotos.add(AdvertisementPhoto.builder()
-                    .photoUrl(photoUrl)
-                    .creationDate(LocalDateTime.now())
-                    .build());
+            AdvertisementPhoto advertisementPhoto = processAndUploadPhoto(photo, advertisement, subCategoryName);
+            saveAdvertisementPhoto(advertisementPhoto);
+            advertisementPhotos.add(advertisementPhoto);
         }
+
         return advertisementPhotos;
     }
 
-    public List<AdvertisementPhoto> uploadPhotosAndLinkToAdvertisement(MultipartFile[] photos,
-                                                                       Advertisement advertisement,
-                                                                       Long subCategoryId) throws IOException {
-        String subCategoryName = subCategoryService.findById(subCategoryId).getSubCategoryName();
-        List<AdvertisementPhoto> advertisementPhotos = handlePhotoUpload(photos, subCategoryName);
-        advertisementPhotos.forEach(photo -> photo.setAdvertisement(advertisement));
-        advertisementPhotos.forEach(this::saveAdvertisementPhoto);
-
-        return advertisementPhotos;
+    private AdvertisementPhoto processAndUploadPhoto(MultipartFile photo,
+                                                     Advertisement advertisement,
+                                                     String subCategoryName) throws IOException {
+        isImage(photo);
+        String photoUrl = amazonS3Service.uploadPhoto(photo, subCategoryName);
+        return AdvertisementPhoto.builder()
+                .photoUrl(photoUrl)
+                .creationDate(LocalDateTime.now())
+                .advertisement(advertisement)
+                .build();
     }
 
     public void deletePhotosByAdvertisementId(Long advertisementId) throws IOException {
@@ -72,13 +73,8 @@ public class AdvertisementPhotoService {
         advertisementPhotoRepository.save(advertisementPhoto);
     }
 
-    private List<AdvertisementPhoto> findPhotosByAdvertisementId(Long advertisementId) {
+    public List<AdvertisementPhoto> findPhotosByAdvertisementId(Long advertisementId) {
         List<AdvertisementPhoto> photos = advertisementPhotoRepository.findByAdvertisementId(advertisementId);
-
-//        if (photos == null || photos.isEmpty()) {
-//            throw new EntityNotFoundException("Advertisement photos not found");
-//        }
-
         return photos;
     }
 
@@ -93,5 +89,4 @@ public class AdvertisementPhotoService {
             throw new IllegalArgumentException("Number of photos must be between 1 and 8");
         }
     }
-    
 }

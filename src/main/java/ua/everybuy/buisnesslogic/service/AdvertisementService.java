@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ua.everybuy.buisnesslogic.service.integration.UserProfileService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementRepository;
@@ -29,21 +30,21 @@ public class AdvertisementService {
     private final AdvertisementRepository advertisementRepository;
     private final AdvertisementPhotoService advertisementPhotoService;
     private final AdvertisementMapper advertisementMapper;
-    private final UserService userService;
+    private final UserProfileService userProfileService;
 
     public StatusResponse createAdvertisement(CreateAdvertisementRequest createRequest,
                                               MultipartFile[] photos,
                                               String userId) throws IOException {
 
-        Advertisement savedAdvertisement = advertisementMapper.mapToEntity(createRequest, Long.parseLong(userId));
-        savedAdvertisement = advertisementRepository.save(savedAdvertisement);
+        Advertisement newAdvertisement = advertisementMapper.mapToEntity(createRequest, Long.parseLong(userId));
+        newAdvertisement = advertisementRepository.save(newAdvertisement);
 
-        savedAdvertisement(photos, savedAdvertisement, createRequest.subCategoryId());
+        savedAdvertisementPhotos(photos, newAdvertisement, createRequest.subCategoryId());
 
-        List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(savedAdvertisement.getId());
+        List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(newAdvertisement.getId());
 
         CreateAdvertisementResponse advertisementResponse = advertisementMapper.
-                mapToAdvertisementCreateResponse(savedAdvertisement, photoUrls);
+                mapToAdvertisementCreateResponse(newAdvertisement, photoUrls);
 
         return StatusResponse.builder()
                 .status(HttpStatus.CREATED.value())
@@ -60,7 +61,7 @@ public class AdvertisementService {
         existingAdvertisement = advertisementMapper.mapToEntity(updateRequest, existingAdvertisement);
         advertisementPhotoService.deletePhotosByAdvertisementId(existingAdvertisement.getId());
 
-        savedAdvertisement(newPhotos, existingAdvertisement, updateRequest.subCategoryId());
+        savedAdvertisementPhotos(newPhotos, existingAdvertisement, updateRequest.subCategoryId());
         List<String> updatedPhotos = advertisementPhotoService.getPhotoUrlsByAdvertisementId(existingAdvertisement.getId());
 
         UpdateAdvertisementResponse updateAdvertisementResponse = advertisementMapper
@@ -72,11 +73,11 @@ public class AdvertisementService {
                 .build();
     }
 
-    private void savedAdvertisement(MultipartFile[] newPhotos,
-                                    Advertisement existingAdvertisement,
-                                    Long advertisementId) throws IOException {
+    private void savedAdvertisementPhotos(MultipartFile[] newPhotos,
+                                          Advertisement existingAdvertisement,
+                                          Long advertisementId) throws IOException {
         List<AdvertisementPhoto> existingPhotos = advertisementPhotoService
-                .uploadPhotosAndLinkToAdvertisement(newPhotos, existingAdvertisement, advertisementId);
+                .uploadAndLinkPhotos(newPhotos, existingAdvertisement, advertisementId);
 
         String mainPhotoUrl = existingPhotos.get(0).getPhotoUrl();
         existingAdvertisement.setMainPhotoUrl(mainPhotoUrl);
@@ -98,18 +99,6 @@ public class AdvertisementService {
                 .build();
     }
 
-    public StatusResponse getUserAdvertisement(Long id, HttpServletRequest request, Principal principal) {
-
-        Long userId = Long.parseLong(principal.getName());
-        Advertisement advertisement = findAdvertisementByIdAndUserId(id, userId);
-        AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement, userId, request);
-
-        return StatusResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(advertisementDTO)
-                .build();
-    }
-
     private void incrementViewsAndSave(Long advertisementId) {
         Advertisement advertisement = findById(advertisementId);
         if (advertisement != null) {
@@ -117,24 +106,24 @@ public class AdvertisementService {
             advertisementRepository.save(advertisement);
         }
     }
+
     public void incrementFavouriteCountAndSave(Advertisement advertisement) {
         if (advertisement != null) {
-            advertisement.setFavouriteCount(advertisement.getFavouriteCount()+1);
+            advertisement.setFavouriteCount(advertisement.getFavouriteCount() + 1);
             advertisementRepository.save(advertisement);
         }
     }
 
-    private AdvertisementDto createAdvertisementDto(Advertisement advertisement,
-                                                    Long userId,
-                                                    HttpServletRequest request) {
+    AdvertisementDto createAdvertisementDto(Advertisement advertisement,
+                                            Long userId,
+                                            HttpServletRequest request) {
 
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(advertisement.getId());
         AdvertisementDto advertisementDTO = advertisementMapper.mapToDto(advertisement, photoUrls);
-        advertisementDTO.setUserDto(userService.getShortUserInfo(request, userId));
+        advertisementDTO.setUserDto(userProfileService.getShortUserInfo(request, userId));
 
         return advertisementDTO;
     }
-
 
     public void deleteAdvertisement(Long advertisementId, Principal principal) throws IOException {
         Advertisement advertisement = findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(principal.getName()));
@@ -157,14 +146,6 @@ public class AdvertisementService {
                 .status(HttpStatus.OK.value())
                 .data(advertisementStatusResponse)
                 .build();
-    }
-
-    public List<ShortAdvertisementResponse> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
-        return findAllUserAdvertisement(userId)
-                .stream()
-                .filter(ad -> ad.getIsEnabled() == isEnabled)
-                .map(advertisementMapper::mapToShortAdvertisementResponse)
-                .toList();
     }
 
     public Advertisement findById(Long id) {
@@ -195,6 +176,7 @@ public class AdvertisementService {
     public List<Advertisement> findAll() {
         return advertisementRepository.findAll();
     }
+
     public List<Advertisement> findAllEnableAds() {
         return findAll()
                 .stream()
