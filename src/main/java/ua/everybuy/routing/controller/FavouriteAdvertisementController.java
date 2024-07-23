@@ -2,9 +2,9 @@ package ua.everybuy.routing.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.everybuy.buisnesslogic.service.FavouriteAdvertisementService;
+import ua.everybuy.routing.dto.response.AddToFavouriteResponse;
 import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 
@@ -18,30 +18,27 @@ public class FavouriteAdvertisementController {
     private final FavouriteAdvertisementService favouriteAdvertisementService;
 
     @PostMapping("/{id}/add-to-favourite")
-    public ResponseEntity<StatusResponse> addToFavourite(Principal principal,
-                                                         @PathVariable(name = "id") Long advertisementId) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(favouriteAdvertisementService.addToFavorites(principal.getName(), advertisementId));
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public StatusResponse<AddToFavouriteResponse> addToFavourite(Principal principal,
+                                                                 @PathVariable(name = "id") Long advertisementId) {
+        return favouriteAdvertisementService.addToFavorites(principal.getName(), advertisementId);
     }
 
     @DeleteMapping("/{id}/remove-from-favourite")
-    public ResponseEntity<?> removeFromFavourites(Principal principal,
-                                                  @PathVariable(name = "id") Long advertisementId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeFromFavourites(Principal principal,
+                                     @PathVariable(name = "id") Long advertisementId) {
         favouriteAdvertisementService.removeFromFavorites(principal.getName(), advertisementId);
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/favourite-ads")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<StatusResponse> getAllUsersFavouriteAdvertisementsWithCategory(
+    @ResponseBody
+    public StatusResponse<List<FavouriteAdvertisementResponse>> getAllUsersFavouriteAdvertisementsWithCategory(
             @RequestParam(required = false) Long categoryId, Principal principal) {
-        List<FavouriteAdvertisementResponse> favouriteUsersAdvertisements = favouriteAdvertisementService
+        List<FavouriteAdvertisementResponse> responseList = favouriteAdvertisementService
                 .findAllUserFavouriteAdvertisementsWithCategory(principal.getName(), categoryId);
-
-        return ResponseEntity.ok(StatusResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(favouriteUsersAdvertisements)
-                .build());
+        return new StatusResponse<>(HttpStatus.OK.value(), responseList);
     }
-
 }

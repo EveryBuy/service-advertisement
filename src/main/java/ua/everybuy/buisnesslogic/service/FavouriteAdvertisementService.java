@@ -9,6 +9,7 @@ import ua.everybuy.database.entity.FavouriteAdvertisement;
 import ua.everybuy.database.repository.FavouriteAdvertisementRepository;
 import ua.everybuy.errorhandling.custom.DuplicateDataException;
 import ua.everybuy.routing.dto.mapper.FavouriteAdvertisementMapper;
+import ua.everybuy.routing.dto.response.AddToFavouriteResponse;
 import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 
@@ -53,7 +54,7 @@ public class FavouriteAdvertisementService {
                 .collect(Collectors.toList());
     }
 
-    public StatusResponse addToFavorites(String userId, Long adId) {
+    public StatusResponse<AddToFavouriteResponse> addToFavorites(String userId, Long adId) {
         Long userIdLong = Long.parseLong(userId);
         Advertisement advertisement = advertisementService.findById(adId);
 
@@ -66,11 +67,9 @@ public class FavouriteAdvertisementService {
 
         newFavouriteAdvertisement = favouriteAdvertisementRepository.save(newFavouriteAdvertisement);
         advertisementService.incrementFavouriteCountAndSave(advertisement);
+        AddToFavouriteResponse addToFavouriteResponse = favouriteAdvertisementMapper.mapToAddToFavouriteResponse(newFavouriteAdvertisement);
 
-        return StatusResponse.builder()
-                .status(HttpStatus.CREATED.value())
-                .data(favouriteAdvertisementMapper.mapToAddToFavouriteResponse(newFavouriteAdvertisement))
-                .build();
+        return new StatusResponse<>(HttpStatus.CREATED.value(), addToFavouriteResponse);
     }
 
     public void removeFromFavorites(String userId, Long adId) {

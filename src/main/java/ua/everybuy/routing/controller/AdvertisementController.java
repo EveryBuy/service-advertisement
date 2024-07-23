@@ -4,14 +4,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.AdvertisementService;
+import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
+import ua.everybuy.routing.dto.response.AdvertisementStatusResponse;
+import ua.everybuy.routing.dto.response.CreateAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
+import ua.everybuy.routing.dto.response.UpdateAdvertisementResponse;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -25,46 +28,42 @@ public class AdvertisementController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<StatusResponse> createAdvertisement(
+    @ResponseBody
+    public StatusResponse<CreateAdvertisementResponse> createAdvertisement(
             @Valid @RequestPart("request") CreateAdvertisementRequest createRequest,
             @Nullable @RequestPart(value = "photos", required = false) MultipartFile[] photos,
             Principal principal) throws IOException {
-
-        StatusResponse response = advertisementService.createAdvertisement(createRequest, photos, principal.getName());
-        return ResponseEntity.status(response.getStatus()).body(response);
+        return advertisementService.createAdvertisement(createRequest, photos, principal.getName());
     }
 
     @PutMapping("/{id}/update")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<StatusResponse> updateAdvertisement(
+    @ResponseBody
+    public StatusResponse<UpdateAdvertisementResponse> updateAdvertisement(
             @PathVariable Long id,
             @Valid @RequestPart("request") UpdateAdvertisementRequest updateRequest,
             @Nullable @RequestPart(value = "photos", required = false) MultipartFile[] photos,
             Principal principal) throws IOException {
-
-        StatusResponse response = advertisementService.updateAdvertisement(id, updateRequest, photos, principal.getName());
-        return ResponseEntity.status(response.getStatus()).body(response);
+        return advertisementService.updateAdvertisement(id, updateRequest, photos, principal.getName());
     }
-
 
     @GetMapping("/{id}/active")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<StatusResponse> getAdvertisementById(@PathVariable Long id, HttpServletRequest request) {
-        StatusResponse response = advertisementService.getActiveAdvertisement(id, request);
-        return ResponseEntity.status(response.getStatus()).body(response);
+    @ResponseBody
+    public StatusResponse<AdvertisementDto> getAdvertisementById(@PathVariable Long id, HttpServletRequest request) {
+        return advertisementService.getActiveAdvertisement(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> deleteAdvertisementById(@PathVariable Long id, Principal principal) throws IOException {
+    public void deleteAdvertisementById(@PathVariable Long id, Principal principal) throws IOException {
         advertisementService.deleteAdvertisement(id, principal);
-        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/change-status")
-    public ResponseEntity<StatusResponse> enableAdvertisement(@PathVariable @Valid Long id) {
-        StatusResponse response = advertisementService.setAdvertisementEnabledStatus(id);
-        return ResponseEntity.ok(response);
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public StatusResponse<AdvertisementStatusResponse> enableAdvertisement(@PathVariable @Valid Long id) {
+        return advertisementService.setAdvertisementEnabledStatus(id);
     }
-
 }

@@ -31,9 +31,9 @@ public class AdvertisementService {
     private final AdvertisementMapper advertisementMapper;
     private final UserProfileService userProfileService;
 
-    public StatusResponse createAdvertisement(CreateAdvertisementRequest createRequest,
-                                              MultipartFile[] photos,
-                                              String userId) throws IOException {
+    public StatusResponse<CreateAdvertisementResponse> createAdvertisement(CreateAdvertisementRequest createRequest,
+                                                                           MultipartFile[] photos,
+                                                                           String userId) throws IOException {
 
         Advertisement newAdvertisement = advertisementMapper.mapToEntity(createRequest, Long.parseLong(userId));
         newAdvertisement = advertisementRepository.save(newAdvertisement);
@@ -44,12 +44,12 @@ public class AdvertisementService {
         CreateAdvertisementResponse advertisementResponse = advertisementMapper.
                 mapToAdvertisementCreateResponse(newAdvertisement, photoUrls);
 
-        return new StatusResponse(HttpStatus.CREATED.value(), advertisementResponse);
+        return new StatusResponse<>(HttpStatus.CREATED.value(), advertisementResponse);
     }
 
-    public StatusResponse updateAdvertisement(Long advertisementId,
-                                              UpdateAdvertisementRequest updateRequest,
-                                              MultipartFile[] newPhotos, String userId) throws IOException {
+    public StatusResponse<UpdateAdvertisementResponse> updateAdvertisement(Long advertisementId,
+                                                                           UpdateAdvertisementRequest updateRequest,
+                                                                           MultipartFile[] newPhotos, String userId) throws IOException {
 
         Advertisement existingAdvertisement = findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(userId));
 
@@ -62,7 +62,7 @@ public class AdvertisementService {
         UpdateAdvertisementResponse updateAdvertisementResponse = advertisementMapper
                 .mapToAdvertisementUpdateResponse(existingAdvertisement, updatedPhotos);
 
-        return new StatusResponse(HttpStatus.OK.value(), updateAdvertisementResponse);
+        return new StatusResponse<>(HttpStatus.OK.value(), updateAdvertisementResponse);
     }
 
     private void savedAdvertisementPhotos(MultipartFile[] newPhotos,
@@ -76,7 +76,7 @@ public class AdvertisementService {
         advertisementRepository.save(existingAdvertisement);
     }
 
-    public StatusResponse getActiveAdvertisement(Long id, HttpServletRequest request) {
+    public StatusResponse<AdvertisementDto> getActiveAdvertisement(Long id, HttpServletRequest request) {
         Advertisement advertisement = findById(id);
         if (!advertisement.getIsEnabled()) {
             throw new AccessDeniedException("Advertisement is inactive");
@@ -85,7 +85,7 @@ public class AdvertisementService {
         incrementViewsAndSave(advertisement);
         AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement, advertisement.getUserId(), request);
 
-        return new StatusResponse(HttpStatus.OK.value(), advertisementDTO);
+        return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
     }
 
     private void incrementViewsAndSave(Advertisement advertisement) {
@@ -120,7 +120,7 @@ public class AdvertisementService {
 
     }
 
-    public StatusResponse setAdvertisementEnabledStatus(Long id) {
+    public StatusResponse<AdvertisementStatusResponse> setAdvertisementEnabledStatus(Long id) {
         Advertisement advertisement = findById(id);
 
         boolean currentStatus = advertisement.getIsEnabled();
@@ -131,7 +131,7 @@ public class AdvertisementService {
         AdvertisementStatusResponse advertisementStatusResponse =
                 advertisementMapper.mapToAdvertisementStatusResponse(advertisement);
 
-        return new StatusResponse(HttpStatus.OK.value(), advertisementStatusResponse);
+        return new StatusResponse<>(HttpStatus.OK.value(), advertisementStatusResponse);
     }
 
     public Advertisement findById(Long id) {
@@ -158,7 +158,6 @@ public class AdvertisementService {
                                 + " or advertisement not found."));
 
     }
-
     public List<Advertisement> findAllEnableAds() {
         return advertisementRepository.findByIsEnabledTrue();
     }

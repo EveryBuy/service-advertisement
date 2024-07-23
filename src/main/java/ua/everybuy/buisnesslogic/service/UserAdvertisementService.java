@@ -18,16 +18,14 @@ import java.util.List;
 public class UserAdvertisementService {
     private final AdvertisementService advertisementService;
     private final AdvertisementMapper advertisementMapper;
-    public StatusResponse getUserAdvertisement(Long id, HttpServletRequest request, Principal principal) {
+
+    public StatusResponse<AdvertisementDto> getUserAdvertisement(Long id, HttpServletRequest request, Principal principal) {
 
         Long userId = Long.parseLong(principal.getName());
         Advertisement advertisement = advertisementService.findAdvertisementByIdAndUserId(id, userId);
         AdvertisementDto advertisementDTO = advertisementService.createAdvertisementDto(advertisement, userId, request);
 
-        return StatusResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(advertisementDTO)
-                .build();
+        return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
     }
 
     public List<ShortAdvertisementResponse> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
