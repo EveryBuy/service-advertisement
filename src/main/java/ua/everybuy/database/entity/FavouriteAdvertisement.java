@@ -18,8 +18,7 @@ public class FavouriteAdvertisement {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "advertisement_id", nullable = false)
     private Advertisement advertisement;
-
 }
