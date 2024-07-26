@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
-import ua.everybuy.routing.dto.response.ShortAdvertisementResponse;
+import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
 
 import java.security.Principal;
@@ -28,7 +28,7 @@ public class UserAdvertisementService {
         return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
     }
 
-    public List<ShortAdvertisementResponse> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
+    public List<AdvertisementWithStatisticResponse> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
         return advertisementService.findAllUserAdvertisement(userId)
                 .stream()
                 .filter(ad -> ad.getIsEnabled() == isEnabled)

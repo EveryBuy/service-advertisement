@@ -62,7 +62,7 @@ public interface AdvertisementMapper {
     @Mapping(source = "advertisement.price", target = "price")
     @Mapping(source = "advertisement.userId", target = "userId")
     @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
-    ShortAdvertisementResponse mapToShortAdvertisementResponse(Advertisement advertisement);
+    AdvertisementWithStatisticResponse mapToShortAdvertisementResponse(Advertisement advertisement);
 
     @Mapping(source = "advertisement.id", target = "advertisementId")
     @Mapping(source = "advertisement.userId", target = "userId")
