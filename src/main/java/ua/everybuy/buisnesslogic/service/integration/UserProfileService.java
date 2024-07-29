@@ -16,10 +16,10 @@ public class UserProfileService {
     @Value("${user.service.url}")
     private String userServiceUrl;
 
-    public ShortUserInfoDto getShortUserInfo(HttpServletRequest request, Long userId) {
+    public ShortUserInfoDto getShortUserInfo(Long userId) {
         String shortUserInfoUrl = userServiceUrl + SHORT_INFO_ENDPOINT + userId;
         UserShortInfoResponse response = exchangeService
-                .exchangeGetRequest(request, shortUserInfoUrl, UserShortInfoResponse.class).getBody();
+                .exchangeGetRequest(shortUserInfoUrl, UserShortInfoResponse.class).getBody();
         return response != null ? response.getData() : null;
     }
 }

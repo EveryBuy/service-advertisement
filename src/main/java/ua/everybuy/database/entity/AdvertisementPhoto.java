@@ -18,14 +18,14 @@ public class AdvertisementPhoto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "advertisement_id", nullable = false)
-    private Advertisement advertisement;
-
     @Column(name = "photo_url", nullable = false, length = 500)
     private String photoUrl;
 
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "advertisement_id", nullable = false)
+    private Advertisement advertisement;
 
 }

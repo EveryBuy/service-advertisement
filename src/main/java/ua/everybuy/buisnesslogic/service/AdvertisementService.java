@@ -108,7 +108,7 @@ public class AdvertisementService {
 
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(advertisement.getId());
         AdvertisementDto advertisementDTO = advertisementMapper.mapToDto(advertisement, photoUrls);
-        advertisementDTO.setUserDto(userProfileService.getShortUserInfo(request, userId));
+        advertisementDTO.setUserDto(userProfileService.getShortUserInfo(userId));
 
         return advertisementDTO;
     }
