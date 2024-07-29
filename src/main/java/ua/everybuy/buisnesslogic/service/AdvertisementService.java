@@ -158,7 +158,8 @@ public class AdvertisementService {
                                 + " or advertisement not found."));
 
     }
-    public List<Advertisement> findAllEnableAds() {
-        return advertisementRepository.findByIsEnabledTrue();
+    public List<Advertisement> findAllEnabledAdsOrderByCreationDateDesc() {
+        return advertisementRepository.findByIsEnabledTrueOrderByCreationDateDesc();
     }
+
 }

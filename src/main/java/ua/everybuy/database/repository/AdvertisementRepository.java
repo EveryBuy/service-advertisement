@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface AdvertisementRepository extends JpaRepository<Advertisement, Long> {
     Optional <Advertisement> findByIdAndUserId(Long id, Long userId);
     List<Advertisement> findByUserId(Long userId);
-    List<Advertisement> findByIsEnabledTrue();
+    List<Advertisement> findByIsEnabledTrueOrderByCreationDateDesc();
+
 }
