@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface AdvertisementRepository extends JpaRepository<Advertisement, Long> {
-    List<Advertisement> findByUserId(Long userId);
     Optional <Advertisement> findByIdAndUserId(Long id, Long userId);
+    List<Advertisement> findByUserId(Long userId);
+    List<Advertisement> findByIsEnabledTrueOrderByCreationDateDesc();
 
 }

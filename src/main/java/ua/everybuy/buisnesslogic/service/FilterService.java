@@ -26,15 +26,18 @@ public class FilterService {
     private final SubCategoryService subCategoryService;
     private final RegionService regionService;
 
-    public List<FilteredAdvertisementsResponse> getFilteredAdvertisements(Double minPrice, Double maxPrice, String sortOrder, Long regionId, Long subCategoryId,
+    public List<FilteredAdvertisementsResponse> getFilteredAdvertisements(Double minPrice, Double maxPrice, String sortOrder,
+                                                                          Long regionId, Long subCategoryId,
                                                                           Long categoryId, String productType) {
         List<Advertisement> filteredAdvertisements = filterAdvertisements(minPrice, maxPrice, sortOrder, regionId, subCategoryId, categoryId, productType);
         return mapToResponse(filteredAdvertisements);
     }
 
     private List<Advertisement> filterAdvertisements(Double minPrice, Double maxPrice, String sortOrder,
-                                                     Long cityId, Long subCategoryId, Long categoryId, String productType) {
-        List<Advertisement> advertisements = advertisementService.findAllEnableAds();
+                                                     Long cityId, Long subCategoryId,
+                                                     Long categoryId, String productType) {
+
+        List<Advertisement> advertisements = advertisementService.findAllEnabledAdsOrderByCreationDateDesc();
 
         advertisements = filterByMinPrice(advertisements, minPrice);
         advertisements = filterByMaxPrice(advertisements, maxPrice);

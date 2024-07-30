@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -80,4 +81,7 @@ public class Advertisement {
         UKR_POST,
         MEEST_EXPRESS
     }
+
+    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
+    private List<FavouriteAdvertisement> favouriteAdvertisements;
 }

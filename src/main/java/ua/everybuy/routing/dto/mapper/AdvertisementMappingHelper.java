@@ -13,7 +13,6 @@ import ua.everybuy.database.entity.SubCategory;
 public class AdvertisementMappingHelper {
 
     private final CityService cityService;
-
     private final SubCategoryService subCategoryService;
 
     @Named("cityIdToCity")

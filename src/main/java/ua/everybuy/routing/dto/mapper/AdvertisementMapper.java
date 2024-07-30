@@ -21,6 +21,7 @@ public interface AdvertisementMapper {
     @Mapping(target = "views", constant = "0")
     @Mapping(target = "favouriteCount", constant = "0")
     @Mapping(source = "userId", target = "userId")
+    @Mapping(target = "favouriteAdvertisements", ignore = true)
     Advertisement mapToEntity(CreateAdvertisementRequest request, Long userId);
 
     @Mapping(source = "request.title", target = "title")
@@ -32,6 +33,7 @@ public interface AdvertisementMapper {
     @Mapping(source = "request.subCategoryId", target = "subCategory", qualifiedByName = "subCategoryIdToSubCategory")
     @Mapping(target = "updateDate", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "isEnabled", constant = "true")
+    @Mapping(target = "favouriteAdvertisements", ignore = true)
     Advertisement mapToEntity(UpdateAdvertisementRequest request, Advertisement advertisement);
 
     @Mapping(source = "advertisement.city", target = "city")
@@ -60,7 +62,7 @@ public interface AdvertisementMapper {
     @Mapping(source = "advertisement.price", target = "price")
     @Mapping(source = "advertisement.userId", target = "userId")
     @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
-    ShortAdvertisementResponse mapToShortAdvertisementResponse(Advertisement advertisement);
+    AdvertisementWithStatisticResponse mapToShortAdvertisementResponse(Advertisement advertisement);
 
     @Mapping(source = "advertisement.id", target = "advertisementId")
     @Mapping(source = "advertisement.userId", target = "userId")
@@ -72,5 +74,10 @@ public interface AdvertisementMapper {
     @Mapping(source = "advertisement.updateDate", target = "updateDate")
     @Mapping(source = "advertisement.city", target = "city")
     FilteredAdvertisementsResponse mapToFilteredAdvertisementsResponse(Advertisement advertisement);
+    @Mapping(source = "advertisement.id", target = "id")
+    @Mapping(source = "advertisement.userId", target = "userId")
+    @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
+    @Mapping(source = "advertisement.title", target = "title")
+    AdvertisementInfoForChatService mapToAdvertisementInfoForChatService(Advertisement advertisement);
 }
 

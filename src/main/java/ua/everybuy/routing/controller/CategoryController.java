@@ -2,7 +2,6 @@ package ua.everybuy.routing.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.everybuy.buisnesslogic.service.CategoryService;
 import ua.everybuy.database.entity.Category;
@@ -19,24 +18,18 @@ public class CategoryController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     @CrossOrigin(origins = "*")
-    public ResponseEntity<StatusResponse> getAllCategory() {
+    public StatusResponse<List<Category>> getAllCategory() {
         List<Category> categoryList = categoryService.getAllCategories();
-        return ResponseEntity.ok(StatusResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(categoryList)
-                .build());
+        return new StatusResponse<>(HttpStatus.OK.value(), categoryList);
     }
 
     @GetMapping("/ukr")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<StatusResponse> getAllUkrNames() {
+    @ResponseBody
+    public StatusResponse<List<String>> getAllUkrNames() {
         List<String> ukrCategories = categoryService.getAllUkrCategories();
-        return ResponseEntity.ok(StatusResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(ukrCategories)
-                .build());
+        return new StatusResponse<>(HttpStatus.OK.value(), ukrCategories);
     }
-
-
 }

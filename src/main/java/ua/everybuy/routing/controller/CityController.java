@@ -2,7 +2,6 @@ package ua.everybuy.routing.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.everybuy.buisnesslogic.service.CityService;
 import ua.everybuy.database.entity.City;
@@ -18,13 +17,10 @@ public class CityController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     @CrossOrigin(origins = "*")
-    public ResponseEntity<StatusResponse> getAllCities() {
+    public StatusResponse<List<City>> getAllCities() {
         List<City> cityList = cityService.getAllCities();
-
-        return ResponseEntity.ok(StatusResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(cityList)
-                .build());
+        return new StatusResponse<>(HttpStatus.OK.value(), cityList);
     }
 }
