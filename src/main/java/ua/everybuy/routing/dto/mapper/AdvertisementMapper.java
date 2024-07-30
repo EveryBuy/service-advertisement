@@ -74,5 +74,10 @@ public interface AdvertisementMapper {
     @Mapping(source = "advertisement.updateDate", target = "updateDate")
     @Mapping(source = "advertisement.city", target = "city")
     FilteredAdvertisementsResponse mapToFilteredAdvertisementsResponse(Advertisement advertisement);
+    @Mapping(source = "advertisement.id", target = "id")
+    @Mapping(source = "advertisement.userId", target = "userId")
+    @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
+    @Mapping(source = "advertisement.title", target = "title")
+    AdvertisementInfoForChatService mapToAdvertisementInfoForChatService(Advertisement advertisement);
 }
 

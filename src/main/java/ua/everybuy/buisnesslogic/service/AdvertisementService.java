@@ -76,12 +76,16 @@ public class AdvertisementService {
         advertisementRepository.save(existingAdvertisement);
     }
 
-    public StatusResponse<AdvertisementDto> getActiveAdvertisement(Long id, HttpServletRequest request) {
+    public Advertisement findActiveAdvertisementById(Long id) {
         Advertisement advertisement = findById(id);
         if (!advertisement.getIsEnabled()) {
             throw new AccessDeniedException("Advertisement is inactive");
         }
+        return advertisement;
+    }
 
+    public StatusResponse<AdvertisementDto> getActiveAdvertisement(Long id, HttpServletRequest request) {
+        Advertisement advertisement = findActiveAdvertisementById(id);
         incrementViewsAndSave(advertisement);
         AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement, advertisement.getUserId(), request);
 
@@ -158,8 +162,13 @@ public class AdvertisementService {
                                 + " or advertisement not found."));
 
     }
+
     public List<Advertisement> findAllEnabledAdsOrderByCreationDateDesc() {
         return advertisementRepository.findByIsEnabledTrueOrderByCreationDateDesc();
     }
 
+    public AdvertisementInfoForChatService getAdvertisementShortInfo(Long advertisementId) {
+        Advertisement advertisement = findActiveAdvertisementById(advertisementId);
+        return advertisementMapper.mapToAdvertisementInfoForChatService(advertisement);
+    }
 }

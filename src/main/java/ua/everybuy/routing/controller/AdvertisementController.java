@@ -10,11 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.AdvertisementService;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
-import ua.everybuy.routing.dto.response.AdvertisementStatusResponse;
-import ua.everybuy.routing.dto.response.CreateAdvertisementResponse;
-import ua.everybuy.routing.dto.response.StatusResponse;
+import ua.everybuy.routing.dto.response.*;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
-import ua.everybuy.routing.dto.response.UpdateAdvertisementResponse;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -52,6 +49,13 @@ public class AdvertisementController {
     @ResponseBody
     public StatusResponse<AdvertisementDto> getAdvertisementById(@PathVariable Long id, HttpServletRequest request) {
         return advertisementService.getActiveAdvertisement(id, request);
+    }
+
+    @GetMapping("/{id}/info")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public AdvertisementInfoForChatService getAdvertisementById(@PathVariable Long id) {
+        return advertisementService.getAdvertisementShortInfo(id);
     }
 
     @DeleteMapping("/{id}")
