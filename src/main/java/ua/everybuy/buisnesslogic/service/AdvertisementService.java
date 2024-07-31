@@ -84,7 +84,7 @@ public class AdvertisementService {
         return advertisement;
     }
 
-    public StatusResponse<AdvertisementDto> getActiveAdvertisement(Long id, HttpServletRequest request) {
+    public StatusResponse<AdvertisementDto> getAdvertisement(Long id, HttpServletRequest request) {
         Advertisement advertisement = findActiveAdvertisementById(id);
         incrementViewsAndSave(advertisement);
         AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement, advertisement.getUserId(), request);

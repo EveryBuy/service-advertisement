@@ -48,7 +48,7 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public StatusResponse<AdvertisementDto> getAdvertisementById(@PathVariable Long id, HttpServletRequest request) {
-        return advertisementService.getActiveAdvertisement(id, request);
+        return advertisementService.getAdvertisement(id, request);
     }
 
     @GetMapping("/{id}/info")
