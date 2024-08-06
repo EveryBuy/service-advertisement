@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import ua.everybuy.database.entity.Advertisement;
+import ua.everybuy.database.entity.Category;
 import ua.everybuy.database.entity.City;
 
 import java.time.LocalDateTime;
@@ -19,5 +20,6 @@ public class FavouriteAdvertisementResponse {
     private Advertisement.ProductType productType;
     private String price;
     private LocalDateTime updateDate;
+    private Category category;
     private City city;
 }

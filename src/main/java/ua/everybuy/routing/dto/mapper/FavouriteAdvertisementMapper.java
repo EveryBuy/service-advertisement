@@ -20,6 +20,7 @@ public interface FavouriteAdvertisementMapper {
     @Mapping(source = "advertisement.price", target = "price")
     @Mapping(source = "advertisement.productType", target = "productType")
     @Mapping(source = "advertisement.updateDate", target = "updateDate")
+    @Mapping(source = "advertisement.subCategory.category", target = "category")
     @Mapping(source = "advertisement.city", target = "city")
     FavouriteAdvertisementResponse mapToFavouriteAdvertisementResponse(Advertisement advertisement);
 
