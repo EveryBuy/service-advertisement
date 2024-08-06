@@ -37,7 +37,7 @@ public class FavouriteAdvertisementService {
         if (categoryId != null) {
             categoryService.findById(categoryId);
             advertisements = advertisements.stream()
-                    .filter(advertisement ->
+                    .filter(advertisement -> advertisement != null &&
                             categoryId.equals(advertisement.getSubCategory().getCategory().getId()))
                     .collect(Collectors.toList());
         }

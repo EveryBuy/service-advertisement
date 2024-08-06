@@ -106,7 +106,7 @@ public class AdvertisementService {
         }
     }
 
-    AdvertisementDto createAdvertisementDto(Advertisement advertisement,
+    public AdvertisementDto createAdvertisementDto(Advertisement advertisement,
                                             Long userId,
                                             HttpServletRequest request) {
 
