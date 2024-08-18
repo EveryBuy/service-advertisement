@@ -22,6 +22,7 @@ public interface AdvertisementMapper {
     @Mapping(target = "favouriteCount", constant = "0")
     @Mapping(source = "userId", target = "userId")
     @Mapping(target = "favouriteAdvertisements", ignore = true)
+    @Mapping(source = "request.deliveryMethods", target = "deliveryMethods", qualifiedByName = "convert")
     Advertisement mapToEntity(CreateAdvertisementRequest request, Long userId);
 
     @Mapping(source = "request.title", target = "title")
@@ -34,6 +35,7 @@ public interface AdvertisementMapper {
     @Mapping(target = "updateDate", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "isEnabled", constant = "true")
     @Mapping(target = "favouriteAdvertisements", ignore = true)
+//    @Mapping(target = "deliveryMethods", ignore = true)
     Advertisement mapToEntity(UpdateAdvertisementRequest request, Advertisement advertisement);
 
     @Mapping(source = "advertisement.city", target = "city")

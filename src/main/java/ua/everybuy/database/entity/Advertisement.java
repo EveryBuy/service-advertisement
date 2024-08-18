@@ -76,11 +76,6 @@ public class Advertisement {
     @Column(name = "delivery_method")
     private Set<DeliveryMethod> deliveryMethods = new HashSet<>();
 
-    public enum DeliveryMethod {
-        NOVA_POST,
-        UKR_POST,
-        MEEST_EXPRESS
-    }
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private List<FavouriteAdvertisement> favouriteAdvertisements;

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ua.everybuy.buisnesslogic.delivery.DeliveryMethodFactory;
 import ua.everybuy.buisnesslogic.service.integration.UserProfileService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
@@ -14,8 +15,8 @@ import ua.everybuy.database.repository.AdvertisementRepository;
 
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
-import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
+import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.*;
 
 import java.io.IOException;
@@ -30,15 +31,17 @@ public class AdvertisementService {
     private final AdvertisementPhotoService advertisementPhotoService;
     private final AdvertisementMapper advertisementMapper;
     private final UserProfileService userProfileService;
+    private final DeliveryMethodFactory deliveryMethodFactory;
 
     public StatusResponse<CreateAdvertisementResponse> createAdvertisement(CreateAdvertisementRequest createRequest,
                                                                            MultipartFile[] photos,
                                                                            String userId) throws IOException {
 
+//        Set<DeliveryMethod> deliveryMethods = deliveryMethodFactory.getDeliveryMethodsFromNames(createRequest.deliveryMethods());
         Advertisement newAdvertisement = advertisementMapper.mapToEntity(createRequest, Long.parseLong(userId));
         newAdvertisement = advertisementRepository.save(newAdvertisement);
 
-        savedAdvertisementPhotos(photos, newAdvertisement, createRequest.subCategoryId());
+        saveAdvertisementPhotos(photos, newAdvertisement, createRequest.subCategoryId());
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(newAdvertisement.getId());
 
         CreateAdvertisementResponse advertisementResponse = advertisementMapper.
@@ -52,11 +55,10 @@ public class AdvertisementService {
                                                                            MultipartFile[] newPhotos, String userId) throws IOException {
 
         Advertisement existingAdvertisement = findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(userId));
-
-        existingAdvertisement = advertisementMapper.mapToEntity(updateRequest, existingAdvertisement);
         advertisementPhotoService.deletePhotosByAdvertisementId(existingAdvertisement.getId());
+        existingAdvertisement = advertisementMapper.mapToEntity(updateRequest, existingAdvertisement);
 
-        savedAdvertisementPhotos(newPhotos, existingAdvertisement, updateRequest.subCategoryId());
+        saveAdvertisementPhotos(newPhotos, existingAdvertisement, updateRequest.subCategoryId());
         List<String> updatedPhotos = advertisementPhotoService.getPhotoUrlsByAdvertisementId(existingAdvertisement.getId());
 
         UpdateAdvertisementResponse updateAdvertisementResponse = advertisementMapper
@@ -65,9 +67,9 @@ public class AdvertisementService {
         return new StatusResponse<>(HttpStatus.OK.value(), updateAdvertisementResponse);
     }
 
-    private void savedAdvertisementPhotos(MultipartFile[] newPhotos,
-                                          Advertisement existingAdvertisement,
-                                          Long advertisementId) throws IOException {
+    private void saveAdvertisementPhotos(MultipartFile[] newPhotos,
+                                         Advertisement existingAdvertisement,
+                                         Long advertisementId) throws IOException {
         List<AdvertisementPhoto> existingPhotos = advertisementPhotoService
                 .uploadAndLinkPhotos(newPhotos, existingAdvertisement, advertisementId);
 
@@ -107,8 +109,8 @@ public class AdvertisementService {
     }
 
     public AdvertisementDto createAdvertisementDto(Advertisement advertisement,
-                                            Long userId,
-                                            HttpServletRequest request) {
+                                                   Long userId,
+                                                   HttpServletRequest request) {
 
         List<String> photoUrls = advertisementPhotoService.getPhotoUrlsByAdvertisementId(advertisement.getId());
         AdvertisementDto advertisementDTO = advertisementMapper.mapToDto(advertisement, photoUrls);

@@ -3,6 +3,7 @@ package ua.everybuy.routing.dto.response;
 import lombok.Getter;
 import lombok.Setter;
 import ua.everybuy.database.entity.Advertisement;
+import ua.everybuy.database.entity.DeliveryMethod;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,5 +24,5 @@ public class CreateAdvertisementResponse {
     private String cityName;
     private String subCategoryName;
     private String productType;
-    private Set<Advertisement.DeliveryMethod> deliveryMethods;
+    private Set<DeliveryMethod> deliveryMethods;
 }
