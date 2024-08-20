@@ -26,6 +26,7 @@ public class AdvertisementDto {
     private City city;
     private SubCategory subCategory;
     private String productType;
+    private String section;
     private Set<String> deliveryMethods;
     private ShortUserInfoDto userDto;
 }

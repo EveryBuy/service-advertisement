@@ -21,5 +21,6 @@ public class CreateAdvertisementResponse {
     private String cityName;
     private String subCategoryName;
     private String productType;
+    private String section;
     private Set<String> deliveryMethods;
 }

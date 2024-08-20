@@ -63,6 +63,15 @@ public class Advertisement {
     public enum ProductType {
         NEW, USED
     }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ad_section", nullable = false, length = 10)
+    private AdSection section;
+
+    public enum AdSection {
+        BUY, SELL
+    }
+
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<AdvertisementDelivery> advertisementDeliveries;
 

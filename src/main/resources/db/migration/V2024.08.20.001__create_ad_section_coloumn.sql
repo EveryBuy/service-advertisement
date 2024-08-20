@@ -1,0 +1,2 @@
+ALTER TABLE advertisements
+    ADD COLUMN ad_section VARCHAR(10) NOT NULL DEFAULT 'SELL';
