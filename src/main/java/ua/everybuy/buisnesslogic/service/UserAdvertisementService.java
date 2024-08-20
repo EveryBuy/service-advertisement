@@ -32,7 +32,7 @@ public class UserAdvertisementService {
         return advertisementService.findAllUserAdvertisement(userId)
                 .stream()
                 .filter(ad -> ad.getIsEnabled() == isEnabled)
-                .map(advertisementMapper::mapToShortAdvertisementResponse)
+                .map(advertisementMapper::mapToAdvertisementStatisticResponse)
                 .toList();
     }
 }

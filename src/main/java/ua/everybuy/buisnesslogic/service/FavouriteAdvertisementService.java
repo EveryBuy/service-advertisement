@@ -22,6 +22,7 @@ public class FavouriteAdvertisementService {
     private final FavouriteAdvertisementRepository favouriteAdvertisementRepository;
     private final FavouriteAdvertisementMapper favouriteAdvertisementMapper;
     private final AdvertisementService advertisementService;
+    private final StatisticsService statisticsService;
     private final CategoryService categoryService;
 
     public List<Advertisement> findAllUserFavouriteAdvertisements(String userId) {
@@ -66,7 +67,7 @@ public class FavouriteAdvertisementService {
                 .mapToFavouriteAdvertisementEntity(userIdLong, advertisement);
 
         newFavouriteAdvertisement = favouriteAdvertisementRepository.save(newFavouriteAdvertisement);
-        advertisementService.incrementFavouriteCountAndSave(advertisement);
+        statisticsService.incrementFavouriteCountAndSave(advertisement);
         AddToFavouriteResponse addToFavouriteResponse = favouriteAdvertisementMapper.mapToAddToFavouriteResponse(newFavouriteAdvertisement);
 
         return new StatusResponse<>(HttpStatus.CREATED.value(), addToFavouriteResponse);

@@ -18,9 +18,8 @@ public interface AdvertisementMapper {
     @Mapping(source = "request.subCategoryId", target = "subCategory", qualifiedByName = "subCategoryIdToSubCategory")
     @Mapping(target = "creationDate", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "updateDate", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "statistics", expression = "java(new AdvertisementStatistics())")
     @Mapping(target = "isEnabled", constant = "true")
-    @Mapping(target = "views", constant = "0")
-    @Mapping(target = "favouriteCount", constant = "0")
     @Mapping(source = "userId", target = "userId")
     @Mapping(target = "favouriteAdvertisements", ignore = true)
     Advertisement mapToEntity(CreateAdvertisementRequest request, Long userId);
@@ -50,19 +49,21 @@ public interface AdvertisementMapper {
     @Mapping(source = "advertisement.city.cityName", target = "cityName")
     @Mapping(source = "advertisement.subCategory.subCategoryName", target = "subCategoryName")
     @Mapping(source = "photos", target = "photoUrls")
-    CreateAdvertisementResponse mapToAdvertisementCreateResponse(Advertisement advertisement, Set<String> deliveryMethods,  List<String> photos);
+    CreateAdvertisementResponse mapToAdvertisementCreateResponse(Advertisement advertisement, Set<String> deliveryMethods, List<String> photos);
 
     @Mapping(source = "advertisement.city.cityName", target = "cityName")
     @Mapping(source = "advertisement.subCategory.subCategoryName", target = "subCategoryName")
     @Mapping(source = "photos", target = "photoUrls")
-    UpdateAdvertisementResponse mapToAdvertisementUpdateResponse(Advertisement advertisement,Set<String> deliveryMethods, List<String> photos);
+    UpdateAdvertisementResponse mapToAdvertisementUpdateResponse(Advertisement advertisement, Set<String> deliveryMethods, List<String> photos);
 
     @Mapping(source = "advertisement.id", target = "id")
     @Mapping(source = "advertisement.title", target = "title")
     @Mapping(source = "advertisement.price", target = "price")
     @Mapping(source = "advertisement.userId", target = "userId")
     @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
-    AdvertisementWithStatisticResponse mapToShortAdvertisementResponse(Advertisement advertisement);
+    @Mapping(source = "advertisement.statistics.views", target = "views")
+    @Mapping(source = "advertisement.statistics.favouriteCount", target = "favouriteCount")
+    AdvertisementWithStatisticResponse mapToAdvertisementStatisticResponse(Advertisement advertisement);
 
     @Mapping(source = "advertisement.id", target = "advertisementId")
     @Mapping(source = "advertisement.userId", target = "userId")

@@ -45,11 +45,8 @@ public class Advertisement {
     @Column (name = "main_photo_url")
     private String mainPhotoUrl;
 
-    @Column(name = "views", nullable = false)
-    private Integer views = 0;
-
-    @Column (name = "favourite_count", nullable = false)
-    private Integer favouriteCount = 0;
+    @Embedded
+    private AdvertisementStatistics statistics;
 
     @ManyToOne
     @JoinColumn(name="city_id", nullable = false)
@@ -68,7 +65,6 @@ public class Advertisement {
     }
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<AdvertisementDelivery> advertisementDeliveries;
-
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private List<FavouriteAdvertisement> favouriteAdvertisements;
