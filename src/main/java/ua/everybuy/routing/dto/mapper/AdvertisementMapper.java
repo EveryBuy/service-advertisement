@@ -9,6 +9,7 @@ import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = AdvertisementMappingHelper.class)
 public interface AdvertisementMapper {
@@ -28,7 +29,6 @@ public interface AdvertisementMapper {
     @Mapping(source = "request.description", target = "description")
     @Mapping(source = "request.price", target = "price")
     @Mapping(source = "request.productType", target = "productType")
-    @Mapping(source = "request.deliveryMethods", target = "deliveryMethods")
     @Mapping(source = "request.cityId", target = "city", qualifiedByName = "cityIdToCity")
     @Mapping(source = "request.subCategoryId", target = "subCategory", qualifiedByName = "subCategoryIdToSubCategory")
     @Mapping(target = "updateDate", expression = "java(java.time.LocalDateTime.now())")
@@ -40,7 +40,7 @@ public interface AdvertisementMapper {
     @Mapping(source = "advertisement.subCategory", target = "subCategory")
     @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
     @Mapping(source = "photos", target = "photoUrls")
-    AdvertisementDto mapToDto(Advertisement advertisement, List<String> photos);
+    AdvertisementDto mapToDto(Advertisement advertisement, Set<String> deliveryMethods, List<String> photos);
 
     @Mapping(source = "advertisement.id", target = "advertisementId")
     @Mapping(source = "advertisement.isEnabled", target = "status")
@@ -50,12 +50,12 @@ public interface AdvertisementMapper {
     @Mapping(source = "advertisement.city.cityName", target = "cityName")
     @Mapping(source = "advertisement.subCategory.subCategoryName", target = "subCategoryName")
     @Mapping(source = "photos", target = "photoUrls")
-    CreateAdvertisementResponse mapToAdvertisementCreateResponse(Advertisement advertisement, List<String> photos);
+    CreateAdvertisementResponse mapToAdvertisementCreateResponse(Advertisement advertisement, Set<String> deliveryMethods,  List<String> photos);
 
     @Mapping(source = "advertisement.city.cityName", target = "cityName")
     @Mapping(source = "advertisement.subCategory.subCategoryName", target = "subCategoryName")
     @Mapping(source = "photos", target = "photoUrls")
-    UpdateAdvertisementResponse mapToAdvertisementUpdateResponse(Advertisement advertisement, List<String> photos);
+    UpdateAdvertisementResponse mapToAdvertisementUpdateResponse(Advertisement advertisement,Set<String> deliveryMethods, List<String> photos);
 
     @Mapping(source = "advertisement.id", target = "id")
     @Mapping(source = "advertisement.title", target = "title")
@@ -74,10 +74,10 @@ public interface AdvertisementMapper {
     @Mapping(source = "advertisement.updateDate", target = "updateDate")
     @Mapping(source = "advertisement.city", target = "city")
     FilteredAdvertisementsResponse mapToFilteredAdvertisementsResponse(Advertisement advertisement);
+
     @Mapping(source = "advertisement.id", target = "id")
     @Mapping(source = "advertisement.userId", target = "userId")
     @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
     @Mapping(source = "advertisement.title", target = "title")
     AdvertisementInfoForChatService mapToAdvertisementInfoForChatService(Advertisement advertisement);
 }
-

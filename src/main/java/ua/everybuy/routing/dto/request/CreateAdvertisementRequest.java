@@ -28,6 +28,6 @@ public record CreateAdvertisementRequest(
         Advertisement.ProductType productType,
 
         @NotNull(message = "Delivery methods are required")
-        Set<Advertisement.DeliveryMethod> deliveryMethods
+        Set<String> deliveryMethods
 ) {
 }

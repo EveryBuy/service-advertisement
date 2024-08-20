@@ -3,11 +3,8 @@ package ua.everybuy.database.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -69,18 +66,9 @@ public class Advertisement {
     public enum ProductType {
         NEW, USED
     }
+    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<AdvertisementDelivery> advertisementDeliveries;
 
-    @ElementCollection(targetClass = DeliveryMethod.class, fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "advertisement_delivery_methods", joinColumns = @JoinColumn(name = "advertisement_id"))
-    @Column(name = "delivery_method")
-    private Set<DeliveryMethod> deliveryMethods = new HashSet<>();
-
-    public enum DeliveryMethod {
-        NOVA_POST,
-        UKR_POST,
-        MEEST_EXPRESS
-    }
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private List<FavouriteAdvertisement> favouriteAdvertisements;

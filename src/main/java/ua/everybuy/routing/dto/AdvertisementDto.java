@@ -3,7 +3,6 @@ package ua.everybuy.routing.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.City;
 import ua.everybuy.database.entity.SubCategory;
 
@@ -27,6 +26,6 @@ public class AdvertisementDto {
     private City city;
     private SubCategory subCategory;
     private String productType;
-    private Set<Advertisement.DeliveryMethod> deliveryMethods;
+    private Set<String> deliveryMethods;
     private ShortUserInfoDto userDto;
 }
