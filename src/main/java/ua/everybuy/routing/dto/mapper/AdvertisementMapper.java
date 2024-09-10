@@ -35,7 +35,8 @@ public interface AdvertisementMapper {
     @Mapping(target = "favouriteAdvertisements", ignore = true)
     Advertisement mapToEntity(UpdateAdvertisementRequest request, Advertisement advertisement);
 
-    @Mapping(source = "advertisement.city", target = "city")
+    @Mapping(source = "advertisement.city.cityName", target = "cityName")
+    @Mapping(source = "advertisement.city.region.regionName", target = "regionName")
     @Mapping(source = "advertisement.subCategory", target = "subCategory")
     @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
     @Mapping(source = "photos", target = "photoUrls")

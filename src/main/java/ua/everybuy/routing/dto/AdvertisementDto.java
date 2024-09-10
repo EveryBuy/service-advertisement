@@ -23,7 +23,8 @@ public class AdvertisementDto {
     private Long userId;
     private String mainPhotoUrl;
     private List<String> photoUrls;
-    private City city;
+    private String cityName;
+    private String regionName;
     private SubCategory subCategory;
     private String productType;
     private String section;
