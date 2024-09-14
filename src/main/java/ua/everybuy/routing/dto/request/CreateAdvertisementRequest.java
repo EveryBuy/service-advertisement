@@ -8,6 +8,8 @@ import ua.everybuy.database.entity.Advertisement;
 import java.util.Set;
 
 public record CreateAdvertisementRequest(
+        @NotNull(message = "Product section is required")
+        Advertisement.AdSection section,
         @NotBlank(message = "Title is required")
         @Size(max = 255, message = "Title must be less than 255 characters")
         String title,
@@ -28,6 +30,6 @@ public record CreateAdvertisementRequest(
         Advertisement.ProductType productType,
 
         @NotNull(message = "Delivery methods are required")
-        Set<Advertisement.DeliveryMethod> deliveryMethods
+        Set<String> deliveryMethods
 ) {
 }

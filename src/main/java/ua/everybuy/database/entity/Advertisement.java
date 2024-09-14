@@ -3,11 +3,8 @@ package ua.everybuy.database.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -48,11 +45,8 @@ public class Advertisement {
     @Column (name = "main_photo_url")
     private String mainPhotoUrl;
 
-    @Column(name = "views", nullable = false)
-    private Integer views = 0;
-
-    @Column (name = "favourite_count", nullable = false)
-    private Integer favouriteCount = 0;
+    @Embedded
+    private AdvertisementStatistics statistics;
 
     @ManyToOne
     @JoinColumn(name="city_id", nullable = false)
@@ -70,17 +64,16 @@ public class Advertisement {
         NEW, USED
     }
 
-    @ElementCollection(targetClass = DeliveryMethod.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "advertisement_delivery_methods", joinColumns = @JoinColumn(name = "advertisement_id"))
-    @Column(name = "delivery_method")
-    private Set<DeliveryMethod> deliveryMethods = new HashSet<>();
+    @Column(name = "ad_section", nullable = false, length = 10)
+    private AdSection section;
 
-    public enum DeliveryMethod {
-        NOVA_POST,
-        UKR_POST,
-        MEEST_EXPRESS
+    public enum AdSection {
+        BUY, SELL
     }
+
+    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<AdvertisementDelivery> advertisementDeliveries;
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
     private List<FavouriteAdvertisement> favouriteAdvertisements;

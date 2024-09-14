@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdvertisementPhotoService {
+public class PhotoService {
     private static final int MIN_PHOTOS = 1;
     private static final int MAX_PHOTOS = 8;
     private final AdvertisementPhotoRepository advertisementPhotoRepository;

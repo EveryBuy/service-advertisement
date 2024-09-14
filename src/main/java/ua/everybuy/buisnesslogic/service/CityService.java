@@ -18,6 +18,6 @@ public class CityService {
         return cityRepository.findAll();
     }
     public City findById(Long id){
-       return cityRepository.findById(Long.valueOf(id)).orElseThrow(() -> new EntityNotFoundException("City not found"));
+       return cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("City not found"));
     }
 }
