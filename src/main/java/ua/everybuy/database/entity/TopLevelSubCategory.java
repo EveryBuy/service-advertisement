@@ -1,17 +1,15 @@
 package ua.everybuy.database.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "subcategories")
-public class SubCategory {
+@Table(name = "top_level_subcategories")
+public class TopLevelSubCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -26,10 +24,6 @@ public class SubCategory {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private SubCategory parentCategory;
-
-    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SubCategory> subCategories = new ArrayList<>();
+    @OneToMany(mappedBy = "topLevelSubCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LowLevelSubCategory> lowLevelSubCategories;
 }
