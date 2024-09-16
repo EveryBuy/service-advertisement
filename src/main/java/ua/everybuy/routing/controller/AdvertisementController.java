@@ -1,6 +1,5 @@
 package ua.everybuy.routing.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,6 @@ import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.*;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
-
 import java.io.IOException;
 import java.security.Principal;
 
@@ -20,7 +18,6 @@ import java.security.Principal;
 @RequestMapping("/ad")
 @RequiredArgsConstructor
 public class AdvertisementController {
-
     private final AdvertisementService advertisementService;
 
     @PostMapping("/create")
@@ -47,14 +44,14 @@ public class AdvertisementController {
     @GetMapping("/{id}/active")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public StatusResponse<AdvertisementDto> getAdvertisementById(@PathVariable Long id, HttpServletRequest request) {
-        return advertisementService.getAdvertisement(id, request);
+    public StatusResponse<AdvertisementDto> getAdvertisementById(@PathVariable Long id) {
+        return advertisementService.getAdvertisement(id);
     }
 
     @GetMapping("/{id}/info")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public AdvertisementInfoForChatService getAdvertisementById(@PathVariable Long id) {
+    public AdvertisementInfoForChatService getAdvertisementByIdForChatService(@PathVariable Long id) {
         return advertisementService.getAdvertisementShortInfo(id);
     }
 

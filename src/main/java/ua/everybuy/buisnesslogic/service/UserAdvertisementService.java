@@ -9,7 +9,6 @@ import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
-
 import java.security.Principal;
 import java.util.List;
 
@@ -20,10 +19,9 @@ public class UserAdvertisementService {
     private final AdvertisementMapper advertisementMapper;
 
     public StatusResponse<AdvertisementDto> getUserAdvertisement(Long id, HttpServletRequest request, Principal principal) {
-
         Long userId = Long.parseLong(principal.getName());
         Advertisement advertisement = advertisementService.findAdvertisementByIdAndUserId(id, userId);
-        AdvertisementDto advertisementDTO = advertisementService.createAdvertisementDto(advertisement, userId, request);
+        AdvertisementDto advertisementDTO = advertisementService.createAdvertisementDto(advertisement, userId);
 
         return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
     }

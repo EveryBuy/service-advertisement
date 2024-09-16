@@ -5,6 +5,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+
 @Getter
 @Setter
 public class UpdateAdvertisementResponse {
@@ -19,7 +20,9 @@ public class UpdateAdvertisementResponse {
     private String mainPhotoUrl;
     private List<String> photoUrls;
     private String cityName;
-    private String subCategoryName;
+    private String categoryNameUkr;
+    private String topSubCategoryNameUkr;
+    private String lowSubCategoryNameUkr;
     private String productType;
     private String section;
     private Set<String> deliveryMethods;

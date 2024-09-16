@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+//ToDO subcategory filter
 public class FilterService {
     private static final String SORT_ORDER_ASC = "ASC";
     private static final String SORT_ORDER_DESC = "DESC";
@@ -23,7 +24,7 @@ public class FilterService {
     private final AdvertisementService advertisementService;
     private final AdvertisementMapper advertisementMapper;
     private final CategoryService categoryService;
-    private final SubCategoryService subCategoryService;
+//    private final SubCategoryService subCategoryService;
     private final RegionService regionService;
 
     public List<FilteredAdvertisementsResponse> getFilteredAdvertisements(Double minPrice, Double maxPrice, String sortOrder,
@@ -43,7 +44,7 @@ public class FilterService {
         advertisements = filterByMaxPrice(advertisements, maxPrice);
         advertisements = sortAdvertisements(advertisements, sortOrder);
         advertisements = filterByCity(advertisements, cityId);
-        advertisements = filterBySubCategory(advertisements, subCategoryId);
+//        advertisements = filterBySubCategory(advertisements, subCategoryId);
         advertisements = filterByCategory(advertisements, categoryId);
         advertisements = filterByProductType(advertisements, productType);
 
@@ -90,23 +91,23 @@ public class FilterService {
                 .orElse(advertisements);
     }
 
-    private List<Advertisement> filterBySubCategory(List<Advertisement> advertisements, Long subCategoryId) {
-        return Optional.ofNullable(subCategoryId)
-                .map(id -> {
-                    subCategoryService.findById(id);
-                    return advertisements.stream()
-                            .filter(ad -> ad.getSubCategory().getId().equals(id))
-                            .collect(Collectors.toList());
-                })
-                .orElse(advertisements);
-    }
+//    private List<Advertisement> filterBySubCategory(List<Advertisement> advertisements, Long subCategoryId) {
+//        return Optional.ofNullable(subCategoryId)
+//                .map(id -> {
+//                    subCategoryService.findById(id);
+//                    return advertisements.stream()
+//                            .filter(ad -> ad.getSubCategory().getId().equals(id))
+//                            .collect(Collectors.toList());
+//                })
+//                .orElse(advertisements);
+//    }
 
     private List<Advertisement> filterByCategory(List<Advertisement> advertisements, Long categoryId) {
         return Optional.ofNullable(categoryId)
                 .map(id -> {
                     categoryService.findById(id);
                     return advertisements.stream()
-                            .filter(ad -> ad.getSubCategory().getCategory().getId().equals(id))
+                            .filter(ad -> ad.getTopSubCategory().getCategory().getId().equals(id))
                             .collect(Collectors.toList());
                 })
                 .orElse(advertisements);
