@@ -53,8 +53,12 @@ public class Advertisement {
     private City city;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "subcategory_id", nullable = false)
-    private SubCategory subCategory;
+    @JoinColumn(name = "top_level_subcategory_id", nullable = false)
+    private TopLevelSubCategory topSubCategory;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "low_level_subcategory_id", nullable = true)
+    private LowLevelSubCategory lowSubCategory;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_type", nullable = false, length = 10)

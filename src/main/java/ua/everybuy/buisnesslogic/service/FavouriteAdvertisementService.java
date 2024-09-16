@@ -12,7 +12,6 @@ import ua.everybuy.routing.dto.mapper.FavouriteAdvertisementMapper;
 import ua.everybuy.routing.dto.response.AddToFavouriteResponse;
 import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +38,7 @@ public class FavouriteAdvertisementService {
             categoryService.findById(categoryId);
             advertisements = advertisements.stream()
                     .filter(advertisement -> advertisement != null &&
-                            categoryId.equals(advertisement.getSubCategory().getCategory().getId()))
+                            categoryId.equals(advertisement.getTopSubCategory().getCategory().getId()))
                     .collect(Collectors.toList());
         }
         return advertisements;

@@ -7,7 +7,6 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementPhotoRepository;
 import ua.everybuy.errorhandling.custom.FileFormatException;
-
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -21,7 +20,7 @@ public class PhotoService {
     private static final int MIN_PHOTOS = 1;
     private static final int MAX_PHOTOS = 8;
     private final AdvertisementPhotoRepository advertisementPhotoRepository;
-    private final SubCategoryService subCategoryService;
+    private final TopLevelSubCategoryService subCategoryService;
     private final AmazonS3Service amazonS3Service;
 
     public List<AdvertisementPhoto> uploadAndLinkPhotos(MultipartFile[] photos,
@@ -74,7 +73,8 @@ public class PhotoService {
     }
 
     public List<AdvertisementPhoto> findPhotosByAdvertisementId(Long advertisementId) {
-        List<AdvertisementPhoto> photos = advertisementPhotoRepository.findByAdvertisementId(advertisementId);
+        List<AdvertisementPhoto> photos = advertisementPhotoRepository
+                .findByAdvertisementId(advertisementId);
         return photos;
     }
 

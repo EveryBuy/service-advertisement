@@ -3,9 +3,7 @@ package ua.everybuy.routing.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ua.everybuy.database.entity.City;
-import ua.everybuy.database.entity.SubCategory;
-
+import ua.everybuy.database.entity.Category;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +23,9 @@ public class AdvertisementDto {
     private List<String> photoUrls;
     private String cityName;
     private String regionName;
-    private SubCategory subCategory;
+    private Category category;
+    private SubCategoryDto topSubCategory;
+    private SubCategoryDto lowSubCategory;
     private String productType;
     private String section;
     private Set<String> deliveryMethods;
