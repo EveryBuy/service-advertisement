@@ -1,15 +1,15 @@
-package ua.everybuy.buisnesslogic.service;
+package ua.everybuy.buisnesslogic.service.advertisement;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ua.everybuy.buisnesslogic.service.location.RegionService;
+import ua.everybuy.buisnesslogic.service.category.CategoryService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import java.util.Optional;
 
 @Service

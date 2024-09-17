@@ -3,8 +3,8 @@ package ua.everybuy.routing.dto.mapper;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
-import ua.everybuy.buisnesslogic.service.CategoryService;
-import ua.everybuy.buisnesslogic.service.CityService;
+import ua.everybuy.buisnesslogic.service.category.CategoryService;
+import ua.everybuy.buisnesslogic.service.location.CityService;
 import ua.everybuy.database.entity.Category;
 import ua.everybuy.database.entity.City;
 

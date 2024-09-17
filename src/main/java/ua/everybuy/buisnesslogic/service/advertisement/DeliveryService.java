@@ -1,4 +1,4 @@
-package ua.everybuy.buisnesslogic.service;
+package ua.everybuy.buisnesslogic.service.advertisement;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,14 +8,12 @@ import ua.everybuy.buisnesslogic.strategy.delivery.DeliveryMethodFactory;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementDelivery;
 import ua.everybuy.database.repository.AdvertisementDeliveryRepository;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
-
     private final DeliveryMethodFactory deliveryMethodFactory;
     private final AdvertisementDeliveryRepository advertisementDeliveryRepository;
 

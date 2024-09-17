@@ -1,14 +1,12 @@
 package ua.everybuy.routing.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ua.everybuy.buisnesslogic.service.UserAdvertisementService;
+import ua.everybuy.buisnesslogic.service.advertisement.UserAdvertisementService;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
-
 import java.security.Principal;
 import java.util.List;
 
@@ -40,8 +38,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody()
     public StatusResponse<AdvertisementDto> getUserAdvertisement(@PathVariable Long id,
-                                                                 HttpServletRequest request,
                                                                  Principal principal) {
-        return userAdvertisementService.getUserAdvertisement(id, request, principal);
+        return userAdvertisementService.getUserAdvertisement(id, principal);
     }
 }

@@ -6,6 +6,7 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.LowLevelSubCategory;
 import ua.everybuy.database.entity.TopLevelSubCategory;
 import ua.everybuy.routing.dto.AdvertisementDto;
+import ua.everybuy.routing.dto.ShortUserInfoDto;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.*;
@@ -35,6 +36,7 @@ public interface AdvertisementMapper {
     @Mapping(source = "request.description", target = "description")
     @Mapping(source = "request.price", target = "price")
     @Mapping(source = "request.productType", target = "productType")
+    @Mapping(source = "request.section", target = "section")
     @Mapping(source = "request.cityId", target = "city", qualifiedByName = "cityIdToCity")
     @Mapping(source = "topSubCategory", target = "topSubCategory")
     @Mapping(source = "lowSubCategory", target = "lowSubCategory")
@@ -46,12 +48,16 @@ public interface AdvertisementMapper {
                               TopLevelSubCategory topSubCategory,
                               LowLevelSubCategory lowSubCategory);
 
+    @Mapping(source = "advertisement.userId", target = "userId")
     @Mapping(source = "advertisement.city.cityName", target = "cityName")
     @Mapping(source = "advertisement.city.region.regionName", target = "regionName")
     @Mapping(source = "advertisement.topSubCategory.category", target = "category")
     @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
     @Mapping(source = "photos", target = "photoUrls")
-    AdvertisementDto mapToDto(Advertisement advertisement, Set<String> deliveryMethods, List<String> photos);
+    AdvertisementDto mapToDto(Advertisement advertisement,
+                              Set<String> deliveryMethods,
+                              List<String> photos,
+                              ShortUserInfoDto userDto);
 
     @Mapping(source = "advertisement.id", target = "advertisementId")
     @Mapping(source = "advertisement.isEnabled", target = "status")
