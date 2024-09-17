@@ -3,11 +3,10 @@ package ua.everybuy.routing.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ua.everybuy.buisnesslogic.service.FavouriteAdvertisementService;
+import ua.everybuy.buisnesslogic.service.advertisement.FavouriteAdvertisementService;
 import ua.everybuy.routing.dto.response.AddToFavouriteResponse;
 import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
-
 import java.security.Principal;
 import java.util.List;
 

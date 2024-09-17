@@ -1,8 +1,9 @@
-package ua.everybuy.buisnesslogic.service;
+package ua.everybuy.buisnesslogic.service.photo;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementPhotoRepository;
@@ -73,9 +74,8 @@ public class PhotoService {
     }
 
     public List<AdvertisementPhoto> findPhotosByAdvertisementId(Long advertisementId) {
-        List<AdvertisementPhoto> photos = advertisementPhotoRepository
+        return advertisementPhotoRepository
                 .findByAdvertisementId(advertisementId);
-        return photos;
     }
 
     private void isImage(MultipartFile file) throws IOException {

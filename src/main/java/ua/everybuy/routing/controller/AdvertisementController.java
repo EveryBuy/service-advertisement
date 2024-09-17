@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ua.everybuy.buisnesslogic.service.AdvertisementService;
+import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementCreationService;
+import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementService;
+import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementUpdateService;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.*;
@@ -19,6 +21,8 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class AdvertisementController {
     private final AdvertisementService advertisementService;
+    private final AdvertisementCreationService advertisementCreationService;
+    private final AdvertisementUpdateService advertisementUpdateService;
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -27,7 +31,7 @@ public class AdvertisementController {
             @Valid @RequestPart("request") CreateAdvertisementRequest createRequest,
             @Nullable @RequestPart(value = "photos", required = false) MultipartFile[] photos,
             Principal principal) throws IOException {
-        return advertisementService.createAdvertisement(createRequest, photos, principal.getName());
+        return advertisementCreationService.createAdvertisement(createRequest, photos, principal.getName());
     }
 
     @PutMapping("/{id}/update")
@@ -38,7 +42,7 @@ public class AdvertisementController {
             @Valid @RequestPart("request") UpdateAdvertisementRequest updateRequest,
             @Nullable @RequestPart(value = "photos", required = false) MultipartFile[] photos,
             Principal principal) throws IOException {
-        return advertisementService.updateAdvertisement(id, updateRequest, photos, principal.getName());
+        return advertisementUpdateService.updateAdvertisement(id, updateRequest, photos, principal.getName());
     }
 
     @GetMapping("/{id}/active")

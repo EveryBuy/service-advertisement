@@ -3,9 +3,8 @@ package ua.everybuy.routing.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ua.everybuy.buisnesslogic.service.LowLevelSubCategoryService;
+import ua.everybuy.buisnesslogic.service.category.LowLevelSubCategoryService;
 import ua.everybuy.routing.dto.SubCategoryDto;
-
 import java.util.List;
 
 @RestController

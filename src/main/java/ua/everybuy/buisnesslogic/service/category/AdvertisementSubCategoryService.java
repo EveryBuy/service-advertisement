@@ -1,4 +1,4 @@
-package ua.everybuy.buisnesslogic.service;
+package ua.everybuy.buisnesslogic.service.category;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

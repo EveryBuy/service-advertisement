@@ -5,11 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ua.everybuy.buisnesslogic.service.FilterService;
-
+import ua.everybuy.buisnesslogic.service.advertisement.FilterService;
 import org.springframework.web.bind.annotation.RestController;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
-
 import java.util.List;
 
 @RestController
