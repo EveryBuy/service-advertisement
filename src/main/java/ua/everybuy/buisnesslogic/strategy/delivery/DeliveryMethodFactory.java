@@ -12,7 +12,6 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class DeliveryMethodFactory {
-
     private final Map<String, DeliveryMethod> deliveryMethods = new HashMap<>();
 
     @PostConstruct

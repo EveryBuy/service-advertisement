@@ -1,6 +1,5 @@
-package ua.everybuy.buisnesslogic.service;
+package ua.everybuy.buisnesslogic.service.advertisement;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,11 +17,10 @@ public class UserAdvertisementService {
     private final AdvertisementService advertisementService;
     private final AdvertisementMapper advertisementMapper;
 
-    public StatusResponse<AdvertisementDto> getUserAdvertisement(Long id, HttpServletRequest request, Principal principal) {
+    public StatusResponse<AdvertisementDto> getUserAdvertisement(Long id, Principal principal) {
         Long userId = Long.parseLong(principal.getName());
         Advertisement advertisement = advertisementService.findAdvertisementByIdAndUserId(id, userId);
-        AdvertisementDto advertisementDTO = advertisementService.createAdvertisementDto(advertisement, userId);
-
+        AdvertisementDto advertisementDTO = advertisementService.createAdvertisementDto(advertisement);
         return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
     }
 
