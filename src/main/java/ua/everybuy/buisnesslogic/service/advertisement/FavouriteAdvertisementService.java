@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class FavouriteAdvertisementService {
     private final FavouriteAdvertisementRepository favouriteAdvertisementRepository;
     private final FavouriteAdvertisementMapper favouriteAdvertisementMapper;
-    private final AdvertisementService advertisementService;
+    private final AdvertisementManagementService advertisementManagementService;
     private final StatisticsService statisticsService;
     private final CategoryService categoryService;
 
@@ -57,7 +57,7 @@ public class FavouriteAdvertisementService {
 
     public StatusResponse<AddToFavouriteResponse> addToFavorites(String userId, Long adId) {
         Long userIdLong = Long.parseLong(userId);
-        Advertisement advertisement = advertisementService.findById(adId);
+        Advertisement advertisement = advertisementManagementService.findById(adId);
 
         if (favouriteAdvertisementRepository.existsByUserIdAndAdvertisement(userIdLong, advertisement)) {
             throw new DuplicateDataException("Advertisement is already added to favorites");
@@ -81,7 +81,7 @@ public class FavouriteAdvertisementService {
     private FavouriteAdvertisement findFavouriteByUserAndAdvertisement(String userId, Long adId) {
         return favouriteAdvertisementRepository.findByUserIdAndAdvertisement(
                         Long.parseLong(userId),
-                        advertisementService.findById(adId))
+                        advertisementManagementService.findById(adId))
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Favourite advertisement with id " + adId + " and user id " + userId + " not found"));
     }

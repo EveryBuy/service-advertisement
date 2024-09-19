@@ -1,31 +1,19 @@
 package ua.everybuy.buisnesslogic.service.advertisement;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ua.everybuy.database.entity.Advertisement;
-import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
 import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
-import ua.everybuy.routing.dto.response.StatusResponse;
-import java.security.Principal;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserAdvertisementService {
-    private final AdvertisementService advertisementService;
+    private final AdvertisementManagementService advertisementManagementService;
     private final AdvertisementMapper advertisementMapper;
 
-    public StatusResponse<AdvertisementDto> getUserAdvertisement(Long id, Principal principal) {
-        Long userId = Long.parseLong(principal.getName());
-        Advertisement advertisement = advertisementService.findAdvertisementByIdAndUserId(id, userId);
-        AdvertisementDto advertisementDTO = advertisementService.createAdvertisementDto(advertisement);
-        return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
-    }
-
     public List<AdvertisementWithStatisticResponse> getUserAdvertisementsByEnabledStatus(Long userId, boolean isEnabled) {
-        return advertisementService.findAllUserAdvertisement(userId)
+        return advertisementManagementService.findAllUserAdvertisement(userId)
                 .stream()
                 .filter(ad -> ad.getIsEnabled() == isEnabled)
                 .map(advertisementMapper::mapToAdvertisementStatisticResponse)

@@ -21,7 +21,7 @@ public class FilterService {
     private static final Comparator<Advertisement> PRICE_ASC_COMPARATOR = Comparator.comparing(Advertisement::getPrice);
     private static final Comparator<Advertisement> PRICE_DESC_COMPARATOR = Comparator.comparing(Advertisement::getPrice).reversed();
 
-    private final AdvertisementService advertisementService;
+    private final AdvertisementManagementService advertisementManagementService;
     private final AdvertisementMapper advertisementMapper;
     private final CategoryService categoryService;
 //    private final SubCategoryService subCategoryService;
@@ -38,7 +38,7 @@ public class FilterService {
                                                      Long cityId, Long subCategoryId,
                                                      Long categoryId, String productType) {
 
-        List<Advertisement> advertisements = advertisementService.findAllEnabledAdsOrderByCreationDateDesc();
+        List<Advertisement> advertisements = advertisementManagementService.findAllEnabledAdsOrderByCreationDateDesc();
 
         advertisements = filterByMinPrice(advertisements, minPrice);
         advertisements = filterByMaxPrice(advertisements, maxPrice);

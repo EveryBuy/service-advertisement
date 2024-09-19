@@ -20,7 +20,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Service
 public class AdvertisementCreationService {
-    private final AdvertisementService advertisementService;
+    private final AdvertisementManagementService advertisementManagementService;
     private final AdvertisementSubCategoryService advertisementSubCategoryService;
     private final PhotoService photoService;
     private final AdvertisementMapper advertisementMapper;
@@ -33,7 +33,7 @@ public class AdvertisementCreationService {
         Advertisement newAdvertisement = createAndSaveAdvertisement(createRequest, userId);
 
         // Save the associated photos and update the main photo URL
-        advertisementService.saveAdvertisementPhotos(photos, newAdvertisement, createRequest.topSubCategoryId());
+        advertisementManagementService.uploadAndSaveAdvertisementPhotos(photos, newAdvertisement, createRequest.topSubCategoryId());
         List<String> photoUrls = photoService.getPhotoUrlsByAdvertisementId(newAdvertisement.getId());
 
         // Save delivery methods and retrieve them
@@ -52,6 +52,6 @@ public class AdvertisementCreationService {
         LowLevelSubCategory lowLevelSubCategory = advertisementSubCategoryService.getLowLevelSubCategory(createRequest);
         Advertisement advertisement = advertisementMapper
                 .mapToEntity(createRequest, Long.parseLong(userId), topLevelSubCategory, lowLevelSubCategory);
-        return advertisementService.saveAdvertisement(advertisement);
+        return advertisementManagementService.saveAdvertisement(advertisement);
     }
 }
