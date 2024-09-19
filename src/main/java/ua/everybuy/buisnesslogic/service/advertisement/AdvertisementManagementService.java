@@ -23,7 +23,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class AdvertisementService {
+public class AdvertisementManagementService {
     private final AdvertisementRepository advertisementRepository;
     private final PhotoService photoService;
     private final StatisticsService statisticsService;
@@ -36,9 +36,9 @@ public class AdvertisementService {
         return advertisementRepository.save(advertisement);
     }
 
-    public void saveAdvertisementPhotos(MultipartFile[] newPhotos,
-                                        Advertisement existingAdvertisement,
-                                        Long advertisementId) throws IOException {
+    public void uploadAndSaveAdvertisementPhotos(MultipartFile[] newPhotos,
+                                                 Advertisement existingAdvertisement,
+                                                 Long advertisementId) throws IOException {
         List<AdvertisementPhoto> photos = photoService.uploadAndLinkPhotos(newPhotos,
                 existingAdvertisement, advertisementId);
         updateMainPhoto(existingAdvertisement, photos);
@@ -58,10 +58,24 @@ public class AdvertisementService {
         return advertisement;
     }
 
-    public StatusResponse<AdvertisementDto> getAdvertisement(Long id) {
+    public StatusResponse<AdvertisementDto> getActiveAdvertisement(Long id) {
         Advertisement advertisement = findActiveAdvertisementById(id);
         statisticsService.incrementViewsAndSave(advertisement);
         return new StatusResponse<>(HttpStatus.OK.value(), createAdvertisementDto(advertisement));
+    }
+
+    public StatusResponse<AdvertisementDto> retrieveAdvertisementWithAuthorization(Long id, Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+        Advertisement advertisement =findById(id);
+
+        if (advertisement.getIsEnabled()) {
+            AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement);
+            return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
+        }
+
+        validateUserAccessToAdvertisement(advertisement, userId);
+        AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement);
+        return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
     }
 
     AdvertisementDto createAdvertisementDto(Advertisement advertisement) {
@@ -130,6 +144,14 @@ public class AdvertisementService {
     private void validateAdvertisementIsActive(Advertisement advertisement) {
         if (!advertisement.getIsEnabled()) {
             throw new AccessDeniedException("Advertisement is inactive");
+        }
+    }
+    private void validateUserAccessToAdvertisement(Advertisement advertisement, Long userId) {
+        if (!advertisement.getUserId().equals(userId)) {
+            throw new AccessDeniedException("User with ID "
+                    + userId
+                    + " does not have permission to view advertisement with ID "
+                    + advertisement.getId() + ".");
         }
     }
 }

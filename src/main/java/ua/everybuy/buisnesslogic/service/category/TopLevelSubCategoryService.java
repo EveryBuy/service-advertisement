@@ -7,7 +7,6 @@ import ua.everybuy.database.entity.TopLevelSubCategory;
 import ua.everybuy.database.repository.TopLevelSubCategoryRepository;
 import ua.everybuy.routing.dto.SubCategoryDto;
 import ua.everybuy.routing.dto.mapper.SubCategoryMapper;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,7 @@ public class TopLevelSubCategoryService {
         TopLevelSubCategory topSubCategory = findById(subCategoryId);
 
         if (!topSubCategory.getCategory().getId().equals(categoryId)) {
-            throw new EntityNotFoundException("Subcategory does not belong to the specified category.");
+            throw new IllegalArgumentException("Top-level does not belong to the specified category.");
         }
         return topSubCategory;
     }

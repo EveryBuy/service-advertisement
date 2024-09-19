@@ -41,7 +41,7 @@ public class LowLevelSubCategoryService {
 
         if (!lowLevelSubCategory.getTopLevelSubCategory()
                 .getId().equals(topLevelSubCategoryId)) {
-            throw new EntityNotFoundException(
+            throw new IllegalArgumentException(
                     "Low-level subcategory does not belong to the specified top-level subcategory");
         }
         return lowLevelSubCategory;

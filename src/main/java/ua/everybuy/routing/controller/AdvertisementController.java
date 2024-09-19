@@ -7,7 +7,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementCreationService;
-import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementService;
+import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementManagementService;
 import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementUpdateService;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
@@ -20,7 +20,7 @@ import java.security.Principal;
 @RequestMapping("/ad")
 @RequiredArgsConstructor
 public class AdvertisementController {
-    private final AdvertisementService advertisementService;
+    private final AdvertisementManagementService advertisementManagementService;
     private final AdvertisementCreationService advertisementCreationService;
     private final AdvertisementUpdateService advertisementUpdateService;
 
@@ -45,30 +45,38 @@ public class AdvertisementController {
         return advertisementUpdateService.updateAdvertisement(id, updateRequest, photos, principal.getName());
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody()
+    public StatusResponse<AdvertisementDto> getUserAdvertisement(@PathVariable Long id,
+                                                                 Principal principal) {
+        return advertisementManagementService.retrieveAdvertisementWithAuthorization(id, principal);
+    }
+
     @GetMapping("/{id}/active")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public StatusResponse<AdvertisementDto> getAdvertisementById(@PathVariable Long id) {
-        return advertisementService.getAdvertisement(id);
+        return advertisementManagementService.getActiveAdvertisement(id);
     }
 
     @GetMapping("/{id}/info")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public AdvertisementInfoForChatService getAdvertisementByIdForChatService(@PathVariable Long id) {
-        return advertisementService.getAdvertisementShortInfo(id);
+        return advertisementManagementService.getAdvertisementShortInfo(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAdvertisementById(@PathVariable Long id, Principal principal) throws IOException {
-        advertisementService.deleteAdvertisement(id, principal);
+        advertisementManagementService.deleteAdvertisement(id, principal);
     }
 
     @PutMapping("/{id}/change-status")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public StatusResponse<AdvertisementStatusResponse> enableAdvertisement(@PathVariable @Valid Long id) {
-        return advertisementService.setAdvertisementEnabledStatus(id);
+        return advertisementManagementService.setAdvertisementEnabledStatus(id);
     }
 }

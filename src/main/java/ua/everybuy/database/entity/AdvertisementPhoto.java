@@ -2,7 +2,6 @@ package ua.everybuy.database.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,7 +12,6 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "advertisement_photos")
 public class AdvertisementPhoto {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

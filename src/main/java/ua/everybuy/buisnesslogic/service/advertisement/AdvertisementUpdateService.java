@@ -20,7 +20,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Service
 public class AdvertisementUpdateService {
-    private final AdvertisementService advertisementService;
+    private final AdvertisementManagementService advertisementManagementService;
     private final AdvertisementSubCategoryService advertisementSubCategoryService;
     private final PhotoService photoService;
     private final AdvertisementMapper advertisementMapper;
@@ -30,7 +30,7 @@ public class AdvertisementUpdateService {
                                                                            MultipartFile[] newPhotos,
                                                                            String userId) throws IOException {
 
-        Advertisement existingAdvertisement = advertisementService.findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(userId));
+        Advertisement existingAdvertisement = advertisementManagementService.findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(userId));
         photoService.deletePhotosByAdvertisementId(existingAdvertisement.getId());
 
         TopLevelSubCategory topLevelSubCategory = advertisementSubCategoryService.getTopLevelSubCategory(updateRequest);
@@ -39,7 +39,7 @@ public class AdvertisementUpdateService {
         existingAdvertisement = advertisementMapper.mapToEntity(updateRequest, existingAdvertisement,
                 topLevelSubCategory, lowLevelSubCategory);
 
-        advertisementService.saveAdvertisementPhotos(newPhotos, existingAdvertisement, updateRequest.topSubCategoryId());
+        advertisementManagementService.uploadAndSaveAdvertisementPhotos(newPhotos, existingAdvertisement, updateRequest.topSubCategoryId());
         List<String> updatedPhotos = photoService.getPhotoUrlsByAdvertisementId(existingAdvertisement.getId());
 
         deliveryService.updateAdvertisementDeliveries(existingAdvertisement, updateRequest.deliveryMethods());
