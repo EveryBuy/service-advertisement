@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ua.everybuy.buisnesslogic.service.location.RegionService;
 import ua.everybuy.buisnesslogic.service.category.CategoryService;
 import ua.everybuy.database.entity.Advertisement;
-import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
+import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
 import java.util.Comparator;
 import java.util.List;
@@ -22,7 +22,7 @@ public class FilterService {
     private static final Comparator<Advertisement> PRICE_DESC_COMPARATOR = Comparator.comparing(Advertisement::getPrice).reversed();
 
     private final AdvertisementManagementService advertisementManagementService;
-    private final AdvertisementMapper advertisementMapper;
+    private final AdvertisementResponseMapper advertisementResponseMapper;
     private final CategoryService categoryService;
 //    private final SubCategoryService subCategoryService;
     private final RegionService regionService;
@@ -127,7 +127,7 @@ public class FilterService {
 
     private List<FilteredAdvertisementsResponse> mapToResponse(List<Advertisement> advertisements) {
         return advertisements.stream()
-                .map(advertisementMapper::mapToFilteredAdvertisementsResponse)
+                .map(advertisementResponseMapper::mapToFilteredAdvertisementsResponse)
                 .collect(Collectors.toList());
     }
 }
