@@ -8,6 +8,7 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementPhotoRepository;
 import ua.everybuy.errorhandling.custom.FileFormatException;
+
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -21,14 +22,12 @@ public class PhotoService {
     private static final int MIN_PHOTOS = 1;
     private static final int MAX_PHOTOS = 8;
     private final AdvertisementPhotoRepository advertisementPhotoRepository;
-    private final TopLevelSubCategoryService subCategoryService;
     private final AmazonS3Service amazonS3Service;
 
     public List<AdvertisementPhoto> uploadAndLinkPhotos(MultipartFile[] photos,
                                                         Advertisement advertisement,
-                                                        Long subCategoryId) throws IOException {
+                                                        String subCategoryName) throws IOException {
         validatePhotos(photos);
-        String subCategoryName = subCategoryService.findById(subCategoryId).getSubCategoryName();
 
         List<AdvertisementPhoto> advertisementPhotos = new ArrayList<>();
 
@@ -53,14 +52,14 @@ public class PhotoService {
                 .build();
     }
 
-    public void deletePhotosByAdvertisementId(Long advertisementId) throws IOException {
-        List<AdvertisementPhoto> photos = findPhotosByAdvertisementId(advertisementId);
+    public void deletePhotosByAdvertisementId(Advertisement advertisement) throws IOException {
+        List<AdvertisementPhoto> photos = findPhotosByAdvertisement(advertisement);
         amazonS3Service.deletePhotos(photos);
         advertisementPhotoRepository.deleteAll(photos);
     }
 
-    public List<String> getPhotoUrlsByAdvertisementId(Long advertisementId) {
-        return findPhotosByAdvertisementId(advertisementId)
+    public List<String> getPhotoUrlsByAdvertisementId(Advertisement advertisement) {
+        return findPhotosByAdvertisement(advertisement)
                 .stream()
                 .map(AdvertisementPhoto::getPhotoUrl)
                 .collect(Collectors.toList());
@@ -73,9 +72,9 @@ public class PhotoService {
         advertisementPhotoRepository.save(advertisementPhoto);
     }
 
-    public List<AdvertisementPhoto> findPhotosByAdvertisementId(Long advertisementId) {
+    public List<AdvertisementPhoto> findPhotosByAdvertisement(Advertisement advertisement) {
         return advertisementPhotoRepository
-                .findByAdvertisementId(advertisementId);
+                .findByAdvertisement(advertisement);
     }
 
     private void isImage(MultipartFile file) throws IOException {

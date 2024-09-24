@@ -35,7 +35,8 @@ public class LowLevelSubCategoryService {
                 .collect(Collectors.toList());
     }
 
-    public LowLevelSubCategory findLowLevelSubCategoryByTopLevelId(Long topLevelSubCategoryId, Long lowLevelSubCategoryId) {
+    public LowLevelSubCategory findLowLevelSubCategoryByTopLevelId(Long topLevelSubCategoryId,
+                                                                   Long lowLevelSubCategoryId) {
         topLevelSubCategoryService.findById(topLevelSubCategoryId);
         LowLevelSubCategory lowLevelSubCategory = findById(lowLevelSubCategoryId);
 

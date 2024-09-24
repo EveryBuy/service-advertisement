@@ -5,21 +5,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.photo.PhotoService;
-import ua.everybuy.buisnesslogic.service.integration.UserProfileService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementRepository;
 import ua.everybuy.routing.dto.AdvertisementDto;
-import ua.everybuy.routing.dto.ShortUserInfoDto;
-import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
+import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
+import ua.everybuy.routing.dto.mapper.AdvertisementToDtoMapper;
 import ua.everybuy.routing.dto.response.*;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,28 +24,19 @@ public class AdvertisementManagementService {
     private final AdvertisementRepository advertisementRepository;
     private final PhotoService photoService;
     private final StatisticsService statisticsService;
-    private final AdvertisementMapper advertisementMapper;
-    private final UserProfileService userProfileService;
-    private final DeliveryService deliveryService;
+    private final AdvertisementResponseMapper responseMapper;
+    private final AdvertisementToDtoMapper dtoMapper;
 
     public Advertisement saveAdvertisement(Advertisement advertisement) {
         validateAdvertisement(advertisement);
         return advertisementRepository.save(advertisement);
     }
 
-    public void uploadAndSaveAdvertisementPhotos(MultipartFile[] newPhotos,
-                                                 Advertisement existingAdvertisement,
-                                                 Long advertisementId) throws IOException {
-        List<AdvertisementPhoto> photos = photoService.uploadAndLinkPhotos(newPhotos,
-                existingAdvertisement, advertisementId);
-        updateMainPhoto(existingAdvertisement, photos);
-    }
-
-    private void updateMainPhoto(Advertisement existingAdvertisement, List<AdvertisementPhoto> photos) {
+    public void updateMainPhoto(Advertisement existingAdvertisement, List<AdvertisementPhoto> photos) {
         if (photos != null && !photos.isEmpty()) {
             String mainPhotoUrl = photos.get(0).getPhotoUrl();
             existingAdvertisement.setMainPhotoUrl(mainPhotoUrl);
-            advertisementRepository.save(existingAdvertisement);
+            saveAdvertisement(existingAdvertisement);
         }
     }
 
@@ -61,7 +49,7 @@ public class AdvertisementManagementService {
     public StatusResponse<AdvertisementDto> getActiveAdvertisement(Long id) {
         Advertisement advertisement = findActiveAdvertisementById(id);
         statisticsService.incrementViewsAndSave(advertisement);
-        return new StatusResponse<>(HttpStatus.OK.value(), createAdvertisementDto(advertisement));
+        return new StatusResponse<>(HttpStatus.OK.value(), dtoMapper.mapToDto(advertisement));
     }
 
     public StatusResponse<AdvertisementDto> retrieveAdvertisementWithAuthorization(Long id, Principal principal) {
@@ -69,26 +57,19 @@ public class AdvertisementManagementService {
         Advertisement advertisement =findById(id);
 
         if (advertisement.getIsEnabled()) {
-            AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement);
+            AdvertisementDto advertisementDTO = dtoMapper.mapToDto(advertisement);
             return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
         }
 
         validateUserAccessToAdvertisement(advertisement, userId);
-        AdvertisementDto advertisementDTO = createAdvertisementDto(advertisement);
+        AdvertisementDto advertisementDTO = dtoMapper.mapToDto(advertisement);
         return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
     }
 
-    AdvertisementDto createAdvertisementDto(Advertisement advertisement) {
-        List<String> photoUrls = photoService.getPhotoUrlsByAdvertisementId(advertisement.getId());
-        Set<String> deliveryMethods = deliveryService.getAdvertisementDeliveryMethods(advertisement);
-        ShortUserInfoDto userDto = userProfileService.getShortUserInfo(advertisement.getUserId());
-
-        return advertisementMapper.mapToDto(advertisement, deliveryMethods, photoUrls, userDto);
-    }
-
     public void deleteAdvertisement(Long advertisementId, Principal principal) throws IOException {
-        Advertisement advertisement = findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(principal.getName()));
-        photoService.deletePhotosByAdvertisementId(advertisement.getId());
+        Advertisement advertisement = findAdvertisementByIdAndUserId(advertisementId,
+                Long.parseLong(principal.getName()));
+        photoService.deletePhotosByAdvertisementId(advertisement);
         advertisementRepository.delete(advertisement);
     }
 
@@ -96,14 +77,14 @@ public class AdvertisementManagementService {
         Advertisement advertisement = findById(id);
         toggleAdvertisementStatus(advertisement);
         return new StatusResponse<>(HttpStatus.OK.value(),
-                advertisementMapper.mapToAdvertisementStatusResponse(advertisement));
+                responseMapper.mapToAdvertisementStatusResponse(advertisement));
     }
 
     private void toggleAdvertisementStatus(Advertisement advertisement) {
         boolean currentStatus = advertisement.getIsEnabled();
         advertisement.setIsEnabled(!currentStatus);
         advertisement.setUpdateDate(LocalDateTime.now());
-        advertisementRepository.save(advertisement);
+        saveAdvertisement(advertisement);
     }
 
     public Advertisement findById(Long id) {
@@ -132,7 +113,7 @@ public class AdvertisementManagementService {
 
     public AdvertisementInfoForChatService getAdvertisementShortInfo(Long advertisementId) {
         Advertisement advertisement = findActiveAdvertisementById(advertisementId);
-        return advertisementMapper.mapToAdvertisementInfoForChatService(advertisement);
+        return responseMapper.mapToAdvertisementInfoForChatService(advertisement);
     }
 
     private void validateAdvertisement(Advertisement advertisement) {

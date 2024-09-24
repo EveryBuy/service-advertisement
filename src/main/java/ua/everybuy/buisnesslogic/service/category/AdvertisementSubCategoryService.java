@@ -13,7 +13,7 @@ public class AdvertisementSubCategoryService {
     private final LowLevelSubCategoryService lowSubCategoryService;
 
     public <T extends CategoryRequest> TopLevelSubCategory getTopLevelSubCategory(T request) {
-        return topSubCategoryService.getTopLevelSubCategoryByCategoryAndSubCategoryId(
+        return topSubCategoryService.findTopLevelSubCategoryByCategoryAndSubCategoryId(
                 request.categoryId(), request.topSubCategoryId());
     }
 

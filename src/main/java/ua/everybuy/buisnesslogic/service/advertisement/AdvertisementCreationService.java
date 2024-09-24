@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ua.everybuy.buisnesslogic.service.category.AdvertisementSubCategoryService;
 import ua.everybuy.buisnesslogic.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
-import ua.everybuy.database.entity.LowLevelSubCategory;
-import ua.everybuy.database.entity.TopLevelSubCategory;
-import ua.everybuy.routing.dto.mapper.AdvertisementMapper;
+import ua.everybuy.database.entity.AdvertisementPhoto;
+import ua.everybuy.database.entity.AdvertisementStatistics;
+import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
+import ua.everybuy.routing.dto.mapper.AdvertisementToEntityMapper;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.CreateAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
@@ -21,37 +21,44 @@ import java.util.Set;
 @Service
 public class AdvertisementCreationService {
     private final AdvertisementManagementService advertisementManagementService;
-    private final AdvertisementSubCategoryService advertisementSubCategoryService;
-    private final PhotoService photoService;
-    private final AdvertisementMapper advertisementMapper;
+    private final AdvertisementResponseMapper advertisementResponseMapper;
+    private final AdvertisementToEntityMapper toEntityMapper;
     private final DeliveryService deliveryService;
+    private final PhotoService photoService;
 
     public StatusResponse<CreateAdvertisementResponse> createAdvertisement(CreateAdvertisementRequest createRequest,
                                                                            MultipartFile[] photos,
                                                                            String userId) throws IOException {
 
-        Advertisement newAdvertisement = createAndSaveAdvertisement(createRequest, userId);
+        Advertisement newAdvertisement = createAdvertisementEntity(createRequest, photos, userId);
 
-        // Save the associated photos and update the main photo URL
-        advertisementManagementService.uploadAndSaveAdvertisementPhotos(photos, newAdvertisement, createRequest.topSubCategoryId());
-        List<String> photoUrls = photoService.getPhotoUrlsByAdvertisementId(newAdvertisement.getId());
-
-        // Save delivery methods and retrieve them
-        deliveryService.saveAdvertisementDeliveries(newAdvertisement, createRequest.deliveryMethods());
-        Set<String> deliveryMethods = deliveryService.getAdvertisementDeliveryMethods(newAdvertisement);
-
-        // Map the saved advertisement to the response DTO and return it
-        CreateAdvertisementResponse advertisementResponse = advertisementMapper
-                .mapToAdvertisementCreateResponse(newAdvertisement, deliveryMethods, photoUrls);
-
+        CreateAdvertisementResponse advertisementResponse = advertisementResponseMapper
+                .mapToAdvertisementCreateResponse(newAdvertisement);
         return new StatusResponse<>(HttpStatus.CREATED.value(), advertisementResponse);
     }
 
-    private Advertisement createAndSaveAdvertisement(CreateAdvertisementRequest createRequest, String userId) {
-        TopLevelSubCategory topLevelSubCategory = advertisementSubCategoryService.getTopLevelSubCategory(createRequest);
-        LowLevelSubCategory lowLevelSubCategory = advertisementSubCategoryService.getLowLevelSubCategory(createRequest);
-        Advertisement advertisement = advertisementMapper
-                .mapToEntity(createRequest, Long.parseLong(userId), topLevelSubCategory, lowLevelSubCategory);
-        return advertisementManagementService.saveAdvertisement(advertisement);
+    private Advertisement createAdvertisementEntity(CreateAdvertisementRequest createRequest,
+                                                    MultipartFile[] photos,
+                                                    String userId) throws IOException {
+
+        Advertisement newAdvertisement = toEntityMapper
+                .mapToEntity(createRequest, new AdvertisementStatistics(), Long.parseLong(userId));
+        newAdvertisement = advertisementManagementService.saveAdvertisement(newAdvertisement);
+
+        processAdvertisementPhotos(newAdvertisement, photos);
+
+        processDeliveryMethods(newAdvertisement, createRequest.deliveryMethods());
+
+        return newAdvertisement;
+    }
+
+    private void processAdvertisementPhotos(Advertisement newAdvertisement, MultipartFile[] photos) throws IOException {
+        List<AdvertisementPhoto> advertisementPhotos = photoService.uploadAndLinkPhotos(photos, newAdvertisement,
+                newAdvertisement.getTopSubCategory().getSubCategoryName());
+        advertisementManagementService.updateMainPhoto(newAdvertisement, advertisementPhotos);
+    }
+
+    private void processDeliveryMethods(Advertisement newAdvertisement, Set<String> deliveryMethods) {
+        deliveryService.saveAdvertisementDeliveries(newAdvertisement, deliveryMethods);
     }
 }

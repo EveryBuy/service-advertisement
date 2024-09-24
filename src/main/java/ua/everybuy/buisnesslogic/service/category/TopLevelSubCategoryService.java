@@ -34,7 +34,8 @@ public class TopLevelSubCategoryService {
                 .collect(Collectors.toList());
     }
 
-    public TopLevelSubCategory getTopLevelSubCategoryByCategoryAndSubCategoryId(Long categoryId, Long subCategoryId) {
+    public TopLevelSubCategory findTopLevelSubCategoryByCategoryAndSubCategoryId(Long categoryId,
+                                                                                 Long subCategoryId) {
         categoryService.findById(categoryId);
         TopLevelSubCategory topSubCategory = findById(subCategoryId);
 
@@ -44,4 +45,3 @@ public class TopLevelSubCategoryService {
         return topSubCategory;
     }
 }
-
