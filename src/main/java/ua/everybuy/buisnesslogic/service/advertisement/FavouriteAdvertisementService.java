@@ -9,10 +9,12 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
 import ua.everybuy.database.repository.FavouriteAdvertisementRepository;
 import ua.everybuy.errorhandling.custom.DuplicateDataException;
+import ua.everybuy.errorhandling.message.FavouriteAdvertisementValidationMessages;
 import ua.everybuy.routing.dto.mapper.FavouriteAdvertisementMapper;
 import ua.everybuy.routing.dto.response.AddToFavouriteResponse;
 import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +49,6 @@ public class FavouriteAdvertisementService {
 
     public List<FavouriteAdvertisementResponse> findAllUserFavouriteAdvertisementsWithCategory(String userId, Long categoryId) {
         List<Advertisement> userAdvertisements = findAllUserFavouriteAdvertisements(userId);
-
         List<Advertisement> filteredAdvertisements = filterAdvertisementsByCategory(userAdvertisements, categoryId);
 
         return filteredAdvertisements.stream()
@@ -60,7 +61,8 @@ public class FavouriteAdvertisementService {
         Advertisement advertisement = advertisementManagementService.findById(adId);
 
         if (favouriteAdvertisementRepository.existsByUserIdAndAdvertisement(userIdLong, advertisement)) {
-            throw new DuplicateDataException("Advertisement is already added to favorites");
+            throw new DuplicateDataException(FavouriteAdvertisementValidationMessages
+                    .DUPLICATE_FAVOURITE_MESSAGE);
         }
 
         FavouriteAdvertisement newFavouriteAdvertisement = favouriteAdvertisementMapper
@@ -83,6 +85,9 @@ public class FavouriteAdvertisementService {
                         Long.parseLong(userId),
                         advertisementManagementService.findById(adId))
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Favourite advertisement with id " + adId + " and user id " + userId + " not found"));
+                        String.format(FavouriteAdvertisementValidationMessages
+                                .FAVOURITE_NOT_FOUND_MESSAGE_TEMPLATE, adId, userId)));
     }
 }
+
+
