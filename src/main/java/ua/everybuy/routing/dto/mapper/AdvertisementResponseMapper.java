@@ -9,7 +9,6 @@ import ua.everybuy.routing.dto.mapper.helper.*;
 @Mapper(componentModel = "spring", uses = {
         PhotoMappingHelper.class,
         DeliveryMappingHelper.class,
-        DescriptionHelper.class
 })
 public interface AdvertisementResponseMapper {
     @Mapping(source = "advertisement.id", target = "advertisementId")
@@ -42,17 +41,6 @@ public interface AdvertisementResponseMapper {
     @Mapping(source = "advertisement.statistics.views", target = "views")
     @Mapping(source = "advertisement.statistics.favouriteCount", target = "favouriteCount")
     AdvertisementWithStatisticResponse mapToAdvertisementStatisticResponse(Advertisement advertisement);
-
-    @Mapping(source = "advertisement.id", target = "advertisementId")
-    @Mapping(source = "advertisement.userId", target = "userId")
-    @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
-    @Mapping(source = "advertisement.title", target = "title")
-    @Mapping(source = "advertisement.productType", target = "productType")
-    @Mapping(source = "advertisement.price", target = "price")
-    @Mapping(source = "advertisement.description", target = "description", qualifiedByName = "truncateDescription")
-    @Mapping(source = "advertisement.updateDate", target = "updateDate")
-    @Mapping(source = "advertisement.city", target = "city")
-    FilteredAdvertisementsResponse mapToFilteredAdvertisementsResponse(Advertisement advertisement);
 
     @Mapping(source = "advertisement.id", target = "id")
     @Mapping(source = "advertisement.userId", target = "userId")
