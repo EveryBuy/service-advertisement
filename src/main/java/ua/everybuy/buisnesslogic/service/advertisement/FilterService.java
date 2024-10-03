@@ -1,133 +1,116 @@
 package ua.everybuy.buisnesslogic.service.advertisement;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ua.everybuy.buisnesslogic.service.category.LowLevelSubCategoryService;
+import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
 import ua.everybuy.buisnesslogic.service.location.RegionService;
 import ua.everybuy.buisnesslogic.service.category.CategoryService;
 import ua.everybuy.database.entity.Advertisement;
-import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
+import ua.everybuy.routing.dto.mapper.AdvertisementFilterMapper;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-//ToDO subcategory filter
 public class FilterService {
     private static final String SORT_ORDER_ASC = "ASC";
     private static final String SORT_ORDER_DESC = "DESC";
     private static final Comparator<Advertisement> PRICE_ASC_COMPARATOR = Comparator.comparing(Advertisement::getPrice);
     private static final Comparator<Advertisement> PRICE_DESC_COMPARATOR = Comparator.comparing(Advertisement::getPrice).reversed();
-
     private final AdvertisementManagementService advertisementManagementService;
-    private final AdvertisementResponseMapper advertisementResponseMapper;
+    private final AdvertisementFilterMapper advertisementFilterMapper;
+    private final TopLevelSubCategoryService topLevelSubCategoryService;
+    private final LowLevelSubCategoryService lowLevelSubCategoryService;
     private final CategoryService categoryService;
-//    private final SubCategoryService subCategoryService;
     private final RegionService regionService;
 
-    public List<FilteredAdvertisementsResponse> getFilteredAdvertisements(Double minPrice, Double maxPrice, String sortOrder,
-                                                                          Long regionId, Long subCategoryId,
-                                                                          Long categoryId, String productType) {
-        List<Advertisement> filteredAdvertisements = filterAdvertisements(minPrice, maxPrice, sortOrder, regionId, subCategoryId, categoryId, productType);
+    public List<FilteredAdvertisementsResponse> getFilteredAdvertisements(Double minPrice, Double maxPrice,
+                                                                          String sortOrder, Long regionId,
+                                                                          Long topSubCategoryId, Long lowSubCategoryId,
+                                                                          Long categoryId, String productType, Pageable pageable) {
+
+        List<Advertisement> filteredAdvertisements = applyFilters(minPrice, maxPrice, sortOrder,
+                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, pageable);
         return mapToResponse(filteredAdvertisements);
     }
 
-    private List<Advertisement> filterAdvertisements(Double minPrice, Double maxPrice, String sortOrder,
-                                                     Long cityId, Long subCategoryId,
-                                                     Long categoryId, String productType) {
+    public List<Advertisement> applyFilters(Double minPrice, Double maxPrice, String sortOrder,
+                                            Long regionId, Long topSubCategoryId, Long lowSubCategoryId,
+                                            Long categoryId, String productType, Pageable pageable) {
 
-        List<Advertisement> advertisements = advertisementManagementService.findAllEnabledAdsOrderByCreationDateDesc();
+        Page<Advertisement> advertisementPage = advertisementManagementService
+                .getActiveAdvertisements(pageable);
 
-        advertisements = filterByMinPrice(advertisements, minPrice);
-        advertisements = filterByMaxPrice(advertisements, maxPrice);
-        advertisements = sortAdvertisements(advertisements, sortOrder);
-        advertisements = filterByCity(advertisements, cityId);
-//        advertisements = filterBySubCategory(advertisements, subCategoryId);
-        advertisements = filterByCategory(advertisements, categoryId);
-        advertisements = filterByProductType(advertisements, productType);
+        List<Advertisement> filteredAds = advertisementPage.getContent().stream()
+                .filter(ad -> filterByMinPrice(ad, minPrice))
+                .filter(ad -> filterByMaxPrice(ad, maxPrice))
+                .filter(ad -> filterByCity(ad, regionId))
+                .filter(ad -> filterByTopSubCategory(ad, topSubCategoryId))
+                .filter(ad -> filterByLowSubCategory(ad, lowSubCategoryId))
+                .filter(ad -> filterByCategory(ad, categoryId))
+                .filter(ad -> filterByProductType(ad, productType))
+                .collect(Collectors.toList());
 
-        return advertisements;
-    }
-
-    private List<Advertisement> filterByMinPrice(List<Advertisement> advertisements, Double minPrice) {
-        return Optional.ofNullable(minPrice)
-                .filter(price -> price > 0)
-                .map(price -> advertisements.stream()
-                        .filter(ad -> ad.getPrice() >= price)
-                        .collect(Collectors.toList()))
-                .orElse(advertisements);
-    }
-
-    private List<Advertisement> filterByMaxPrice(List<Advertisement> advertisements, Double maxPrice) {
-        return Optional.ofNullable(maxPrice)
-                .filter(price -> price > 0)
-                .map(price -> advertisements.stream()
-                        .filter(ad -> ad.getPrice() <= price)
-                        .collect(Collectors.toList()))
-                .orElse(advertisements);
-    }
-
-    private List<Advertisement> sortAdvertisements(List<Advertisement> advertisements, String sortOrder) {
         if (sortOrder != null && !sortOrder.isBlank()) {
-            return switch (sortOrder.toUpperCase()) {
-                case SORT_ORDER_ASC -> advertisements.stream().sorted(PRICE_ASC_COMPARATOR).collect(Collectors.toList());
-                case SORT_ORDER_DESC -> advertisements.stream().sorted(PRICE_DESC_COMPARATOR).collect(Collectors.toList());
-                default -> advertisements;
-            };
+            filteredAds.sort(getPriceComparator(sortOrder));
         }
-        return advertisements;
+        return filteredAds;
     }
 
-    private List<Advertisement> filterByCity(List<Advertisement> advertisements, Long regionId) {
-        return Optional.ofNullable(regionId)
-                .map(id -> {
-                    regionService.findById(id);
-                    return advertisements.stream()
-                            .filter(ad -> ad.getCity().getRegion().getId().equals(id))
-                            .collect(Collectors.toList());
-                })
-                .orElse(advertisements);
+    private boolean filterByMinPrice(Advertisement ad, Double minPrice) {
+        return minPrice == null || ad.getPrice() >= minPrice;
     }
 
-//    private List<Advertisement> filterBySubCategory(List<Advertisement> advertisements, Long subCategoryId) {
-//        return Optional.ofNullable(subCategoryId)
-//                .map(id -> {
-//                    subCategoryService.findById(id);
-//                    return advertisements.stream()
-//                            .filter(ad -> ad.getSubCategory().getId().equals(id))
-//                            .collect(Collectors.toList());
-//                })
-//                .orElse(advertisements);
-//    }
-
-    private List<Advertisement> filterByCategory(List<Advertisement> advertisements, Long categoryId) {
-        return Optional.ofNullable(categoryId)
-                .map(id -> {
-                    categoryService.findById(id);
-                    return advertisements.stream()
-                            .filter(ad -> ad.getTopSubCategory().getCategory().getId().equals(id))
-                            .collect(Collectors.toList());
-                })
-                .orElse(advertisements);
+    private boolean filterByMaxPrice(Advertisement ad, Double maxPrice) {
+        return maxPrice == null || ad.getPrice() <= maxPrice;
     }
 
-    private List<Advertisement> filterByProductType(List<Advertisement> advertisements, String productType) {
-        return Optional.ofNullable(productType)
-                .filter(type -> !type.isBlank())
-                .map(type -> {
-                    String typeOfProd = type.toUpperCase();
-                    return advertisements.stream()
-                            .filter(ad -> ad.getProductType().equals(Advertisement.ProductType.valueOf(typeOfProd)))
-                            .collect(Collectors.toList());
-                })
-                .orElse(advertisements);
+    private boolean filterByCity(Advertisement ad, Long regionId) {
+        if (regionId != null) {
+            regionService.findById(regionId);
+        }
+        return regionId == null || ad.getCity().getRegion().getId().equals(regionId);
+    }
+
+    private boolean filterByTopSubCategory(Advertisement ad, Long topSubCategoryId) {
+        if (topSubCategoryId != null) {
+            topLevelSubCategoryService.findById(topSubCategoryId);
+        }
+        return topSubCategoryId == null || ad.getTopSubCategory().getId().equals(topSubCategoryId);
+    }
+
+    private boolean filterByLowSubCategory(Advertisement ad, Long lowSubCategoryId) {
+        if (lowSubCategoryId != null) {
+            lowLevelSubCategoryService.findById(lowSubCategoryId);
+        }
+        return lowSubCategoryId == null || ad.getLowSubCategory().getId().equals(lowSubCategoryId);
+    }
+
+    private boolean filterByCategory(Advertisement ad, Long categoryId) {
+        if (categoryId != null) {
+            categoryService.findById(categoryId);
+        }
+        return categoryId == null || ad.getTopSubCategory().getCategory().getId().equals(categoryId);
+    }
+
+    private boolean filterByProductType(Advertisement ad, String productType) {
+        return productType == null || productType.isBlank() ||
+                ad.getProductType().name().equalsIgnoreCase(productType);
+    }
+
+    private Comparator<Advertisement> getPriceComparator(String sortOrder) {
+        return SORT_ORDER_ASC.equalsIgnoreCase(sortOrder) ? PRICE_ASC_COMPARATOR : PRICE_DESC_COMPARATOR;
     }
 
     private List<FilteredAdvertisementsResponse> mapToResponse(List<Advertisement> advertisements) {
         return advertisements.stream()
-                .map(advertisementResponseMapper::mapToFilteredAdvertisementsResponse)
+                .map(advertisementFilterMapper::mapToFilteredAdvertisementsResponse)
                 .collect(Collectors.toList());
     }
 }
