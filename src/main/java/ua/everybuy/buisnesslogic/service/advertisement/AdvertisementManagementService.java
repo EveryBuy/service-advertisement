@@ -2,6 +2,8 @@ package ua.everybuy.buisnesslogic.service.advertisement;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import ua.everybuy.buisnesslogic.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementRepository;
+import ua.everybuy.errorhandling.message.AdvertisementValidationMessages;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.dto.mapper.AdvertisementToDtoMapper;
@@ -54,7 +57,7 @@ public class AdvertisementManagementService {
 
     public StatusResponse<AdvertisementDto> retrieveAdvertisementWithAuthorization(Long id, Principal principal) {
         Long userId = Long.parseLong(principal.getName());
-        Advertisement advertisement =findById(id);
+        Advertisement advertisement = findById(id);
 
         if (advertisement.getIsEnabled()) {
             AdvertisementDto advertisementDTO = dtoMapper.mapToDto(advertisement);
@@ -89,13 +92,15 @@ public class AdvertisementManagementService {
 
     public Advertisement findById(Long id) {
         return advertisementRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
+                .orElseThrow(() -> new EntityNotFoundException(AdvertisementValidationMessages
+                        .ADVERTISEMENT_NOT_FOUND_MESSAGE));
     }
 
     public List<Advertisement> findAllUserAdvertisement(Long userId) {
         List<Advertisement> userAdvertisement = advertisementRepository.findByUserId(userId);
         if (userAdvertisement == null || userAdvertisement.isEmpty()) {
-            throw new EntityNotFoundException("No advertisements found for the given user " + userId);
+            throw new EntityNotFoundException(AdvertisementValidationMessages
+                    .NO_ADVERTISEMENTS_FOUND_MESSAGE + userId);
         }
         return userAdvertisement;
     }
@@ -103,12 +108,12 @@ public class AdvertisementManagementService {
     public Advertisement findAdvertisementByIdAndUserId(Long advertisementId, Long userId) {
         return advertisementRepository.findByIdAndUserId(advertisementId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("User with id %d "
-                                + "does not have an advertisement with id %d", userId, advertisementId)));
+                        String.format(AdvertisementValidationMessages
+                                .ACCESS_DENIED_MESSAGE_TEMPLATE, userId, advertisementId)));
     }
 
-    public List<Advertisement> findAllEnabledAdsOrderByCreationDateDesc() {
-        return advertisementRepository.findByIsEnabledTrueOrderByCreationDateDesc();
+    public Page<Advertisement> getActiveAdvertisements(Pageable pageable) {
+        return advertisementRepository.findByIsEnabledTrueOrderByCreationDateDesc(pageable);
     }
 
     public AdvertisementInfoForChatService getAdvertisementShortInfo(Long advertisementId) {
@@ -118,21 +123,23 @@ public class AdvertisementManagementService {
 
     private void validateAdvertisement(Advertisement advertisement) {
         if (advertisement == null) {
-            throw new IllegalArgumentException("Advertisement cannot be null");
+            throw new IllegalArgumentException(AdvertisementValidationMessages
+                    .ADVERTISEMENT_NULL_MESSAGE);
         }
     }
 
     private void validateAdvertisementIsActive(Advertisement advertisement) {
         if (!advertisement.getIsEnabled()) {
-            throw new AccessDeniedException("Advertisement is inactive");
+            throw new AccessDeniedException(AdvertisementValidationMessages
+                    .INACTIVE_ADVERTISEMENT_MESSAGE);
         }
     }
+
     private void validateUserAccessToAdvertisement(Advertisement advertisement, Long userId) {
         if (!advertisement.getUserId().equals(userId)) {
-            throw new AccessDeniedException("User with ID "
-                    + userId
-                    + " does not have permission to view advertisement with ID "
-                    + advertisement.getId() + ".");
+            throw new AccessDeniedException(String.format(AdvertisementValidationMessages
+                            .ACCESS_DENIED_MESSAGE_TEMPLATE,
+                    userId, advertisement.getId()));
         }
     }
 }
