@@ -1,6 +1,8 @@
 package ua.everybuy.errorhandling;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -15,8 +17,6 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import ua.everybuy.errorhandling.custom.DuplicateDataException;
 import ua.everybuy.errorhandling.custom.FileFormatException;
-
-
 import java.io.IOException;
 import java.util.List;
 
@@ -43,6 +43,18 @@ public class GlobalExceptionHandler {
         List<String> errors = exception.getBindingResult().getFieldErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .toList();
+
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), String.join("; ", errors));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleValidationExceptions(ConstraintViolationException exception) {
+        List<String> errors = exception.getConstraintViolations()
+                .stream()
+                .map(ConstraintViolation::getMessage)
                 .toList();
 
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), String.join("; ", errors));

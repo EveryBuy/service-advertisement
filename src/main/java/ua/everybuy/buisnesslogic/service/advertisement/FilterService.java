@@ -11,18 +11,21 @@ import ua.everybuy.buisnesslogic.service.category.CategoryService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.mapper.AdvertisementFilterMapper;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import static ua.everybuy.errorhandling.message.FilterAdvertisementValidationMessages.INVALID_SORT_ORDER_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
 public class FilterService {
     private static final String SORT_ORDER_ASC = "ASC";
     private static final String SORT_ORDER_DESC = "DESC";
-    private static final Comparator<Advertisement> PRICE_ASC_COMPARATOR = Comparator.comparing(Advertisement::getPrice);
-    private static final Comparator<Advertisement> PRICE_DESC_COMPARATOR = Comparator.comparing(Advertisement::getPrice).reversed();
+    private static final Comparator<Advertisement> PRICE_ASC_COMPARATOR = Comparator
+            .comparing(Advertisement::getPrice);
+    private static final Comparator<Advertisement> PRICE_DESC_COMPARATOR = Comparator
+            .comparing(Advertisement::getPrice).reversed();
+
     private final AdvertisementManagementService advertisementManagementService;
     private final AdvertisementFilterMapper advertisementFilterMapper;
     private final TopLevelSubCategoryService topLevelSubCategoryService;
@@ -33,7 +36,9 @@ public class FilterService {
     public List<FilteredAdvertisementsResponse> getFilteredAdvertisements(Double minPrice, Double maxPrice,
                                                                           String sortOrder, Long regionId,
                                                                           Long topSubCategoryId, Long lowSubCategoryId,
-                                                                          Long categoryId, String productType, Pageable pageable) {
+                                                                          Long categoryId,
+                                                                          Advertisement.ProductType productType,
+                                                                          Pageable pageable) {
 
         List<Advertisement> filteredAdvertisements = applyFilters(minPrice, maxPrice, sortOrder,
                 regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, pageable);
@@ -42,7 +47,7 @@ public class FilterService {
 
     public List<Advertisement> applyFilters(Double minPrice, Double maxPrice, String sortOrder,
                                             Long regionId, Long topSubCategoryId, Long lowSubCategoryId,
-                                            Long categoryId, String productType, Pageable pageable) {
+                                            Long categoryId, Advertisement.ProductType productType, Pageable pageable) {
 
         Page<Advertisement> advertisementPage = advertisementManagementService
                 .getActiveAdvertisements(pageable);
@@ -99,13 +104,19 @@ public class FilterService {
         return categoryId == null || ad.getTopSubCategory().getCategory().getId().equals(categoryId);
     }
 
-    private boolean filterByProductType(Advertisement ad, String productType) {
-        return productType == null || productType.isBlank() ||
-                ad.getProductType().name().equalsIgnoreCase(productType);
+    private boolean filterByProductType(Advertisement ad, Advertisement.ProductType productType) {
+        return productType == null || ad.getProductType() == productType;
     }
 
+
     private Comparator<Advertisement> getPriceComparator(String sortOrder) {
-        return SORT_ORDER_ASC.equalsIgnoreCase(sortOrder) ? PRICE_ASC_COMPARATOR : PRICE_DESC_COMPARATOR;
+        if (SORT_ORDER_ASC.equalsIgnoreCase(sortOrder)) {
+            return PRICE_ASC_COMPARATOR;
+        } else if (SORT_ORDER_DESC.equalsIgnoreCase(sortOrder)) {
+            return PRICE_DESC_COMPARATOR;
+        } else {
+            throw new IllegalArgumentException(INVALID_SORT_ORDER_MESSAGE);
+        }
     }
 
     private List<FilteredAdvertisementsResponse> mapToResponse(List<Advertisement> advertisements) {
