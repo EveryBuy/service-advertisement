@@ -34,7 +34,7 @@ public class FilterController {
             @RequestParam(required = false) @Valid Long categoryId,
             @RequestParam(required = false) @Valid Advertisement.ProductType productType,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "8") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
 
