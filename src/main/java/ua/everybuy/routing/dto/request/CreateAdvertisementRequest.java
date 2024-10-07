@@ -1,5 +1,6 @@
 package ua.everybuy.routing.dto.request;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,6 +17,7 @@ public record CreateAdvertisementRequest(
         @Size(max = 3000, message = "Description must be less than 1000 characters")
         String description,
         @NotNull(message = "Price is required")
+        @DecimalMin(value = "0.0", inclusive = true, message = "Price must be a positive number")
         Double price,
         @NotNull(message = "City ID is required")
         Long cityId,
