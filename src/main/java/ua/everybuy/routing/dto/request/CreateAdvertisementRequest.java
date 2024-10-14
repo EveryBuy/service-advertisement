@@ -1,9 +1,6 @@
 package ua.everybuy.routing.dto.request;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import ua.everybuy.database.entity.Advertisement;
 import java.util.Set;
 
@@ -28,7 +25,7 @@ public record CreateAdvertisementRequest(
         Long lowSubCategoryId,
         @NotNull(message = "Product type is required")
         Advertisement.ProductType productType,
-        @NotNull(message = "Delivery methods are required")
+        @NotEmpty(message = "Delivery methods are required")
         Set<String> deliveryMethods
 ) implements CategoryRequest {
 }
