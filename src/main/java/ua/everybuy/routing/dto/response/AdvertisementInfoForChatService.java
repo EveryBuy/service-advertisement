@@ -9,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AdvertisementInfoForChatService {
     private Long id;
+    private String section;
     private String title;
     private String price;
     private Long userId;

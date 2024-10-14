@@ -3,7 +3,6 @@ package ua.everybuy.buisnesslogic.strategy.delivery;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,6 +18,7 @@ public class DeliveryMethodFactory {
         registerDeliveryMethod("NOVA_POST", new NovaPost());
         registerDeliveryMethod("UKR_POST", new UkrPost());
         registerDeliveryMethod("MEEST_EXPRESS", new MeestExpress());
+        registerDeliveryMethod("OTHER", new OtherDeliveryMethod());
     }
 
     public void registerDeliveryMethod(String name, DeliveryMethod handler) {

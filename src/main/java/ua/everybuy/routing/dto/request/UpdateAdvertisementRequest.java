@@ -1,8 +1,6 @@
 package ua.everybuy.routing.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import ua.everybuy.database.entity.Advertisement;
 import java.util.Set;
 
@@ -18,6 +16,7 @@ public record UpdateAdvertisementRequest(
         String description,
 
         @NotNull(message = "Price is required")
+        @DecimalMin(value = "0.0", inclusive = true, message = "Price must be a positive number")
         Double price,
 
         @NotNull(message = "City ID is required")
@@ -31,7 +30,7 @@ public record UpdateAdvertisementRequest(
         @NotNull(message = "Product type is required")
         Advertisement.ProductType productType,
 
-        @NotNull(message = "Delivery methods are required")
+        @NotEmpty(message = "Delivery methods are required")
         Set<String> deliveryMethods
 
 ) implements CategoryRequest {

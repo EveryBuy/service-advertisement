@@ -3,7 +3,6 @@ package ua.everybuy.buisnesslogic.service.photo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.database.repository.AdvertisementPhotoRepository;
@@ -15,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ua.everybuy.errorhandling.message.PhotoValidationMessages.*;
 
 @Service
 @RequiredArgsConstructor
@@ -67,7 +68,7 @@ public class PhotoService {
 
     public void saveAdvertisementPhoto(AdvertisementPhoto advertisementPhoto) {
         if (advertisementPhoto == null) {
-            throw new IllegalArgumentException("AdvertisementPhoto object cannot be null");
+            throw new IllegalArgumentException(NULL_ADVERTISEMENT_PHOTO_ERROR);
         }
         advertisementPhotoRepository.save(advertisementPhoto);
     }
@@ -79,13 +80,15 @@ public class PhotoService {
 
     private void isImage(MultipartFile file) throws IOException {
         if (ImageIO.read(file.getInputStream()) == null) {
-            throw new FileFormatException("File should be an image");
+            throw new FileFormatException(PHOTO_UPLOAD_ERROR);
         }
     }
 
     private void validatePhotos(MultipartFile[] photos) {
-        if (photos == null || photos.length < MIN_PHOTOS || photos.length > MAX_PHOTOS || photos[0].isEmpty()) {
-            throw new IllegalArgumentException("Number of photos must be between 1 and 8");
+        if (photos == null || photos.length < MIN_PHOTOS
+                || photos.length > MAX_PHOTOS || photos[0].isEmpty()) {
+            throw new IllegalArgumentException(String.format(
+                    INVALID_PHOTO_COUNT_ERROR, MIN_PHOTOS, MAX_PHOTOS));
         }
     }
 }

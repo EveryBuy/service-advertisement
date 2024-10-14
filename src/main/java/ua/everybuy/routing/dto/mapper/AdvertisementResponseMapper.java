@@ -43,6 +43,7 @@ public interface AdvertisementResponseMapper {
     AdvertisementWithStatisticResponse mapToAdvertisementStatisticResponse(Advertisement advertisement);
 
     @Mapping(source = "advertisement.id", target = "id")
+    @Mapping(source = "advertisement.section", target = "section")
     @Mapping(source = "advertisement.userId", target = "userId")
     @Mapping(source = "advertisement.mainPhotoUrl", target = "mainPhotoUrl")
     @Mapping(source = "advertisement.title", target = "title")
