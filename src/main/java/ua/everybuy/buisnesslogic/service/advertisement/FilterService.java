@@ -1,8 +1,6 @@
 package ua.everybuy.buisnesslogic.service.advertisement;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.everybuy.buisnesslogic.service.category.LowLevelSubCategoryService;
 import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
@@ -14,6 +12,7 @@ import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static ua.everybuy.errorhandling.message.FilterAdvertisementValidationMessages.INVALID_SORT_ORDER_MESSAGE;
 
 @Service
@@ -36,23 +35,27 @@ public class FilterService {
     public List<FilteredAdvertisementsResponse> getFilteredAdvertisements(Double minPrice, Double maxPrice,
                                                                           String sortOrder, Long regionId,
                                                                           Long topSubCategoryId, Long lowSubCategoryId,
-                                                                          Long categoryId,
-                                                                          Advertisement.ProductType productType,
-                                                                          Pageable pageable) {
+                                                                          Long categoryId, Advertisement.ProductType productType,
+                                                                          int page, int size) {
 
         List<Advertisement> filteredAdvertisements = applyFilters(minPrice, maxPrice, sortOrder,
-                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, pageable);
-        return mapToResponse(filteredAdvertisements);
+                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType);
+
+        int fromIndex = Math.min(page * size, filteredAdvertisements.size());
+        int toIndex = Math.min(fromIndex + size, filteredAdvertisements.size());
+
+        List<Advertisement> paginatedAdvertisements = filteredAdvertisements.subList(fromIndex, toIndex);
+
+        return mapToResponse(paginatedAdvertisements);
     }
 
     public List<Advertisement> applyFilters(Double minPrice, Double maxPrice, String sortOrder,
                                             Long regionId, Long topSubCategoryId, Long lowSubCategoryId,
-                                            Long categoryId, Advertisement.ProductType productType, Pageable pageable) {
+                                            Long categoryId, Advertisement.ProductType productType) {
 
-        Page<Advertisement> advertisementPage = advertisementManagementService
-                .getActiveAdvertisements(pageable);
+        List<Advertisement> allAdvertisements = advertisementManagementService.getActiveAdvertisements();
 
-        List<Advertisement> filteredAds = advertisementPage.getContent().stream()
+        List<Advertisement> filteredAds = allAdvertisements.stream()
                 .filter(ad -> filterByMinPrice(ad, minPrice))
                 .filter(ad -> filterByMaxPrice(ad, maxPrice))
                 .filter(ad -> filterByCity(ad, regionId))
@@ -108,6 +111,9 @@ public class FilterService {
         return productType == null || ad.getProductType() == productType;
     }
 
+    private boolean filterBySection(Advertisement ad, Advertisement.AdSection adSection) {
+        return adSection == null || ad.getSection() == adSection;
+    }
 
     private Comparator<Advertisement> getPriceComparator(String sortOrder) {
         if (SORT_ORDER_ASC.equalsIgnoreCase(sortOrder)) {
