@@ -3,8 +3,6 @@ package ua.everybuy.routing.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,12 +31,12 @@ public class FilterController {
             @RequestParam(required = false) @Valid Long lowSubCategoryId,
             @RequestParam(required = false) @Valid Long categoryId,
             @RequestParam(required = false) @Valid Advertisement.ProductType productType,
+            @RequestParam(required = false) @Valid Advertisement.AdSection section,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "8") int size
     ) {
-        Pageable pageable = PageRequest.of(page, size);
 
         return filterService.getFilteredAdvertisements(minPrice, maxPrice, sortOrder,
-                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, pageable);
+                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, section, page, size);
     }
 }

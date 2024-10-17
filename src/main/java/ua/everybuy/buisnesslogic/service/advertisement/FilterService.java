@@ -36,10 +36,11 @@ public class FilterService {
                                                                           String sortOrder, Long regionId,
                                                                           Long topSubCategoryId, Long lowSubCategoryId,
                                                                           Long categoryId, Advertisement.ProductType productType,
+                                                                          Advertisement.AdSection section,
                                                                           int page, int size) {
 
         List<Advertisement> filteredAdvertisements = applyFilters(minPrice, maxPrice, sortOrder,
-                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType);
+                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, section);
 
         int fromIndex = Math.min(page * size, filteredAdvertisements.size());
         int toIndex = Math.min(fromIndex + size, filteredAdvertisements.size());
@@ -51,7 +52,8 @@ public class FilterService {
 
     public List<Advertisement> applyFilters(Double minPrice, Double maxPrice, String sortOrder,
                                             Long regionId, Long topSubCategoryId, Long lowSubCategoryId,
-                                            Long categoryId, Advertisement.ProductType productType) {
+                                            Long categoryId, Advertisement.ProductType productType,
+                                            Advertisement.AdSection section) {
 
         List<Advertisement> allAdvertisements = advertisementManagementService.getActiveAdvertisements();
 
@@ -63,6 +65,7 @@ public class FilterService {
                 .filter(ad -> filterByLowSubCategory(ad, lowSubCategoryId))
                 .filter(ad -> filterByCategory(ad, categoryId))
                 .filter(ad -> filterByProductType(ad, productType))
+                .filter(ad -> filterBySection(ad, section))
                 .collect(Collectors.toList());
 
         if (sortOrder != null && !sortOrder.isBlank()) {
