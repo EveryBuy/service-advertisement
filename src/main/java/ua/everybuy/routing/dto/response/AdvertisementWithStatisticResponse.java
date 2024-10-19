@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class AdvertisementWithStatisticResponse {
     private Long id;
+    private String section;
     private String title;
     private String price;
     private Long userId;

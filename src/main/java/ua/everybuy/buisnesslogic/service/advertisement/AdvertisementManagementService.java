@@ -112,8 +112,8 @@ public class AdvertisementManagementService {
                                 .ACCESS_DENIED_MESSAGE_TEMPLATE, userId, advertisementId)));
     }
 
-    public Page<Advertisement> getActiveAdvertisements(Pageable pageable) {
-        return advertisementRepository.findByIsEnabledTrueOrderByCreationDateDesc(pageable);
+    public List<Advertisement> getActiveAdvertisements() {
+        return advertisementRepository.findByIsEnabledTrueOrderByCreationDateDesc();
     }
 
     public AdvertisementInfoForChatService getAdvertisementShortInfo(Long advertisementId) {
