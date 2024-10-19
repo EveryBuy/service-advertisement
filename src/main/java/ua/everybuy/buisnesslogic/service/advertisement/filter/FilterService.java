@@ -1,7 +1,8 @@
-package ua.everybuy.buisnesslogic.service.advertisement;
+package ua.everybuy.buisnesslogic.service.advertisement.filter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementManagementService;
 import ua.everybuy.buisnesslogic.service.category.LowLevelSubCategoryService;
 import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
 import ua.everybuy.buisnesslogic.service.location.RegionService;
