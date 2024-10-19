@@ -17,6 +17,7 @@ public class FilteredAdvertisementsResponse {
     private String mainPhotoUrl;
     private String title;
     private Advertisement.ProductType productType;
+    private String section;
     private String price;
     private String description;
     private LocalDateTime updateDate;
