@@ -54,9 +54,9 @@ public class AdvertisementFilterService {
                 .and(AdvertisementSpecifications.hasProductType(productType))
                 .and(AdvertisementSpecifications.hasSection(section));
 
-        Sort primarySort = sortStrategyFactory.getSortStrategy(DATE_DESCENDING).getSortOrder();
         Sort priceSort = sortStrategyFactory.getSortStrategy(sortOrder).getSortOrder();
-        Sort combinedSort = primarySort.and(priceSort);
+        Sort dateSort = sortStrategyFactory.getSortStrategy(DATE_DESCENDING).getSortOrder();
+        Sort combinedSort = priceSort.and(dateSort);
 
         Pageable pageable = PageRequest.of(page - 1, size, combinedSort);
 
