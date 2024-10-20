@@ -14,6 +14,7 @@ import ua.everybuy.routing.dto.mapper.AdvertisementFilterMapper;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
 import java.util.List;
 import java.util.stream.Collectors;
+import static ua.everybuy.buisnesslogic.strategy.sort.SortStrategyFactory.DATE_DESCENDING;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +41,7 @@ public class AdvertisementFilterService {
                                             Long regionId, Long topSubCategoryId, Long lowSubCategoryId,
                                             Long categoryId, Advertisement.ProductType productType,
                                             Advertisement.AdSection section, int page, int size) {
-
+        filterValidator.validatePageNumber(page);
         filterValidator.validate(regionId, topSubCategoryId, lowSubCategoryId, categoryId);
 
         Specification<Advertisement> specs = Specification
@@ -53,8 +54,11 @@ public class AdvertisementFilterService {
                 .and(AdvertisementSpecifications.hasProductType(productType))
                 .and(AdvertisementSpecifications.hasSection(section));
 
-        Sort sort = sortStrategyFactory.getSortStrategy(sortOrder).getSortOrder();
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Sort primarySort = sortStrategyFactory.getSortStrategy(DATE_DESCENDING).getSortOrder();
+        Sort priceSort = sortStrategyFactory.getSortStrategy(sortOrder).getSortOrder();
+        Sort combinedSort = primarySort.and(priceSort);
+
+        Pageable pageable = PageRequest.of(page - 1, size, combinedSort);
 
         return advertisementRepository.findAll(specs, pageable);
     }

@@ -31,7 +31,7 @@ public class FilterController {
             @RequestParam(required = false) @Valid Long categoryId,
             @RequestParam(required = false) @Valid Advertisement.ProductType productType,
             @RequestParam(required = false) @Valid Advertisement.AdSection section,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size
     ) {
 

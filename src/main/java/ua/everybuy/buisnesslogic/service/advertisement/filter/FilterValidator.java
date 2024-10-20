@@ -6,6 +6,7 @@ import ua.everybuy.buisnesslogic.service.category.CategoryService;
 import ua.everybuy.buisnesslogic.service.category.LowLevelSubCategoryService;
 import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
 import ua.everybuy.buisnesslogic.service.location.RegionService;
+import static ua.everybuy.errorhandling.message.FilterAdvertisementValidationMessages.INVALID_PAGE_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,12 @@ public class FilterValidator {
         }
         if (categoryId != null) {
             categoryService.findById(categoryId);
+        }
+    }
+
+    public void validatePageNumber(int page) {
+        if (page <= 0) {
+            throw new IllegalArgumentException(INVALID_PAGE_MESSAGE);
         }
     }
 }
