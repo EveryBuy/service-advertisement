@@ -3,6 +3,7 @@ package ua.everybuy.buisnesslogic.service.advertisement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
@@ -25,6 +26,7 @@ public class AdvertisementUpdateService {
     private final PhotoService photoService;
     private final DeliveryService deliveryService;
 
+    @Transactional
     public StatusResponse<UpdateAdvertisementResponse> updateAdvertisement(Long advertisementId,
                                                                            UpdateAdvertisementRequest updateRequest,
                                                                            MultipartFile[] newPhotos,
