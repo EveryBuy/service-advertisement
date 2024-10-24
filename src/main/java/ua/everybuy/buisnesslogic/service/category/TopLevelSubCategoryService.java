@@ -9,6 +9,8 @@ import ua.everybuy.routing.dto.SubCategoryDto;
 import ua.everybuy.routing.dto.mapper.SubCategoryMapper;
 import java.util.List;
 import java.util.stream.Collectors;
+import static ua.everybuy.errorhandling.message.CategoryValidationMessages.TOP_LEVEL_SUBCATEGORY_INVALID_CATEGORY_MESSAGE;
+import static ua.everybuy.errorhandling.message.CategoryValidationMessages.TOP_LEVEL_SUBCATEGORY_NOT_FOUND_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class TopLevelSubCategoryService {
 
     public TopLevelSubCategory findById(Long id) {
         return topLevelSubCategoryRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Top-level subcategory not found"));
+                .orElseThrow(() -> new EntityNotFoundException(TOP_LEVEL_SUBCATEGORY_NOT_FOUND_MESSAGE));
     }
 
     public List<TopLevelSubCategory> findTopLevelSubCategoriesByCategoryId(Long categoryId) {
@@ -40,7 +42,7 @@ public class TopLevelSubCategoryService {
         TopLevelSubCategory topSubCategory = findById(subCategoryId);
 
         if (!topSubCategory.getCategory().getId().equals(categoryId)) {
-            throw new IllegalArgumentException("Top-level does not belong to the specified category.");
+            throw new IllegalArgumentException(TOP_LEVEL_SUBCATEGORY_INVALID_CATEGORY_MESSAGE);
         }
         return topSubCategory;
     }
