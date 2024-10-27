@@ -65,7 +65,7 @@ public class Advertisement {
     private ProductType productType;
 
     public enum ProductType {
-        NEW, USED
+        NEW, USED, OTHER
     }
 
     @Enumerated(EnumType.STRING)
