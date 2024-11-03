@@ -30,12 +30,13 @@ public class FilterController {
             @RequestParam(required = false) @Valid Long lowSubCategoryId,
             @RequestParam(required = false) @Valid Long categoryId,
             @RequestParam(required = false) @Valid Advertisement.ProductType productType,
-            @RequestParam(required = false) @Valid Advertisement.AdSection section,
+            @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
+            @RequestParam(required = false) @Valid String keyword,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size
     ) {
 
         return advertisementFilterService.getFilteredAdvertisements(minPrice, maxPrice, sortOrder,
-                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, section, page, size);
+                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, section, keyword, page, size);
     }
 }

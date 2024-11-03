@@ -35,4 +35,27 @@ public class AdvertisementSpecifications {
     public static Specification<Advertisement> hasSection(Advertisement.AdSection adSection) {
         return (root, query, cb) -> adSection == null ? null : cb.equal(root.get("section"), adSection);
     }
+
+    public static Specification<Advertisement> hasSimilarTitle(String keyword, double minSimilarity) {
+        return (root, query, cb) -> {
+            if (keyword == null || keyword.isEmpty()) {
+                return null;
+            }
+
+            var similarityCondition = cb.greaterThanOrEqualTo(
+                    cb.function("similarity", Double.class,
+                            cb.function("LOWER", String.class, root.get("title")),
+                            cb.function("LOWER", String.class, cb.literal(keyword))
+                    ),
+                    minSimilarity
+            );
+
+            var ilikeCondition = cb.like(
+                    cb.lower(root.get("title")),
+                    "%" + keyword.toLowerCase() + "%"
+            );
+
+            return cb.or(similarityCondition, ilikeCondition);
+        };
+    }
 }
