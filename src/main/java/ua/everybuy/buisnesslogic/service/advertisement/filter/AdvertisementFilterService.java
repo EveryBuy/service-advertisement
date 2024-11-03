@@ -19,6 +19,7 @@ import static ua.everybuy.buisnesslogic.strategy.sort.SortStrategyFactory.DATE_D
 @Service
 @RequiredArgsConstructor
 public class AdvertisementFilterService {
+    private static final double SIMILARITY_THRESHOLD = 0.5;
     private final AdvertisementRepository advertisementRepository;
     private final AdvertisementFilterMapper advertisementFilterMapper;
     private final SortStrategyFactory sortStrategyFactory;
@@ -28,11 +29,11 @@ public class AdvertisementFilterService {
                                                                           String sortOrder, Long regionId,
                                                                           Long topSubCategoryId, Long lowSubCategoryId,
                                                                           Long categoryId, Advertisement.ProductType productType,
-                                                                          Advertisement.AdSection section,
+                                                                          Advertisement.AdSection section, String keyword,
                                                                           int page, int size) {
 
         Page<Advertisement> paginatedAdvertisements = applyFilters(minPrice, maxPrice, sortOrder,
-                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, section, page, size);
+                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, section, keyword, page, size);
 
         return mapToResponse(paginatedAdvertisements);
     }
@@ -40,7 +41,7 @@ public class AdvertisementFilterService {
     public Page<Advertisement> applyFilters(Double minPrice, Double maxPrice, String sortOrder,
                                             Long regionId, Long topSubCategoryId, Long lowSubCategoryId,
                                             Long categoryId, Advertisement.ProductType productType,
-                                            Advertisement.AdSection section, int page, int size) {
+                                            Advertisement.AdSection section, String keyword, int page, int size) {
         filterValidator.validatePageNumber(page);
         filterValidator.validate(regionId, topSubCategoryId, lowSubCategoryId, categoryId);
 
@@ -52,7 +53,8 @@ public class AdvertisementFilterService {
                 .and(AdvertisementSpecifications.belongsToLowSubCategory(lowSubCategoryId))
                 .and(AdvertisementSpecifications.belongsToCategory(categoryId))
                 .and(AdvertisementSpecifications.hasProductType(productType))
-                .and(AdvertisementSpecifications.hasSection(section));
+                .and(AdvertisementSpecifications.hasSection(section))
+                .and(AdvertisementSpecifications.hasSimilarTitle(keyword, SIMILARITY_THRESHOLD));
 
         Sort priceSort = sortStrategyFactory.getSortStrategy(sortOrder).getSortOrder();
         Sort dateSort = sortStrategyFactory.getSortStrategy(DATE_DESCENDING).getSortOrder();

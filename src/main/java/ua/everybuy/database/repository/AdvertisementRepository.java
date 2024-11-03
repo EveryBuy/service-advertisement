@@ -7,7 +7,7 @@ import ua.everybuy.database.entity.Advertisement;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Repository("advertisementRepository")
 public interface AdvertisementRepository extends JpaRepository<Advertisement, Long>,
         JpaSpecificationExecutor<Advertisement> {
     Optional<Advertisement> findByIdAndUserId(Long id, Long userId);
@@ -15,4 +15,5 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
     List<Advertisement> findByUserId(Long userId);
 
     List<Advertisement> findByIsEnabledTrueOrderByCreationDateDesc();
+
 }
