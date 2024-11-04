@@ -12,7 +12,7 @@ public record UpdateAdvertisementRequest(
         String title,
 
         @NotBlank(message = "Description is required")
-        @Size(max = 3000, message = "Description must be less than 1000 characters")
+        @Size(max = 3000, message = "Description must be less than 3000 characters")
         String description,
 
         @NotNull(message = "Price is required")

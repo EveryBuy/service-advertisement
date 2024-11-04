@@ -11,7 +11,7 @@ public record CreateAdvertisementRequest(
         @Size(max = 255, message = "Title must be less than 255 characters")
         String title,
         @NotBlank(message = "Description is required")
-        @Size(max = 3000, message = "Description must be less than 1000 characters")
+        @Size(max = 3000, message = "Description must be less than 3000 characters")
         String description,
         @NotNull(message = "Price is required")
         @DecimalMin(value = "0.0", inclusive = true, message = "Price must be a positive number")
