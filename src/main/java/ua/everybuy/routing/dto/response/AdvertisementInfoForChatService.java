@@ -10,6 +10,7 @@ import lombok.Setter;
 public class AdvertisementInfoForChatService {
     private Long id;
     private String section;
+    private Boolean isEnabled;
     private String title;
     private String price;
     private Long userId;

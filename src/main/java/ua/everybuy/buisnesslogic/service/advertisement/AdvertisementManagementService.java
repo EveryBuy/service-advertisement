@@ -115,7 +115,7 @@ public class AdvertisementManagementService {
     }
 
     public AdvertisementInfoForChatService getAdvertisementShortInfo(Long advertisementId) {
-        Advertisement advertisement = findActiveAdvertisementById(advertisementId);
+        Advertisement advertisement = findById(advertisementId);
         return responseMapper.mapToAdvertisementInfoForChatService(advertisement);
     }
 
