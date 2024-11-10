@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
 
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), String.join("; ", errors));
+        return new ErrorResponse(exception.getStatusCode().value(), String.join("; ", errors));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

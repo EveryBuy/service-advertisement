@@ -46,7 +46,8 @@ public class AdvertisementFilterService {
         filterValidator.validate(regionId, topSubCategoryId, lowSubCategoryId, categoryId);
 
         Specification<Advertisement> specs = Specification
-                .where(AdvertisementSpecifications.hasMinPrice(minPrice))
+                .where(AdvertisementSpecifications.isEnabled())
+                .and(AdvertisementSpecifications.hasMinPrice(minPrice))
                 .and(AdvertisementSpecifications.hasMaxPrice(maxPrice))
                 .and(AdvertisementSpecifications.belongsToRegion(regionId))
                 .and(AdvertisementSpecifications.belongsToTopSubCategory(topSubCategoryId))
@@ -55,6 +56,7 @@ public class AdvertisementFilterService {
                 .and(AdvertisementSpecifications.hasProductType(productType))
                 .and(AdvertisementSpecifications.hasSection(section))
                 .and(AdvertisementSpecifications.hasSimilarTitle(keyword, SIMILARITY_THRESHOLD));
+
 
         Sort priceSort = sortStrategyFactory.getSortStrategy(sortOrder).getSortOrder();
         Sort dateSort = sortStrategyFactory.getSortStrategy(DATE_DESCENDING).getSortOrder();

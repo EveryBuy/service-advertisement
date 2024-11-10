@@ -4,6 +4,10 @@ import org.springframework.data.jpa.domain.Specification;
 import ua.everybuy.database.entity.Advertisement;
 
 public class AdvertisementSpecifications {
+    public static Specification<Advertisement> isEnabled() {
+        return (root, query, cb) -> cb.isTrue(root.get("isEnabled"));
+    }
+
     public static Specification<Advertisement> hasMinPrice(Double minPrice) {
         return (root, query, cb) -> minPrice == null ? null : cb.greaterThanOrEqualTo(root.get("price"), minPrice);
     }
