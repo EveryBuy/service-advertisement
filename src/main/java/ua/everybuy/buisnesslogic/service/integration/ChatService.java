@@ -25,6 +25,6 @@ public class ChatService {
                     HttpMethod.POST,
                     requestEntity,
                     AdvertisementInfoForChatService.class);
+        System.out.println("Send info about change");
     }
-
 }

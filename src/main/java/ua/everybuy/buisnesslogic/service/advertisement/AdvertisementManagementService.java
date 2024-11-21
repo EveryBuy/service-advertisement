@@ -92,6 +92,7 @@ public class AdvertisementManagementService {
         advertisement.setUpdateDate(LocalDateTime.now());
         saveAdvertisement(advertisement);
         pushAdvertisementChangeToChat(advertisement);
+        System.out.println("Enable changed");
     }
 
     public Advertisement findById(Long id) {
