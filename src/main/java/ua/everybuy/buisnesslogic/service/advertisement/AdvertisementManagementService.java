@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import ua.everybuy.buisnesslogic.service.integration.ChatService;
 import ua.everybuy.buisnesslogic.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
@@ -14,6 +15,7 @@ import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.dto.mapper.AdvertisementToDtoMapper;
 import ua.everybuy.routing.dto.response.*;
+
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ public class AdvertisementManagementService {
     private final StatisticsService statisticsService;
     private final AdvertisementResponseMapper responseMapper;
     private final AdvertisementToDtoMapper dtoMapper;
+    private final ChatService chatService;
 
     public Advertisement saveAdvertisement(Advertisement advertisement) {
         validateAdvertisement(advertisement);
@@ -71,6 +74,8 @@ public class AdvertisementManagementService {
         Advertisement advertisement = findAdvertisementByIdAndUserId(advertisementId,
                 Long.parseLong(principal.getName()));
         photoService.deletePhotosByAdvertisementId(advertisement);
+        advertisement.setIsEnabled(false);
+        pushAdvertisementChangeToChat(advertisement);
         advertisementRepository.delete(advertisement);
     }
 
@@ -86,6 +91,7 @@ public class AdvertisementManagementService {
         advertisement.setIsEnabled(!currentStatus);
         advertisement.setUpdateDate(LocalDateTime.now());
         saveAdvertisement(advertisement);
+        pushAdvertisementChangeToChat(advertisement);
     }
 
     public Advertisement findById(Long id) {
@@ -117,6 +123,11 @@ public class AdvertisementManagementService {
     public AdvertisementInfoForChatService getAdvertisementShortInfo(Long advertisementId) {
         Advertisement advertisement = findById(advertisementId);
         return responseMapper.mapToAdvertisementInfoForChatService(advertisement);
+    }
+
+    public void pushAdvertisementChangeToChat(Advertisement advertisement) {
+        AdvertisementInfoForChatService advertisementInfoForChatService = responseMapper.mapToAdvertisementInfoForChatService(advertisement);
+        chatService.sendInfoAboutChange(advertisementInfoForChatService);
     }
 
     private void validateAdvertisement(Advertisement advertisement) {
