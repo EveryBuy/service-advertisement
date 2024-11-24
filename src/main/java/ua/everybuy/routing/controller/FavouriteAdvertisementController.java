@@ -38,7 +38,7 @@ public class FavouriteAdvertisementController {
     @ResponseBody
     public StatusResponse<List<FavouriteAdvertisementResponse>> getAllUsersFavouriteAdvertisementsWithCategory(
             @RequestParam(required = false) Long categoryId, Principal principal,
-            @RequestParam Advertisement.AdSection section) {
+            @RequestParam(required = false, defaultValue = "SELL") Advertisement.AdSection section) {
         List<FavouriteAdvertisementResponse> responseList = advertisementFavouriteService
                 .findUserFavouriteAdvertisementsByCategoryAndSection(principal, categoryId, section);
         return new StatusResponse<>(HttpStatus.OK.value(), responseList);
