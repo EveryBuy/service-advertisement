@@ -2,7 +2,7 @@ package ua.everybuy.buisnesslogic.service.advertisement.filter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementManagementService;
+import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementStorageService;
 import ua.everybuy.buisnesslogic.service.category.LowLevelSubCategoryService;
 import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
 import ua.everybuy.buisnesslogic.service.location.RegionService;
@@ -26,7 +26,7 @@ public class FilterService {
     private static final Comparator<Advertisement> PRICE_DESC_COMPARATOR = Comparator
             .comparing(Advertisement::getPrice).reversed();
 
-    private final AdvertisementManagementService advertisementManagementService;
+    private final AdvertisementStorageService advertisementStorageService;
     private final AdvertisementFilterMapper advertisementFilterMapper;
     private final TopLevelSubCategoryService topLevelSubCategoryService;
     private final LowLevelSubCategoryService lowLevelSubCategoryService;
@@ -56,7 +56,7 @@ public class FilterService {
                                             Long categoryId, Advertisement.ProductType productType,
                                             Advertisement.AdSection section) {
 
-        List<Advertisement> allAdvertisements = advertisementManagementService.getActiveAdvertisements();
+        List<Advertisement> allAdvertisements = advertisementStorageService.getActiveAdvertisements();
 
         List<Advertisement> filteredAds = allAdvertisements.stream()
                 .filter(ad -> filterByMinPrice(ad, minPrice))

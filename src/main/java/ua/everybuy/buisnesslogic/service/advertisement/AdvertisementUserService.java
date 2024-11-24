@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserAdvertisementService {
+public class AdvertisementUserService {
     private final AdvertisementManagementService advertisementManagementService;
     private final AdvertisementResponseMapper advertisementResponseMapper;
 
