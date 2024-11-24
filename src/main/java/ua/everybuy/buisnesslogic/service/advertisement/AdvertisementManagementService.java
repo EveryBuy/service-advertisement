@@ -2,14 +2,13 @@ package ua.everybuy.buisnesslogic.service.advertisement;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import ua.everybuy.buisnesslogic.service.integration.ChatService;
 import ua.everybuy.buisnesslogic.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
-import ua.everybuy.database.repository.AdvertisementRepository;
 import ua.everybuy.errorhandling.message.AdvertisementValidationMessages;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
@@ -20,11 +19,14 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AdvertisementManagementService {
-    private final AdvertisementRepository advertisementRepository;
+    private final AdvertisementStorageService advertisementStorageService;
+    private final AdvertisementValidationService advertisementValidationService;
     private final PhotoService photoService;
     private final StatisticsService statisticsService;
     private final AdvertisementResponseMapper responseMapper;
@@ -32,8 +34,8 @@ public class AdvertisementManagementService {
     private final ChatService chatService;
 
     public Advertisement saveAdvertisement(Advertisement advertisement) {
-        validateAdvertisement(advertisement);
-        return advertisementRepository.save(advertisement);
+        advertisementValidationService.validate(advertisement);
+        return advertisementStorageService.save(advertisement);
     }
 
     public void updateMainPhoto(Advertisement existingAdvertisement, List<AdvertisementPhoto> photos) {
@@ -45,64 +47,55 @@ public class AdvertisementManagementService {
     }
 
     public Advertisement findActiveAdvertisementById(Long id) {
-        Advertisement advertisement = findById(id);
-        validateAdvertisementIsActive(advertisement);
+        Advertisement advertisement = advertisementStorageService.findById(id);
+        advertisementValidationService.validateIsActive(advertisement);
         return advertisement;
     }
 
     public StatusResponse<AdvertisementDto> getActiveAdvertisement(Long id) {
         Advertisement advertisement = findActiveAdvertisementById(id);
         statisticsService.incrementViewsAndSave(advertisement);
-        return new StatusResponse<>(HttpStatus.OK.value(), dtoMapper.mapToDto(advertisement));
+        return buildStatusResponse(HttpStatus.OK, advertisement, dtoMapper::mapToDto);
     }
 
     public StatusResponse<AdvertisementDto> retrieveAdvertisementWithAuthorization(Long id, Principal principal) {
         Long userId = Long.parseLong(principal.getName());
-        Advertisement advertisement = findById(id);
+        Advertisement advertisement = advertisementStorageService.findById(id);
 
         if (advertisement.getIsEnabled()) {
-            AdvertisementDto advertisementDTO = dtoMapper.mapToDto(advertisement);
-            return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
+            return buildStatusResponse(HttpStatus.OK, advertisement, dtoMapper::mapToDto);
         }
 
-        validateUserAccessToAdvertisement(advertisement, userId);
-        AdvertisementDto advertisementDTO = dtoMapper.mapToDto(advertisement);
-        return new StatusResponse<>(HttpStatus.OK.value(), advertisementDTO);
+        advertisementValidationService.validateUserAccess(advertisement, userId);
+        return buildStatusResponse(HttpStatus.OK, advertisement, dtoMapper::mapToDto);
     }
 
     public void deleteAdvertisement(Long advertisementId, Principal principal) throws IOException {
-        Advertisement advertisement = findAdvertisementByIdAndUserId(advertisementId,
+        Advertisement advertisement = advertisementStorageService
+                .findAdvertisementByIdAndUserId(advertisementId,
                 Long.parseLong(principal.getName()));
         photoService.deletePhotosByAdvertisementId(advertisement);
         advertisement.setIsEnabled(false);
-        pushAdvertisementChangeToChat(advertisement);
-        advertisementRepository.delete(advertisement);
+        pushAdvertisementChangeToChatService(advertisement);
+        advertisementStorageService.delete(advertisement);
     }
 
     public StatusResponse<AdvertisementStatusResponse> setAdvertisementEnabledStatus(Long id) {
-        Advertisement advertisement = findById(id);
+        Advertisement advertisement = advertisementStorageService.findById(id);
         toggleAdvertisementStatus(advertisement);
-        return new StatusResponse<>(HttpStatus.OK.value(),
-                responseMapper.mapToAdvertisementStatusResponse(advertisement));
+        return buildStatusResponse(HttpStatus.OK, advertisement, responseMapper::mapToAdvertisementStatusResponse);
     }
 
     private void toggleAdvertisementStatus(Advertisement advertisement) {
-        boolean currentStatus = advertisement.getIsEnabled();
-        advertisement.setIsEnabled(!currentStatus);
+        advertisement.setIsEnabled(!advertisement.getIsEnabled());
         advertisement.setUpdateDate(LocalDateTime.now());
         saveAdvertisement(advertisement);
-        pushAdvertisementChangeToChat(advertisement);
-        System.out.println("Enable changed");
-    }
-
-    public Advertisement findById(Long id) {
-        return advertisementRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(AdvertisementValidationMessages
-                        .ADVERTISEMENT_NOT_FOUND_MESSAGE));
+        pushAdvertisementChangeToChatService(advertisement);
+        log.info("Advertisement status toggled and sent to chat service");
     }
 
     public List<Advertisement> findAllUserAdvertisement(Long userId) {
-        List<Advertisement> userAdvertisement = advertisementRepository.findByUserId(userId);
+        List<Advertisement> userAdvertisement = advertisementStorageService.findByUserId(userId);
         if (userAdvertisement == null || userAdvertisement.isEmpty()) {
             throw new EntityNotFoundException(AdvertisementValidationMessages
                     .NO_ADVERTISEMENTS_FOUND_MESSAGE + userId);
@@ -110,46 +103,18 @@ public class AdvertisementManagementService {
         return userAdvertisement;
     }
 
-    public Advertisement findAdvertisementByIdAndUserId(Long advertisementId, Long userId) {
-        return advertisementRepository.findByIdAndUserId(advertisementId, userId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(AdvertisementValidationMessages
-                                .ACCESS_DENIED_MESSAGE_TEMPLATE, userId, advertisementId)));
-    }
-
-    public List<Advertisement> getActiveAdvertisements() {
-        return advertisementRepository.findByIsEnabledTrueOrderByCreationDateDesc();
-    }
-
     public AdvertisementInfoForChatService getAdvertisementShortInfo(Long advertisementId) {
-        Advertisement advertisement = findById(advertisementId);
+        Advertisement advertisement = advertisementStorageService.findById(advertisementId);
         return responseMapper.mapToAdvertisementInfoForChatService(advertisement);
     }
 
-    public void pushAdvertisementChangeToChat(Advertisement advertisement) {
+    public void pushAdvertisementChangeToChatService(Advertisement advertisement) {
         AdvertisementInfoForChatService advertisementInfoForChatService = responseMapper.mapToAdvertisementInfoForChatService(advertisement);
         chatService.sendInfoAboutChange(advertisementInfoForChatService);
     }
-
-    private void validateAdvertisement(Advertisement advertisement) {
-        if (advertisement == null) {
-            throw new IllegalArgumentException(AdvertisementValidationMessages
-                    .ADVERTISEMENT_NULL_MESSAGE);
-        }
-    }
-
-    private void validateAdvertisementIsActive(Advertisement advertisement) {
-        if (!advertisement.getIsEnabled()) {
-            throw new AccessDeniedException(AdvertisementValidationMessages
-                    .INACTIVE_ADVERTISEMENT_MESSAGE);
-        }
-    }
-
-    private void validateUserAccessToAdvertisement(Advertisement advertisement, Long userId) {
-        if (!advertisement.getUserId().equals(userId)) {
-            throw new AccessDeniedException(String.format(AdvertisementValidationMessages
-                            .ACCESS_DENIED_MESSAGE_TEMPLATE,
-                    userId, advertisement.getId()));
-        }
+    private <T> StatusResponse<T> buildStatusResponse(HttpStatus status, Advertisement advertisement,
+                                                      Function<Advertisement, T> mapper) {
+        T dto = mapper.apply(advertisement);
+        return new StatusResponse<>(status.value(), dto);
     }
 }

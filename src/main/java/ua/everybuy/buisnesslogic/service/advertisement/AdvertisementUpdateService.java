@@ -22,6 +22,7 @@ import java.util.Set;
 @Service
 public class AdvertisementUpdateService {
     private final AdvertisementManagementService advertisementManagementService;
+    private final AdvertisementStorageService advertisementStorageService;
     private final AdvertisementResponseMapper advertisementResponseMapper;
     private final AdvertisementToEntityMapper toEntityMapper;
     private final PhotoService photoService;
@@ -46,7 +47,7 @@ public class AdvertisementUpdateService {
                                                     MultipartFile[] photos,
                                                     String userId) throws IOException {
 
-        Advertisement existingAdvertisement = advertisementManagementService
+        Advertisement existingAdvertisement = advertisementStorageService
                 .findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(userId));
 
         existingAdvertisement = toEntityMapper.mapToEntity(updateRequest, existingAdvertisement);
@@ -56,14 +57,15 @@ public class AdvertisementUpdateService {
 
         processDeliveryMethods(existingAdvertisement, updateRequest.deliveryMethods());
 
-        advertisementManagementService.pushAdvertisementChangeToChat(existingAdvertisement);
+        advertisementManagementService.pushAdvertisementChangeToChatService(existingAdvertisement);
         return existingAdvertisement;
     }
 
     private void processAdvertisementPhotos(Advertisement advertisement,
                                             MultipartFile[] photos) throws IOException {
         photoService.deletePhotosByAdvertisementId(advertisement);
-        List<AdvertisementPhoto> advertisementPhotos = photoService.uploadAndLinkPhotos(photos, advertisement,
+        List<AdvertisementPhoto> advertisementPhotos = photoService
+                .uploadAndLinkPhotos(photos, advertisement,
                 advertisement.getTopSubCategory().getSubCategoryName());
         advertisementManagementService.updateMainPhoto(advertisement, advertisementPhotos);
     }
@@ -71,5 +73,4 @@ public class AdvertisementUpdateService {
     private void processDeliveryMethods(Advertisement advertisement, Set<String> deliveryMethods) {
         deliveryService.updateAdvertisementDeliveries(advertisement, deliveryMethods);
     }
-
 }
