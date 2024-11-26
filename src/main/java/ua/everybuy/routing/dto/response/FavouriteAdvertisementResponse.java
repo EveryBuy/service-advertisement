@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class FavouriteAdvertisementResponse {
     private Long userId;
     private Long advertisementId;
+    private String section;
     private String mainPhotoUrl;
     private String title;
     private Advertisement.ProductType productType;
