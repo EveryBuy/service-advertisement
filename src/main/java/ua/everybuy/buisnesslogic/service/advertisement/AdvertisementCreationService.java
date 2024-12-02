@@ -57,7 +57,7 @@ public class AdvertisementCreationService {
     private void processAdvertisementPhotos(Advertisement newAdvertisement, MultipartFile[] photos) throws IOException {
         List<AdvertisementPhoto> advertisementPhotos = photoService.uploadAndLinkPhotos(photos, newAdvertisement,
                 newAdvertisement.getTopSubCategory().getSubCategoryName());
-        advertisementManagementService.updateMainPhoto(newAdvertisement, advertisementPhotos);
+        advertisementManagementService.setMainPhoto(newAdvertisement, advertisementPhotos);
     }
 
     private void processDeliveryMethods(Advertisement newAdvertisement, Set<String> deliveryMethods) {

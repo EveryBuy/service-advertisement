@@ -66,8 +66,8 @@ public class AdvertisementUpdateService {
         photoService.deletePhotosByAdvertisementId(advertisement);
         List<AdvertisementPhoto> advertisementPhotos = photoService
                 .uploadAndLinkPhotos(photos, advertisement,
-                advertisement.getTopSubCategory().getSubCategoryName());
-        advertisementManagementService.updateMainPhoto(advertisement, advertisementPhotos);
+                        advertisement.getTopSubCategory().getSubCategoryName());
+        advertisementManagementService.setMainPhoto(advertisement, advertisementPhotos);
     }
 
     private void processDeliveryMethods(Advertisement advertisement, Set<String> deliveryMethods) {

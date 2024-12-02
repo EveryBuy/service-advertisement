@@ -1,6 +1,5 @@
 package ua.everybuy.buisnesslogic.service.advertisement;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,7 +8,6 @@ import ua.everybuy.buisnesslogic.service.integration.ChatService;
 import ua.everybuy.buisnesslogic.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
-import ua.everybuy.errorhandling.message.AdvertisementValidationMessages;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.dto.mapper.AdvertisementToDtoMapper;
@@ -38,11 +36,11 @@ public class AdvertisementManagementService {
         return advertisementStorageService.save(advertisement);
     }
 
-    public void updateMainPhoto(Advertisement existingAdvertisement, List<AdvertisementPhoto> photos) {
+    public void setMainPhoto(Advertisement advertisement, List<AdvertisementPhoto> photos) {
         if (photos != null && !photos.isEmpty()) {
             String mainPhotoUrl = photos.get(0).getPhotoUrl();
-            existingAdvertisement.setMainPhotoUrl(mainPhotoUrl);
-            saveAdvertisement(existingAdvertisement);
+            advertisement.setMainPhotoUrl(mainPhotoUrl);
+            saveAdvertisement(advertisement);
         }
     }
 
@@ -73,7 +71,7 @@ public class AdvertisementManagementService {
     public void deleteAdvertisement(Long advertisementId, Principal principal) throws IOException {
         Advertisement advertisement = advertisementStorageService
                 .findAdvertisementByIdAndUserId(advertisementId,
-                Long.parseLong(principal.getName()));
+                        Long.parseLong(principal.getName()));
         photoService.deletePhotosByAdvertisementId(advertisement);
         advertisement.setIsEnabled(false);
         pushAdvertisementChangeToChatService(advertisement);
@@ -94,24 +92,17 @@ public class AdvertisementManagementService {
         log.info("Advertisement status toggled and sent to chat service");
     }
 
-    public List<Advertisement> findAllUserAdvertisement(Long userId) {
-        List<Advertisement> userAdvertisement = advertisementStorageService.findByUserId(userId);
-        if (userAdvertisement == null || userAdvertisement.isEmpty()) {
-            throw new EntityNotFoundException(AdvertisementValidationMessages
-                    .NO_ADVERTISEMENTS_FOUND_MESSAGE + userId);
-        }
-        return userAdvertisement;
-    }
-
     public AdvertisementInfoForChatService getAdvertisementShortInfo(Long advertisementId) {
         Advertisement advertisement = advertisementStorageService.findById(advertisementId);
         return responseMapper.mapToAdvertisementInfoForChatService(advertisement);
     }
 
     public void pushAdvertisementChangeToChatService(Advertisement advertisement) {
-        AdvertisementInfoForChatService advertisementInfoForChatService = responseMapper.mapToAdvertisementInfoForChatService(advertisement);
+        AdvertisementInfoForChatService advertisementInfoForChatService = responseMapper
+                .mapToAdvertisementInfoForChatService(advertisement);
         chatService.sendInfoAboutChange(advertisementInfoForChatService);
     }
+
     private <T> StatusResponse<T> buildStatusResponse(HttpStatus status, Advertisement advertisement,
                                                       Function<Advertisement, T> mapper) {
         T dto = mapper.apply(advertisement);
