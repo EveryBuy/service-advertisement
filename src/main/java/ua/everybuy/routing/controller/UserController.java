@@ -20,7 +20,7 @@ public class UserController {
     @ResponseBody
     public StatusResponse<List<AdvertisementWithStatisticResponse>> getAllActiveUsersAds(Principal principal) {
         List<AdvertisementWithStatisticResponse> responseList = advertisementUserService
-                .getUserAdvertisementsByEnabledStatus(Long.parseLong(principal.getName()), true);
+                .getUserAdvertisementsByStatus(Long.parseLong(principal.getName()), true);
         return new StatusResponse<>(HttpStatus.OK.value(), responseList);
     }
 
@@ -29,7 +29,7 @@ public class UserController {
     @ResponseBody
     public StatusResponse<List<AdvertisementWithStatisticResponse>> getAllNotActiveUsersAds(Principal principal) {
         List<AdvertisementWithStatisticResponse> responseList = advertisementUserService
-                .getUserAdvertisementsByEnabledStatus(Long.parseLong(principal.getName()), false);
+                .getUserAdvertisementsByStatus(Long.parseLong(principal.getName()), false);
         return new StatusResponse<>(HttpStatus.OK.value(), responseList);
     }
 }

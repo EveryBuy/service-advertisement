@@ -1,6 +1,5 @@
 package ua.everybuy.buisnesslogic.service.photo;
 
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.AmazonS3;
@@ -25,8 +24,7 @@ public class AmazonS3Service {
     private String bucketName;
 
     public String uploadPhoto(MultipartFile photo, String subcategory) throws IOException {
-        String uuid = UUID.randomUUID().toString();
-        String photoKey = subcategory.replaceAll("\\s+", "") + uuid;
+        String photoKey = generatePhotoKey(subcategory);
         String photoUrl = awsUrl + photoKey;
 
         ObjectMetadata metadata = new ObjectMetadata();
@@ -35,8 +33,6 @@ public class AmazonS3Service {
 
         try (InputStream inputStream = photo.getInputStream()) {
             s3Client.putObject(bucketName, photoKey, inputStream, metadata);
-        } catch (AmazonServiceException e) {
-            throw new IOException("Failed to upload photo to S3: " + e.getErrorMessage(), e);
         } catch (SdkClientException e) {
             throw new IOException("Failed to upload photo to S3: " + e.getMessage(), e);
         }
@@ -51,11 +47,14 @@ public class AmazonS3Service {
 
             try {
                 s3Client.deleteObject(bucketName, s3Key);
-            } catch (AmazonServiceException e) {
-                throw new IOException("Failed to upload photo to S3: " + e.getErrorMessage(), e);
             } catch (SdkClientException e) {
-                throw new IOException("Failed to upload photo to S3: " + e.getMessage(), e);
+                throw new IOException("Failed to delete photo from S3: " + e.getMessage(), e);
             }
         }
+    }
+
+    private String generatePhotoKey(String subcategory) {
+        String uuid = UUID.randomUUID().toString();
+        return subcategory.replaceAll("\\s+", "") + uuid;
     }
 }
