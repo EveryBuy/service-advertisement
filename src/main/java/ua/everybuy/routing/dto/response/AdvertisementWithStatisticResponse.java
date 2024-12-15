@@ -9,6 +9,7 @@ public class AdvertisementWithStatisticResponse {
     private Long id;
     private String section;
     private String title;
+    private String productType;
     private String price;
     private Long userId;
     private String mainPhotoUrl;
