@@ -34,6 +34,7 @@ public class ValidationFilter extends OncePerRequestFilter {
             new AntPathRequestMatcher("/ad/category/**"),
             new AntPathRequestMatcher("/ad/subcategory/**"),
             new AntPathRequestMatcher("/ad/city/**"),
+            new AntPathRequestMatcher("/ad/region/**"),
             new AntPathRequestMatcher("/ad/keep-alive"),
             new AntPathRequestMatcher("/ad/*/active"),
             new AntPathRequestMatcher("/ad/*/info"),

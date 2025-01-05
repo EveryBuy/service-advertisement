@@ -42,14 +42,14 @@ public class Advertisement {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column (name = "main_photo_url")
+    @Column(name = "main_photo_url")
     private String mainPhotoUrl;
 
     @Embedded
     private AdvertisementStatistics statistics;
 
     @ManyToOne
-    @JoinColumn(name="city_id", nullable = false)
+    @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -57,7 +57,7 @@ public class Advertisement {
     private TopLevelSubCategory topSubCategory;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "low_level_subcategory_id", nullable = true)
+    @JoinColumn(name = "low_level_subcategory_id")
     private LowLevelSubCategory lowSubCategory;
 
     @Enumerated(EnumType.STRING)
@@ -76,9 +76,7 @@ public class Advertisement {
         BUY, SELL
     }
 
-    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<AdvertisementDelivery> advertisementDeliveries;
 
-    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
-    private List<FavouriteAdvertisement> favouriteAdvertisements;
 }
