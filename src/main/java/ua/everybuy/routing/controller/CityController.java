@@ -19,7 +19,7 @@ public class CityController {
     @ResponseBody
     @CrossOrigin(origins = "*")
     public StatusResponse<List<City>> getAllCities() {
-        List<City> cityList = cityService.getAllCities();
+        List<City> cityList = cityService.getAllCitiesWithRegions();
         return new StatusResponse<>(HttpStatus.OK.value(), cityList);
     }
 }

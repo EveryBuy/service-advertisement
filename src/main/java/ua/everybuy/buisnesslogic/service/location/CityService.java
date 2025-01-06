@@ -2,20 +2,47 @@ package ua.everybuy.buisnesslogic.service.location;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.City;
 import ua.everybuy.database.repository.CityRepository;
 import java.util.List;
 
+import static ua.everybuy.errorhandling.message.CityValidationMessages.CITY_NOT_FOUND_MESSAGE;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CityService {
     private final CityRepository cityRepository;
+    private final RegionService regionService;
 
-    public List<City> getAllCities (){
-        return cityRepository.findAll();
+    @Cacheable(value = "citiesCache")
+    public List<City> getAllCitiesWithRegions() {
+        log.info("[CACHE INFO] Fetching all cities with regions - Cache START");
+        return cityRepository.findAllWithRegions();
     }
-    public City findById(Long id){
-       return cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("City not found"));
+
+    @Cacheable(value = "citiesByRegionCache", key = "#regionId")
+    public List<City> getCitiesByRegionId(Long regionId) {
+        log.info("[CACHE INFO] Fetching cities for regionId: {} - Cache START", regionId);
+        regionService.findById(regionId);
+        return cityRepository.findAllByRegionId(regionId);
+    }
+
+    @Cacheable(value = "cityByIdCache", key = "#id")
+    public City findById(Long id) {
+        log.info("[CACHE INFO] Fetching city with id: {} - Cache START", id);
+        return cityRepository.findByIdWithRegion(id)
+                .orElseThrow(() -> new EntityNotFoundException(CITY_NOT_FOUND_MESSAGE + id));
+    }
+
+    public City getByIdAndRegionId(Long id, Long regionId) {
+        return cityRepository.findByCityIdAndRegionId(id, regionId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("City with id %d does not exist in region with id %d",
+                                id, regionId)
+                ));
     }
 }

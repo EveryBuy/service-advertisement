@@ -12,6 +12,7 @@ import java.util.List;
 @RequestMapping("/ad/subcategory")
 public class LowLevelSubCategoryController {
     private final LowLevelSubCategoryService subCategoryService;
+
     @GetMapping("/{subcategoryId}/low-level-subcategories")
     @ResponseStatus(HttpStatus.OK)
     public List<SubCategoryDto> getSubCategoriesByParentId(@PathVariable Long subcategoryId) {

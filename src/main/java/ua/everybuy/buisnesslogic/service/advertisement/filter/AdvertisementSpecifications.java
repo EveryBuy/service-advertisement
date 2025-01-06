@@ -20,6 +20,10 @@ public class AdvertisementSpecifications {
         return (root, query, cb) -> regionId == null ? null : cb.equal(root.get("city").get("region").get("id"), regionId);
     }
 
+    public static Specification<Advertisement> belongsToCity(Long cityId) {
+        return (root, query, cb) -> cityId == null ? null : cb.equal(root.get("city").get("id"), cityId);
+    }
+
     public static Specification<Advertisement> belongsToTopSubCategory(Long topSubCategoryId) {
         return (root, query, cb) -> topSubCategoryId == null ? null : cb.equal(root.get("topSubCategory").get("id"), topSubCategoryId);
     }

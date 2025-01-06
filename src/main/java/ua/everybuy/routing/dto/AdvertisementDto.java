@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import ua.everybuy.database.entity.Category;
+import ua.everybuy.database.entity.City;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -21,13 +22,12 @@ public class AdvertisementDto {
     private Long userId;
     private String mainPhotoUrl;
     private List<String> photoUrls;
-    private String cityName;
-    private String regionName;
+    private String productType;
+    private String section;
+    private City city;
     private Category category;
     private SubCategoryDto topSubCategory;
     private SubCategoryDto lowSubCategory;
-    private String productType;
-    private String section;
     private Set<String> deliveryMethods;
     private ShortUserInfoDto userDto;
 }

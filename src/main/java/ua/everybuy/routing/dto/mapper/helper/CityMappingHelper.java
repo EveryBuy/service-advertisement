@@ -16,4 +16,3 @@ public class CityMappingHelper {
         return cityService.findById(cityId);
     }
 }
-

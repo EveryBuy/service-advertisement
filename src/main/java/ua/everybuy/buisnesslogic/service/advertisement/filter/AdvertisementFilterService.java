@@ -14,6 +14,7 @@ import ua.everybuy.routing.dto.mapper.AdvertisementFilterMapper;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static ua.everybuy.buisnesslogic.strategy.sort.SortStrategyFactory.DATE_DESCENDING;
 
 @Service
@@ -26,37 +27,37 @@ public class AdvertisementFilterService {
     private final FilterValidator filterValidator;
 
     public List<FilteredAdvertisementsResponse> getFilteredAdvertisements(Double minPrice, Double maxPrice,
-                                                                          String sortOrder, Long regionId,
+                                                                          String sortOrder, Long regionId, Long cityId,
                                                                           Long topSubCategoryId, Long lowSubCategoryId,
                                                                           Long categoryId, Advertisement.ProductType productType,
                                                                           Advertisement.AdSection section, String keyword,
                                                                           int page, int size) {
 
         Page<Advertisement> paginatedAdvertisements = applyFilters(minPrice, maxPrice, sortOrder,
-                regionId, topSubCategoryId, lowSubCategoryId, categoryId, productType, section, keyword, page, size);
+                regionId, cityId, topSubCategoryId, lowSubCategoryId, categoryId, productType, section, keyword, page, size);
 
         return mapToResponse(paginatedAdvertisements);
     }
 
     public Page<Advertisement> applyFilters(Double minPrice, Double maxPrice, String sortOrder,
-                                            Long regionId, Long topSubCategoryId, Long lowSubCategoryId,
+                                            Long regionId, Long cityId, Long topSubCategoryId, Long lowSubCategoryId,
                                             Long categoryId, Advertisement.ProductType productType,
                                             Advertisement.AdSection section, String keyword, int page, int size) {
         filterValidator.validatePageNumber(page);
-        filterValidator.validate(regionId, topSubCategoryId, lowSubCategoryId, categoryId);
+        filterValidator.validate(regionId, cityId, topSubCategoryId, lowSubCategoryId, categoryId);
 
         Specification<Advertisement> specs = Specification
                 .where(AdvertisementSpecifications.isEnabled())
                 .and(AdvertisementSpecifications.hasMinPrice(minPrice))
                 .and(AdvertisementSpecifications.hasMaxPrice(maxPrice))
                 .and(AdvertisementSpecifications.belongsToRegion(regionId))
+                .and(AdvertisementSpecifications.belongsToCity(cityId))
                 .and(AdvertisementSpecifications.belongsToTopSubCategory(topSubCategoryId))
                 .and(AdvertisementSpecifications.belongsToLowSubCategory(lowSubCategoryId))
                 .and(AdvertisementSpecifications.belongsToCategory(categoryId))
                 .and(AdvertisementSpecifications.hasProductType(productType))
                 .and(AdvertisementSpecifications.hasSection(section))
                 .and(AdvertisementSpecifications.hasSimilarTitle(keyword, SIMILARITY_THRESHOLD));
-
 
         Sort priceSort = sortStrategyFactory.getSortStrategy(sortOrder).getSortOrder();
         Sort dateSort = sortStrategyFactory.getSortStrategy(DATE_DESCENDING).getSortOrder();
