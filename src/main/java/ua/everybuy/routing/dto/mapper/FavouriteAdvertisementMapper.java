@@ -4,10 +4,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
+import ua.everybuy.routing.dto.mapper.helper.CityMappingHelper;
 import ua.everybuy.routing.dto.response.AddToFavouriteResponse;
 import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {
+        CityMappingHelper.class,
+})
 public interface FavouriteAdvertisementMapper {
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "advertisement", target = "advertisement")
@@ -21,7 +24,7 @@ public interface FavouriteAdvertisementMapper {
     @Mapping(source = "advertisement.productType", target = "productType")
     @Mapping(source = "advertisement.updateDate", target = "updateDate")
     @Mapping(source = "advertisement.topSubCategory.category", target = "category")
-    @Mapping(source = "advertisement.city", target = "city")
+    @Mapping(source = "advertisement.city.id", target = "city", qualifiedByName = "cityIdToCity")
     FavouriteAdvertisementResponse mapToFavouriteAdvertisementResponse(Advertisement advertisement);
 
     @Mapping(source = "id", target = "id")
