@@ -12,6 +12,7 @@ import ua.everybuy.buisnesslogic.service.location.CityService;
 import ua.everybuy.buisnesslogic.service.location.RegionService;
 import ua.everybuy.database.entity.City;
 import ua.everybuy.database.entity.Region;
+
 import java.util.List;
 
 @RestController
@@ -31,7 +32,7 @@ public class RegionController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     @GetMapping({"/{regionId}/cities"})
-    public List<City> getAllCitiesWithRegions(@PathVariable Long regionId) {
+    public List<City> getAllCitiesByRegionId(@PathVariable Long regionId) {
         return cityService.getCitiesByRegionId(regionId);
     }
 }
