@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ua.everybuy.buisnesslogic.service.location.CityService;
 import ua.everybuy.buisnesslogic.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
@@ -51,6 +52,7 @@ public class AdvertisementUpdateService {
                 .findAdvertisementByIdAndUserId(advertisementId, Long.parseLong(userId));
 
         existingAdvertisement = toEntityMapper.mapToEntity(updateRequest, existingAdvertisement);
+
         existingAdvertisement = advertisementManagementService.saveAdvertisement(existingAdvertisement);
 
         processAdvertisementPhotos(existingAdvertisement, photos);

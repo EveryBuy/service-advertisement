@@ -32,7 +32,7 @@ public class CityService {
         return cityRepository.findAllByRegionId(regionId);
     }
 
-    @Cacheable(value = "cityByIdCache", key = "#id")
+//    @Cacheable(value = "cityByIdCache", key = "#cityId")
     public City findById(Long id) {
         log.info("[CACHE INFO] Fetching city with id: {} - Cache START", id);
         return cityRepository.findByIdWithRegion(id)

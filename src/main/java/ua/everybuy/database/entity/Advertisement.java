@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 @Table(name = "advertisements")
 public class Advertisement {
     @Id
@@ -79,4 +80,6 @@ public class Advertisement {
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<AdvertisementDelivery> advertisementDeliveries;
 
+    @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<FavouriteAdvertisement> favouriteAdvertisements;
 }
