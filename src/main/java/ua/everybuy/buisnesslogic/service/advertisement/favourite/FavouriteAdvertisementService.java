@@ -1,10 +1,17 @@
-package ua.everybuy.buisnesslogic.service.advertisement;
+package ua.everybuy.buisnesslogic.service.advertisement.favourite;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementStorageService;
+import ua.everybuy.buisnesslogic.service.advertisement.StatisticsService;
 import ua.everybuy.buisnesslogic.service.category.CategoryService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
@@ -15,29 +22,43 @@ import ua.everybuy.routing.dto.mapper.FavouriteAdvertisementMapper;
 import ua.everybuy.routing.dto.response.AddToFavouriteResponse;
 import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
-
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdvertisementFavouriteService {
+public class FavouriteAdvertisementService {
     private final FavouriteAdvertisementRepository favouriteAdvertisementRepository;
+    private final FavouriteAdvertisementSpecificationFactory favouriteAdvertisementSpecifications;
     private final FavouriteAdvertisementMapper favouriteAdvertisementMapper;
     private final AdvertisementStorageService advertisementStorageService;
     private final StatisticsService statisticsService;
     private final CategoryService categoryService;
 
-    public List<FavouriteAdvertisementResponse> findUserFavouriteAdvertisementsByCategoryAndSection(Principal principal,
-                                                                                                    Long categoryId,
-                                                                                                    Advertisement.AdSection adSection) {
+    private Page<FavouriteAdvertisement> findUserFavouriteAdvertisementsByCategoryAndSection(Principal principal, Long categoryId,
+                                                                                             Advertisement.AdSection adSection,
+                                                                                             int page, int size) {
         Long userId = Long.parseLong(principal.getName());
-        checkCategoryValid(categoryId);
-        return findAllUserFavouriteAdvertisements(userId).stream()
-                .filter(ad -> categoryId == null || categoryId.equals(ad.getTopSubCategory().getCategory().getId()))
-                .filter(ad -> adSection == null || ad.getSection().equals(adSection))
-                .map(favouriteAdvertisementMapper::mapToFavouriteAdvertisementResponse)
+        if (categoryId != null) {
+            checkCategoryValid(categoryId);
+        }
+
+        Specification<FavouriteAdvertisement> spec = favouriteAdvertisementSpecifications
+                .createSpecification(userId, categoryId, adSection);
+
+        Sort dateSort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page - 1, size, dateSort);
+
+        return favouriteAdvertisementRepository.findAll(spec, pageable);
+
+    }
+
+    public List<FavouriteAdvertisementResponse> getUserFavouriteAdvertisements(Principal principal, Long categoryId,
+                                                                               Advertisement.AdSection adSection,
+                                                                               int page, int size) {
+        return findUserFavouriteAdvertisementsByCategoryAndSection(principal, categoryId, adSection, page, size).stream()
+                .map(fa -> favouriteAdvertisementMapper.mapToFavouriteAdvertisementResponse(fa.getAdvertisement()))
                 .collect(Collectors.toList());
     }
 
@@ -63,12 +84,6 @@ public class AdvertisementFavouriteService {
         Long userId = Long.parseLong(principal.getName());
         FavouriteAdvertisement favouriteAdvertisement = findFavouriteByUserAndAdvertisement(userId, adId);
         favouriteAdvertisementRepository.delete(favouriteAdvertisement);
-    }
-
-    private List<Advertisement> findAllUserFavouriteAdvertisements(Long userId) {
-        return favouriteAdvertisementRepository.findByUserId(userId).stream()
-                .map(FavouriteAdvertisement::getAdvertisement)
-                .collect(Collectors.toList());
     }
 
     private FavouriteAdvertisement findFavouriteByUserAndAdvertisement(Long userId, Long adId) {

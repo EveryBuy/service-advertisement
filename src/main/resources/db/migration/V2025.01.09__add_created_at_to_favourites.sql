@@ -1,0 +1,2 @@
+ALTER TABLE favourites_advertisements
+    ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
