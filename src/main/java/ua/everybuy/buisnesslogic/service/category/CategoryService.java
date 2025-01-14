@@ -20,7 +20,7 @@ public class CategoryService {
     }
     @Cacheable(value = "categoriesCache")
     public List<Category> getAllCategories() {
-        System.out.println("Cache");
+        System.out.println("Cache categories");
         return categoryRepository.findAll();
     }
 
