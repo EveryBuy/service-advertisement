@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
   redis:
     image: "redis:latest"
-    container_name: "redis-chat"
+    container_name: "redis-advertisement"
     ports:
       - "6379:6379"
     restart: unless-stopped
