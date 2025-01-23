@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ua.everybuy.buisnesslogic.service.advertisement.filter.AdvertisementFilterService;
 import org.springframework.web.bind.annotation.RestController;
 import ua.everybuy.database.entity.Advertisement;
-import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
-
-import java.util.List;
+import ua.everybuy.routing.dto.response.FilteredAdvertisementsResult;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +20,7 @@ public class FilterController {
     private final AdvertisementFilterService advertisementFilterService;
 
     @GetMapping("/filter")
-    public List<FilteredAdvertisementsResponse> doFilter(
+    public FilteredAdvertisementsResult doFilter(
             @RequestParam(required = false) @Valid @Min(0) Double minPrice,
             @RequestParam(required = false) @Valid @Min(0) Double maxPrice,
             @RequestParam(required = false) @Valid String sortOrder,
@@ -35,8 +33,7 @@ public class FilterController {
             @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
             @RequestParam(required = false) @Valid String keyword,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "8") int size
-    ) {
+            @RequestParam(defaultValue = "8") int size) {
         return advertisementFilterService.getFilteredAdvertisements(minPrice, maxPrice, sortOrder,
                 regionId, cityId, topSubCategoryId, lowSubCategoryId, categoryId, productType, section, keyword, page, size);
     }

@@ -15,6 +15,7 @@ public class FilterAdvertisementSpecificationFactory {
                                                             Advertisement.AdSection section, String keyword) {
         return Specification
                 .where(AdvertisementSpecifications.isEnabled())
+                .and(AdvertisementSpecifications.fetchCityAndRegion()) // Добавили fetch
                 .and(AdvertisementSpecifications.hasMinPrice(minPrice))
                 .and(AdvertisementSpecifications.hasMaxPrice(maxPrice))
                 .and(AdvertisementSpecifications.belongsToCity(cityId))

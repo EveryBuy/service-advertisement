@@ -6,7 +6,6 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.Category;
 import ua.everybuy.database.entity.City;
 import ua.everybuy.routing.dto.SubCategoryDto;
-
 import java.time.LocalDateTime;
 
 @Getter
