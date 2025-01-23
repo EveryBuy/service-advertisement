@@ -30,9 +30,10 @@ dependencies {
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation 'org.flywaydb:flyway-core:9.22.1'
 	runtimeOnly 'org.postgresql:postgresql'
 
-	implementation 'org.flywaydb:flyway-core'
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.11.388'
 	implementation 'org.mapstruct:mapstruct:1.5.2.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'

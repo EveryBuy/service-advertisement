@@ -21,7 +21,7 @@ public interface AdvertisementFilterMapper {
     @Mapping(source = "advertisement.price", target = "price")
     @Mapping(source = "advertisement.description", target = "description", qualifiedByName = "truncateDescription")
     @Mapping(source = "advertisement.updateDate", target = "updateDate")
-    @Mapping(source = "advertisement.city.id", target = "city", qualifiedByName = "cityIdToCity")
+    @Mapping(source = "advertisement.city", target = "city")
     @Mapping(source = "advertisement.topSubCategory", target = "topSubCategory", qualifiedByName = "mapToSubCategoryDto")
     @Mapping(source = "advertisement.lowSubCategory", target = "lowSubCategory", qualifiedByName = "mapToSubCategoryDto")
     @Mapping(source = "advertisement.topSubCategory.category", target = "category")

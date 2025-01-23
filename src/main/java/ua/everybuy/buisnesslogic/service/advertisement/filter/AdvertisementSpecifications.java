@@ -1,5 +1,6 @@
 package ua.everybuy.buisnesslogic.service.advertisement.filter;
 
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 import ua.everybuy.database.entity.Advertisement;
 
@@ -22,6 +23,14 @@ public class AdvertisementSpecifications {
 
     public static Specification<Advertisement> belongsToCity(Long cityId) {
         return (root, query, cb) -> cityId == null ? null : cb.equal(root.get("city").get("id"), cityId);
+    }
+    public static Specification<Advertisement> fetchCityAndRegion() {
+        return (root, query, cb) -> {
+            if (query.getResultType() != Long.class) {
+                root.fetch("city", JoinType.LEFT).fetch("region", JoinType.LEFT);
+            }
+            return null;
+        };
     }
 
     public static Specification<Advertisement> belongsToTopSubCategory(Long topSubCategoryId) {

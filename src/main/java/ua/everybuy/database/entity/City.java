@@ -12,8 +12,10 @@ public class City {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column (name="city_name")
     private String cityName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name="region_id")
     private Region region;

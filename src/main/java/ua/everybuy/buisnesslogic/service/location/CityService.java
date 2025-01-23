@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.City;
 import ua.everybuy.database.repository.CityRepository;
+
 import java.util.List;
 
 import static ua.everybuy.errorhandling.message.CityValidationMessages.CITY_NOT_FOUND_BY_REGION_MESSAGE;
@@ -32,9 +33,7 @@ public class CityService {
         return cityRepository.findAllByRegionId(regionId);
     }
 
-//    @Cacheable(value = "cityByIdCache", key = "#cityId")
     public City findById(Long id) {
-        log.info("[CACHE INFO] Fetching city with id: {} - Cache START", id);
         return cityRepository.findByIdWithRegion(id)
                 .orElseThrow(() -> new EntityNotFoundException(CITY_NOT_FOUND_MESSAGE + id));
     }
