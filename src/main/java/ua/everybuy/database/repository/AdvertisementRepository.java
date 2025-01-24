@@ -26,7 +26,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     @Query("SELECT new ua.everybuy.routing.dto.PriceRangeDto(MIN(a.price), MAX(a.price)) " +
             "FROM Advertisement a " +
-            "WHERE (:categoryId IS NULL OR a.topSubCategory.category = :categoryId) " +
+            "WHERE (:categoryId IS NULL OR a.topSubCategory.category.id = :categoryId) " +
             "AND (:cityId IS NULL OR a.city.id = :cityId) " +
             "AND (:regionId IS NULL OR a.city.region.id= :regionId) " +
             "AND (:topSubCategoryId IS NULL OR a.topSubCategory.id = :topSubCategoryId) " +

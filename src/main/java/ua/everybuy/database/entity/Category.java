@@ -7,12 +7,10 @@ import lombok.*;
 @Table(name = "categories")
 @Getter
 @Setter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Category {
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +21,7 @@ public class Category {
 
     @Column(name = "name_ukr")
     private String nameUkr;
+
     @Column(name = "photo_url")
     private String photoUrl;
 }
