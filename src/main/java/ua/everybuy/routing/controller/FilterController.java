@@ -33,7 +33,7 @@ public class FilterController {
             @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
             @RequestParam(required = false) @Valid String keyword,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "8") int size) {
+            @RequestParam(defaultValue = "20") int size) {
         return advertisementFilterService.getFilteredAdvertisements(minPrice, maxPrice, sortOrder,
                 regionId, cityId, topSubCategoryId, lowSubCategoryId, categoryId, productType, section, keyword, page, size);
     }
