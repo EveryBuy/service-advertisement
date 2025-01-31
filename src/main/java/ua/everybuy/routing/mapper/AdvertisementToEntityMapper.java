@@ -1,4 +1,4 @@
-package ua.everybuy.routing.dto.mapper;
+package ua.everybuy.routing.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -6,7 +6,8 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementStatistics;
 import ua.everybuy.routing.dto.request.CreateAdvertisementRequest;
 import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
-import ua.everybuy.routing.dto.mapper.helper.*;
+import ua.everybuy.routing.mapper.helper.CategoryMappingHelper;
+import ua.everybuy.routing.mapper.helper.CityMappingHelper;
 
 @Mapper(componentModel = "spring", uses = {
         CityMappingHelper.class,

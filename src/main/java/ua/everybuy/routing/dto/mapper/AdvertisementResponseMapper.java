@@ -4,7 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.response.*;
-import ua.everybuy.routing.dto.mapper.helper.*;
+import ua.everybuy.routing.mapper.helper.DeliveryMappingHelper;
+import ua.everybuy.routing.mapper.helper.PhotoMappingHelper;
 
 @Mapper(componentModel = "spring", uses = {
         PhotoMappingHelper.class,

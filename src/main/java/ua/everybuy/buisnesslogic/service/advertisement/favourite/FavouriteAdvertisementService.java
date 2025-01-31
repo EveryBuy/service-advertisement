@@ -18,7 +18,7 @@ import ua.everybuy.database.entity.FavouriteAdvertisement;
 import ua.everybuy.database.repository.FavouriteAdvertisementRepository;
 import ua.everybuy.errorhandling.custom.DuplicateDataException;
 import ua.everybuy.errorhandling.message.FavouriteAdvertisementValidationMessages;
-import ua.everybuy.routing.dto.mapper.FavouriteAdvertisementMapper;
+import ua.everybuy.routing.mapper.FavouriteAdvertisementMapper;
 import ua.everybuy.routing.dto.response.AddToFavouriteResponse;
 import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
