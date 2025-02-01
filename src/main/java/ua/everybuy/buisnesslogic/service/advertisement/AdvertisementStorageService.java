@@ -2,6 +2,7 @@ package ua.everybuy.buisnesslogic.service.advertisement;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.repository.AdvertisementRepository;
@@ -23,8 +24,10 @@ public class AdvertisementStorageService {
                 .orElseThrow(() -> new EntityNotFoundException(AdvertisementValidationMessages
                         .ADVERTISEMENT_NOT_FOUND_MESSAGE));
     }
-    public List<Advertisement> findByUserId(Long userId) {
-        return advertisementRepository.findByUserId(userId);
+
+    public List<Advertisement> findByUserId(Long userId, Advertisement.AdSection section,
+                                            boolean isEnabled, Pageable pageable) {
+        return advertisementRepository.findByUserId(userId, section, isEnabled, pageable);
     }
 
     public List<Advertisement> getActiveAdvertisements() {

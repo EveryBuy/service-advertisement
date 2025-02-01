@@ -10,9 +10,8 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
-import ua.everybuy.routing.dto.mapper.AdvertisementToDtoMapper;
+import ua.everybuy.routing.mapper.AdvertisementToDtoMapper;
 import ua.everybuy.routing.dto.response.*;
-
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;

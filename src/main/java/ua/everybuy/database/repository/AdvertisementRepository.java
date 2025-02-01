@@ -1,5 +1,6 @@
 package ua.everybuy.database.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -8,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.PriceRangeDto;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +20,12 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     @Query("SELECT a FROM Advertisement a " +
             "JOIN FETCH a.advertisementDeliveries " +
-            "WHERE a.userId = :userId")
-    List<Advertisement> findByUserId(Long userId);
+            "JOIN FETCH a.city " +
+            "WHERE a.userId = :userId " +
+            "AND (:section IS NULL OR a.section = :section) " +
+            "AND (a.isEnabled = :isEnabled) ")
+    List<Advertisement> findByUserId(Long userId, Advertisement.AdSection section,
+                                     Boolean isEnabled, Pageable pageable);
 
     @EntityGraph(attributePaths = {"city", "lowLevelSubcategory", "topLevelSubcategory", "advertisementDeliveries"})
     List<Advertisement> findByIsEnabledTrueOrderByCreationDateDesc();

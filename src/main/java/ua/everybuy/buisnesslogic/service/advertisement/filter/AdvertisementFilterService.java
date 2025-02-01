@@ -11,9 +11,9 @@ import ua.everybuy.buisnesslogic.strategy.sort.SortStrategyFactory;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.repository.AdvertisementRepository;
 import ua.everybuy.routing.dto.PriceRangeDto;
-import ua.everybuy.routing.dto.mapper.AdvertisementFilterMapper;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResult;
+import ua.everybuy.routing.mapper.AdvertisementFilterMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;

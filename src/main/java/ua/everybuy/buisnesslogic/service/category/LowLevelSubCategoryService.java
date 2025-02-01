@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.LowLevelSubCategory;
 import ua.everybuy.database.repository.LowLevelSubCategoryRepository;
 import ua.everybuy.routing.dto.SubCategoryDto;
-import ua.everybuy.routing.dto.mapper.SubCategoryMapper;
+import ua.everybuy.routing.mapper.SubCategoryMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 import static ua.everybuy.errorhandling.message.CategoryValidationMessages.LOW_LEVEL_SUBCATEGORY_ERROR_MESSAGE;

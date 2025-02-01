@@ -1,10 +1,13 @@
-package ua.everybuy.routing.dto.mapper;
+package ua.everybuy.routing.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.AdvertisementDto;
-import ua.everybuy.routing.dto.mapper.helper.*;
+import ua.everybuy.routing.mapper.helper.CityMappingHelper;
+import ua.everybuy.routing.mapper.helper.DeliveryMappingHelper;
+import ua.everybuy.routing.mapper.helper.PhotoMappingHelper;
+import ua.everybuy.routing.mapper.helper.UserMappingHelper;
 
 @Mapper(componentModel = "spring", uses = {
         PhotoMappingHelper.class,

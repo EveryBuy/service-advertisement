@@ -1,4 +1,4 @@
-package ua.everybuy.routing.dto.mapper.helper;
+package ua.everybuy.routing.mapper.helper;
 
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;

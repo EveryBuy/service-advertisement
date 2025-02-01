@@ -1,4 +1,4 @@
-package ua.everybuy.routing.dto.mapper.helper;
+package ua.everybuy.routing.mapper.helper;
 
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
