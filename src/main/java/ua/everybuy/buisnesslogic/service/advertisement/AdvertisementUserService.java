@@ -36,10 +36,6 @@ public class AdvertisementUserService {
 
         List<Advertisement> advertisements = advertisementStorageService.findByUserId(userId, section, isEnabled, pageable);
 
-        return Optional.ofNullable(advertisements)
-                .filter(list -> !list.isEmpty())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        AdvertisementValidationMessages.NO_ADVERTISEMENTS_FOUND_MESSAGE + userId
-                ));
+        return advertisements;
     }
 }
