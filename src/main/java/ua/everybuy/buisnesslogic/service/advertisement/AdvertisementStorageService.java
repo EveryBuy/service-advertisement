@@ -25,9 +25,9 @@ public class AdvertisementStorageService {
                         .ADVERTISEMENT_NOT_FOUND_MESSAGE));
     }
 
-    public List<Advertisement> findByUserId(Long userId, Advertisement.AdSection section,
-                                            boolean isEnabled, Pageable pageable) {
-        return advertisementRepository.findByUserId(userId, section, isEnabled, pageable);
+    public List<Advertisement> findByUserId(Long userId, boolean isEnabled, Advertisement.AdSection section,
+                                            Pageable pageable) {
+        return advertisementRepository.findByUserId(userId, isEnabled, section, pageable);
     }
 
     public List<Advertisement> getActiveAdvertisements() {

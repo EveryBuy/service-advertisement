@@ -24,8 +24,9 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
             "WHERE a.userId = :userId " +
             "AND (:section IS NULL OR a.section = :section) " +
             "AND (a.isEnabled = :isEnabled) ")
-    List<Advertisement> findByUserId(Long userId, Advertisement.AdSection section,
-                                     Boolean isEnabled, Pageable pageable);
+    List<Advertisement> findByUserId(Long userId, Boolean isEnabled,
+                                     Advertisement.AdSection section,
+                                     Pageable pageable);
 
     @EntityGraph(attributePaths = {"city", "lowLevelSubcategory", "topLevelSubcategory", "advertisementDeliveries"})
     List<Advertisement> findByIsEnabledTrueOrderByCreationDateDesc();
