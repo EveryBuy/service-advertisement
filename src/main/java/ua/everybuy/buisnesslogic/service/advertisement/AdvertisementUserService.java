@@ -8,8 +8,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.errorhandling.message.AdvertisementValidationMessages;
-import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
+import ua.everybuy.routing.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -22,19 +23,20 @@ public class AdvertisementUserService {
     public List<AdvertisementWithStatisticResponse> getUserAdvertisements(Long userId, boolean isEnabled,
                                                                           Advertisement.AdSection section,
                                                                           int page, int size) {
-        List<Advertisement> advertisements = findUserAdvertisements(userId, section, page, size, isEnabled);
+        List<Advertisement> advertisements = findUserAdvertisements(userId, isEnabled, section, page, size);
 
         return advertisements.stream()
                 .map(advertisementResponseMapper::mapToAdvertisementStatisticResponse)
                 .toList();
     }
 
-    private List<Advertisement> findUserAdvertisements(Long userId, Advertisement.AdSection section,
-                                                       int page, int size, Boolean isEnabled) {
+    private List<Advertisement> findUserAdvertisements(Long userId, Boolean isEnabled,
+                                                       Advertisement.AdSection section,
+                                                       int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "creationDate");
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-        List<Advertisement> advertisements = advertisementStorageService.findByUserId(userId, section, isEnabled, pageable);
+        List<Advertisement> advertisements = advertisementStorageService.findByUserId(userId, isEnabled, section, pageable);
 
         return advertisements;
     }

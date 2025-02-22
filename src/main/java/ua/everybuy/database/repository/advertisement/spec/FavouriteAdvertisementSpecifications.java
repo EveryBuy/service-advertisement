@@ -1,4 +1,4 @@
-package ua.everybuy.buisnesslogic.service.advertisement.favourite;
+package ua.everybuy.database.repository.advertisement.spec;
 
 import org.springframework.data.jpa.domain.Specification;
 import ua.everybuy.database.entity.Advertisement;

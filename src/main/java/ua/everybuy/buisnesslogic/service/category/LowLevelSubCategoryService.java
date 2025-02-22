@@ -4,7 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.LowLevelSubCategory;
-import ua.everybuy.database.repository.LowLevelSubCategoryRepository;
+import ua.everybuy.database.repository.category.LowLevelSubCategoryRepository;
 import ua.everybuy.routing.dto.SubCategoryDto;
 import ua.everybuy.routing.mapper.SubCategoryMapper;
 import java.util.List;

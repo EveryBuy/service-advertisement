@@ -8,8 +8,8 @@ import java.util.Map;
 
 @Service
 public class SortStrategyFactory {
-    private static final String PRICE_ASCENDING = "ASC";
-    private static final String PRICE_DESCENDING = "DESC";
+    public static final String PRICE_ASCENDING = "ASC";
+    public static final String PRICE_DESCENDING = "DESC";
     private static final String DATE_ASCENDING = "DATE_ASC";
     public static final String DATE_DESCENDING = "DATE_DESC";
     private static final String DEFAULT_ORDER = "DEFAULT";

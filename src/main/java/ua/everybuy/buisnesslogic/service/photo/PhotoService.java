@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
-import ua.everybuy.database.repository.AdvertisementPhotoRepository;
+import ua.everybuy.database.repository.photo.AdvertisementPhotoRepository;
 import ua.everybuy.errorhandling.custom.FileFormatException;
 
 import javax.imageio.ImageIO;

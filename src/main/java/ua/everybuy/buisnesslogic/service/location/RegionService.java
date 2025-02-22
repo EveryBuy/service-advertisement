@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Region;
-import ua.everybuy.database.repository.RegionRepository;
+import ua.everybuy.database.repository.location.RegionRepository;
 import java.util.List;
 
 @Service

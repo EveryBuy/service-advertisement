@@ -1,4 +1,4 @@
-package ua.everybuy.database.repository;
+package ua.everybuy.database.repository.advertisement;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

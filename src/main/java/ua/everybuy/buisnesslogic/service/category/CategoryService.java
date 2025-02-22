@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Category;
-import ua.everybuy.database.repository.CategoryRepository;
+import ua.everybuy.database.repository.category.CategoryRepository;
 import java.util.List;
 import static ua.everybuy.errorhandling.message.CategoryValidationMessages.CATEGORY_NOT_FOUND_MESSAGE;
 

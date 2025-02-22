@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Advertisement;
-import ua.everybuy.database.repository.AdvertisementRepository;
+import ua.everybuy.database.repository.advertisement.AdvertisementRepository;
 import ua.everybuy.errorhandling.message.AdvertisementValidationMessages;
 
 import java.util.List;
@@ -25,9 +25,9 @@ public class AdvertisementStorageService {
                         .ADVERTISEMENT_NOT_FOUND_MESSAGE));
     }
 
-    public List<Advertisement> findByUserId(Long userId, Advertisement.AdSection section,
-                                            boolean isEnabled, Pageable pageable) {
-        return advertisementRepository.findByUserId(userId, section, isEnabled, pageable);
+    public List<Advertisement> findByUserId(Long userId, boolean isEnabled, Advertisement.AdSection section,
+                                            Pageable pageable) {
+        return advertisementRepository.findByUserId(userId, isEnabled, section, pageable);
     }
 
     public List<Advertisement> getActiveAdvertisements() {

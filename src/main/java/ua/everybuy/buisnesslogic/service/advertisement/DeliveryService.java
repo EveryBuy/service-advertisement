@@ -7,7 +7,7 @@ import ua.everybuy.buisnesslogic.strategy.delivery.DeliveryMethod;
 import ua.everybuy.buisnesslogic.strategy.delivery.DeliveryMethodFactory;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementDelivery;
-import ua.everybuy.database.repository.AdvertisementDeliveryRepository;
+import ua.everybuy.database.repository.advertisement.AdvertisementDeliveryRepository;
 import java.util.Set;
 import java.util.stream.Collectors;
 

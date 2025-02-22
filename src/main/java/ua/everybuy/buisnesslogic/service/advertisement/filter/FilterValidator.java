@@ -7,8 +7,7 @@ import ua.everybuy.buisnesslogic.service.category.LowLevelSubCategoryService;
 import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
 import ua.everybuy.buisnesslogic.service.location.CityService;
 import ua.everybuy.buisnesslogic.service.location.RegionService;
-
-import static ua.everybuy.errorhandling.message.FilterAdvertisementValidationMessages.INVALID_PAGE_MESSAGE;
+import ua.everybuy.routing.dto.request.AdvertisementSearchParametersDto;
 
 @Service
 @RequiredArgsConstructor
@@ -19,30 +18,24 @@ public class FilterValidator {
     private final LowLevelSubCategoryService lowLevelSubCategoryService;
     private final CategoryService categoryService;
 
-    public void validate(Long regionId, Long cityId, Long topSubCategoryId, Long lowSubCategoryId, Long categoryId) {
-        if (regionId != null) {
-            regionService.findById(regionId);
+    public void validate(AdvertisementSearchParametersDto searchParametersDto) {
+        if (searchParametersDto.getRegionId() != null) {
+            regionService.findById(searchParametersDto.getRegionId());
         }
-        if (cityId != null) {
-            cityService.findById(cityId);
+        if (searchParametersDto.getCityId() != null) {
+            cityService.findById(searchParametersDto.getCityId());
         }
-        if (regionId != null && cityId != null) {
-            cityService.getByIdAndRegionId(cityId, regionId);
+        if (searchParametersDto.getRegionId() != null && searchParametersDto.getCityId() != null) {
+            cityService.getByIdAndRegionId(searchParametersDto.getCityId(), searchParametersDto.getRegionId());
         }
-        if (topSubCategoryId != null) {
-            topLevelSubCategoryService.findById(topSubCategoryId);
+        if (searchParametersDto.getTopSubCategoryId() != null) {
+            topLevelSubCategoryService.findById(searchParametersDto.getTopSubCategoryId());
         }
-        if (lowSubCategoryId != null) {
-            lowLevelSubCategoryService.findById(lowSubCategoryId);
+        if (searchParametersDto.getLowSubCategoryId() != null) {
+            lowLevelSubCategoryService.findById(searchParametersDto.getLowSubCategoryId());
         }
-        if (categoryId != null) {
-            categoryService.findById(categoryId);
-        }
-    }
-
-    public void validatePageNumber(int page) {
-        if (page <= 0) {
-            throw new IllegalArgumentException(INVALID_PAGE_MESSAGE);
+        if (searchParametersDto.getCategoryId() != null) {
+            categoryService.findById(searchParametersDto.getCategoryId());
         }
     }
 }

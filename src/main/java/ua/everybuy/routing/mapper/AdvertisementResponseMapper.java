@@ -1,4 +1,4 @@
-package ua.everybuy.routing.dto.mapper;
+package ua.everybuy.routing.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
