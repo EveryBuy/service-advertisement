@@ -1,10 +1,10 @@
-package ua.everybuy.buisnesslogic.service.advertisement.filter;
+package ua.everybuy.database.repository.advertisement.spec;
 
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 import ua.everybuy.database.entity.Advertisement;
 
-public class AdvertisementSpecifications {
+public class AdvertisementSearchSpecifications {
     public static Specification<Advertisement> isEnabled() {
         return (root, query, cb) -> cb.isTrue(root.get("isEnabled"));
     }

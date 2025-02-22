@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.buisnesslogic.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
-import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
+import ua.everybuy.routing.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.mapper.AdvertisementToEntityMapper;
 import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.StatusResponse;

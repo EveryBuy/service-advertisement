@@ -1,4 +1,4 @@
-package ua.everybuy.buisnesslogic.service.advertisement.favourite;
+package ua.everybuy.buisnesslogic.service.advertisement;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -10,12 +10,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementStorageService;
-import ua.everybuy.buisnesslogic.service.advertisement.StatisticsService;
 import ua.everybuy.buisnesslogic.service.category.CategoryService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.FavouriteAdvertisement;
-import ua.everybuy.database.repository.FavouriteAdvertisementRepository;
+import ua.everybuy.database.repository.advertisement.FavouriteAdvertisementRepository;
+import ua.everybuy.database.repository.advertisement.spec.factory.FavouriteAdvertisementSpecificationFactory;
 import ua.everybuy.errorhandling.custom.DuplicateDataException;
 import ua.everybuy.errorhandling.message.FavouriteAdvertisementValidationMessages;
 import ua.everybuy.routing.mapper.FavouriteAdvertisementMapper;

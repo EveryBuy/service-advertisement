@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.errorhandling.message.AdvertisementValidationMessages;
-import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
+import ua.everybuy.routing.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
 
 import java.util.List;

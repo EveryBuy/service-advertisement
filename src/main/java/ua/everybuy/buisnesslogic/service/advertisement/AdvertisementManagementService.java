@@ -9,7 +9,7 @@ import ua.everybuy.buisnesslogic.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
 import ua.everybuy.routing.dto.AdvertisementDto;
-import ua.everybuy.routing.dto.mapper.AdvertisementResponseMapper;
+import ua.everybuy.routing.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.mapper.AdvertisementToDtoMapper;
 import ua.everybuy.routing.dto.response.*;
 import java.io.IOException;

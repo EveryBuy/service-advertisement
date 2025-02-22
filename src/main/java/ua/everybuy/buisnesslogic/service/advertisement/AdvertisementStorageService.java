@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Advertisement;
-import ua.everybuy.database.repository.AdvertisementRepository;
+import ua.everybuy.database.repository.advertisement.AdvertisementRepository;
 import ua.everybuy.errorhandling.message.AdvertisementValidationMessages;
 
 import java.util.List;

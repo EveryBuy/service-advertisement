@@ -1,4 +1,4 @@
-package ua.everybuy.database.repository;
+package ua.everybuy.database.repository.advertisement;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

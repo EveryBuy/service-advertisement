@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementStatistics;
-import ua.everybuy.database.repository.AdvertisementRepository;
+import ua.everybuy.database.repository.advertisement.AdvertisementRepository;
 
 @Service
 @RequiredArgsConstructor
