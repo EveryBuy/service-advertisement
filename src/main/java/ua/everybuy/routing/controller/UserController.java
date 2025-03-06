@@ -21,7 +21,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public StatusResponse<List<AdvertisementWithStatisticResponse>> getAllActiveUsersAds(
-            Principal principal, @RequestParam(required = false, defaultValue = "BUY") @Valid Advertisement.AdSection section,
+            Principal principal, @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size) {
         List<AdvertisementWithStatisticResponse> responseList = advertisementUserService
@@ -33,7 +33,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public StatusResponse<List<AdvertisementWithStatisticResponse>> getAllNotActiveUsersAds(
-            Principal principal, @RequestParam(required = false, defaultValue = "BUY") @Valid Advertisement.AdSection section,
+            Principal principal, @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size) {
         List<AdvertisementWithStatisticResponse> responseList = advertisementUserService
