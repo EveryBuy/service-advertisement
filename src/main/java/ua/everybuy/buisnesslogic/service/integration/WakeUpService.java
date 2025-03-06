@@ -16,7 +16,7 @@ public class WakeUpService {
     private String userServiceUrl;
     private static final String WAKE_UP_ENDPOINT = "/keep-alive";
 
-    @Scheduled(fixedRate = 200000)
+    @Scheduled(fixedRate = 300000)
     public void sendEmptyRequestToWakeUpService() {
         String userServiceWakeUpUrl = userServiceUrl + WAKE_UP_ENDPOINT;
         ResponseEntity<String> response = exchangeService

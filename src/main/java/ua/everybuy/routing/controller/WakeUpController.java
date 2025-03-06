@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class WakeUpController {
     @GetMapping("/ad/keep-alive")
     public String keepAlive() {
-        return "Service is active";
+        return "Advertisement service is active";
     }
 }
