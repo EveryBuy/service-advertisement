@@ -19,7 +19,7 @@ public class FavouriteAdvertisementResponse {
     private String mainPhotoUrl;
     private String title;
     private Advertisement.ProductType productType;
-    private String price;
+    private Double price;
     private LocalDateTime updateDate;
     private Category category;
     private City city;
