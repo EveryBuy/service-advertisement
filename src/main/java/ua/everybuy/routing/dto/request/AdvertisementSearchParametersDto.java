@@ -26,15 +26,3 @@ public class AdvertisementSearchParametersDto {
     private String keyword;
     private String sortOrder;
 }
-// @RequestParam(required = false) @Valid @Min(0) Double minPrice,
-//            @RequestParam(required = false) @Valid @Min(0) Double maxPrice,
-//            @RequestParam(required = false) @Valid String sortOrder,
-//            @RequestParam(required = false) @Valid Long regionId,
-//            @RequestParam(required = false) @Valid Long cityId,
-//            @RequestParam(required = false) @Valid Long topSubCategoryId,
-//            @RequestParam(required = false) @Valid Long lowSubCategoryId,
-//            @RequestParam(required = false) @Valid Long categoryId,
-//            @RequestParam(required = false) @Valid Advertisement.ProductType productType,
-//            @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
-//            @RequestParam(required = false) @Valid String keyword,
-
