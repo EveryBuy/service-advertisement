@@ -17,7 +17,7 @@ public class FilteredAdvertisementsResponse {
     private String title;
     private Advertisement.ProductType productType;
     private String section;
-    private String price;
+    private Double price;
     private String description;
     private LocalDateTime updateDate;
     private City city;
