@@ -1,10 +1,12 @@
 package ua.everybuy.routing.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import ua.everybuy.database.entity.Category;
 import ua.everybuy.database.entity.City;
+import ua.everybuy.routing.dto.util.PriceSerializer;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +18,8 @@ public class AdvertisementDto {
     private Long id;
     private String title;
     private String description;
-    private String price;
+    @JsonSerialize(using = PriceSerializer.class)
+    private Double price;
     private LocalDateTime creationDate;
     private Boolean isEnabled;
     private Long userId;

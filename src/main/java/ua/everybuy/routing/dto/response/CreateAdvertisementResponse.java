@@ -1,7 +1,10 @@
 package ua.everybuy.routing.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -12,7 +15,7 @@ public class CreateAdvertisementResponse {
     private Long id;
     private String title;
     private String description;
-    private Double price;
+    private BigDecimal price;
     private LocalDateTime creationDate;
     private Boolean isEnabled;
     private Long userId;
