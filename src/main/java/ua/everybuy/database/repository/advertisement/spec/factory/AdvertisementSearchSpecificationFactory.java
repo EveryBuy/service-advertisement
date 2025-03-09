@@ -8,7 +8,7 @@ import ua.everybuy.routing.dto.request.AdvertisementSearchParametersDto;
 
 @Component
 public class AdvertisementSearchSpecificationFactory {
-    private static final double SIMILARITY_THRESHOLD = 0.4;
+    private static final double SIMILARITY_THRESHOLD = 0.3;
 
     public Specification<Advertisement> createSpecification(AdvertisementSearchParametersDto params) {
         return Specification
