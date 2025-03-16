@@ -60,7 +60,7 @@ public class AdvertisementSearchSpecifications {
             }
 
             var similarityCondition = cb.greaterThanOrEqualTo(
-                    cb.function("similarity", Double.class,
+                    cb.function("word_similarity", Double.class,
                             cb.function("LOWER", String.class, root.get("title")),
                             cb.function("LOWER", String.class, cb.literal(keyword))
                     ),
