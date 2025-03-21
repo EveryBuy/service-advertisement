@@ -13,6 +13,7 @@ import ua.everybuy.routing.dto.util.PriceSerializer;
 public class AdvertisementSearchResultDto {
     private long totalAdvertisements;
     private int totalPages;
+    @JsonSerialize(using = PriceSerializer.class)
     private Double minPrice;
     @JsonSerialize(using = PriceSerializer.class)
     private Double maxPrice;

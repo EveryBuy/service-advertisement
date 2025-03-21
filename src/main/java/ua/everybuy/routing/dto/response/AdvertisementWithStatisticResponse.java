@@ -13,7 +13,7 @@ public class AdvertisementWithStatisticResponse {
     private String title;
     private String productType;
     @JsonSerialize(using = PriceSerializer.class)
-    private String price;
+    private Double price;
     private Long userId;
     private String mainPhotoUrl;
     private Integer favouriteCount;
