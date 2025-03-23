@@ -16,7 +16,6 @@ public class CityController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     @CrossOrigin(origins = "*")
     public StatusResponse<List<City>> getAllCities() {
         List<City> cityList = cityService.getAllCitiesWithRegions();

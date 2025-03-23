@@ -21,7 +21,6 @@ public class FavouriteAdvertisementController {
 
     @PostMapping("/{id}/add-to-favourite")
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public StatusResponse<AddToFavouriteResponse> addToFavourite(Principal principal,
                                                                  @PathVariable(name = "id") Long advertisementId) {
         return favouriteAdvertisementService.addToFavorites(principal, advertisementId);
@@ -36,7 +35,6 @@ public class FavouriteAdvertisementController {
 
     @GetMapping("/favourite-ads")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public StatusResponse<List<FavouriteAdvertisementResponse>>
     getAllUsersFavouriteAdvertisementsWithCategory(Principal principal,
                                                    @RequestParam(required = false) @Valid Long categoryId,

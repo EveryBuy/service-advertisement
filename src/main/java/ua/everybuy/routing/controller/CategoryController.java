@@ -15,7 +15,6 @@ public class CategoryController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     @CrossOrigin(origins = "*")
     public List<Category> getAllCategory() {
         return categoryService.getAllCategories();
@@ -23,7 +22,6 @@ public class CategoryController {
 
     @GetMapping("/ukr")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public List<String> getAllUkrNames() {
         return categoryService.getAllUkrCategories();
     }

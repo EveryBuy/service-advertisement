@@ -31,7 +31,6 @@ public class UserController {
 
     @GetMapping("/user/inactive-ads")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public StatusResponse<List<AdvertisementWithStatisticResponse>> getAllNotActiveUsersAds(
             Principal principal, @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
             @RequestParam(defaultValue = "1") int page,
