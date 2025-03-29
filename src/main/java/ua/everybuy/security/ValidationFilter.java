@@ -6,8 +6,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.client.HttpStatusCodeException;
 import ua.everybuy.buisnesslogic.service.integration.AuthValidationService;
 import ua.everybuy.errorhandling.ErrorResponse;
@@ -25,21 +23,10 @@ import ua.everybuy.routing.dto.response.ValidResponse;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class ValidationFilter extends OncePerRequestFilter {
-    private static final Set<RequestMatcher> EXCLUDED_PATH_MATCHERS = Set.of(
-            new AntPathRequestMatcher("/ad/category/**"),
-            new AntPathRequestMatcher("/ad/subcategory/**"),
-            new AntPathRequestMatcher("/ad/city/**"),
-            new AntPathRequestMatcher("/ad/region/**"),
-            new AntPathRequestMatcher("/ad/keep-alive"),
-            new AntPathRequestMatcher("/ad/*/active"),
-            new AntPathRequestMatcher("/ad/*/info"),
-            new AntPathRequestMatcher("/ad/filter")
-    );
 
     private final ObjectMapper objectMapper;
     private final AuthValidationService authValidationService;
@@ -83,7 +70,7 @@ public class ValidationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
-        return EXCLUDED_PATH_MATCHERS.stream()
+        return PublicAvailableEndpoints.getPublicEndpoints().stream()
                 .anyMatch(matcher -> matcher.matches(request));
     }
 
