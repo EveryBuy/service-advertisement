@@ -88,6 +88,9 @@ public class AdvertisementUserService {
     }
 
     private void validCategory(Long categoryId) {
-        categoryService.findById(categoryId);
+        if (categoryId != null) {
+            categoryService.findById(categoryId);
+        }
+
     }
 }
