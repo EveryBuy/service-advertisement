@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementUserService;
 import ua.everybuy.database.entity.Advertisement;
+import ua.everybuy.routing.dto.UserAdvertisementDto;
 import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
+
 import java.security.Principal;
 import java.util.List;
 
@@ -38,5 +40,13 @@ public class UserController {
         List<AdvertisementWithStatisticResponse> responseList = advertisementUserService
                 .getUserAdvertisements(Long.parseLong(principal.getName()), false, section, page, size);
         return new StatusResponse<>(HttpStatus.OK.value(), responseList);
+    }
+
+    @GetMapping("/user/{userId}/advertisements")
+    @ResponseStatus(HttpStatus.OK)
+    public UserAdvertisementDto getUserAds(@PathVariable Long userId, @RequestParam(required = false) Long categoryId,
+                                           @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+
+        return advertisementUserService.getUserActiveAdvertisements(userId, categoryId, page, size);
     }
 }

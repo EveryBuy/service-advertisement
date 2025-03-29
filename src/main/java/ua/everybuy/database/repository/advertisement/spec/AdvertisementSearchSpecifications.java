@@ -24,6 +24,7 @@ public class AdvertisementSearchSpecifications {
     public static Specification<Advertisement> belongsToCity(Long cityId) {
         return (root, query, cb) -> cityId == null ? null : cb.equal(root.get("city").get("id"), cityId);
     }
+
     public static Specification<Advertisement> fetchCityAndRegion() {
         return (root, query, cb) -> {
             if (query.getResultType() != Long.class) {
@@ -51,6 +52,10 @@ public class AdvertisementSearchSpecifications {
 
     public static Specification<Advertisement> hasSection(Advertisement.AdSection adSection) {
         return (root, query, cb) -> adSection == null ? null : cb.equal(root.get("section"), adSection);
+    }
+
+    public static Specification<Advertisement> belongsToUser(Long userId) {
+        return (root, query, cb) -> userId == null ? null : cb.equal(root.get("userId"), userId);
     }
 
     public static Specification<Advertisement> hasSimilarTitle(String keyword, double minSimilarity) {

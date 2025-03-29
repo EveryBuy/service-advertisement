@@ -30,10 +30,6 @@ public class AdvertisementStorageService {
         return advertisementRepository.findByUserId(userId, isEnabled, section, pageable);
     }
 
-    public List<Advertisement> getActiveAdvertisements() {
-        return advertisementRepository.findByIsEnabledTrueOrderByCreationDateDesc();
-    }
-
     public Advertisement findAdvertisementByIdAndUserId(Long advertisementId, Long userId) {
         return advertisementRepository.findByIdAndUserId(advertisementId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(
