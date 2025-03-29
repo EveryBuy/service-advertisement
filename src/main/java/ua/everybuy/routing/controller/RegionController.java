@@ -24,13 +24,11 @@ public class RegionController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public List<Region> getAllRegions() {
         return regionService.getAllRegions();
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     @GetMapping({"/{regionId}/cities"})
     public List<City> getAllCitiesByRegionId(@PathVariable Long regionId) {
         return cityService.getCitiesByRegionId(regionId);

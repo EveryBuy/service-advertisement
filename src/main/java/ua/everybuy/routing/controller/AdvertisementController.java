@@ -26,7 +26,6 @@ public class AdvertisementController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public StatusResponse<CreateAdvertisementResponse> createAdvertisement(
             @Valid @RequestPart("request") CreateAdvertisementRequest createRequest,
             @Nullable @RequestPart(value = "photos", required = false) MultipartFile[] photos,
@@ -36,7 +35,6 @@ public class AdvertisementController {
 
     @PutMapping("/{id}/update")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public StatusResponse<UpdateAdvertisementResponse> updateAdvertisement(
             @PathVariable Long id,
             @Valid @RequestPart("request") UpdateAdvertisementRequest updateRequest,
@@ -47,7 +45,6 @@ public class AdvertisementController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody()
     public StatusResponse<AdvertisementDto> getUserAdvertisement(@PathVariable Long id,
                                                                  Principal principal) {
         return advertisementManagementService.retrieveAdvertisementWithAuthorization(id, principal);
@@ -55,14 +52,12 @@ public class AdvertisementController {
 
     @GetMapping("/{id}/active")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public StatusResponse<AdvertisementDto> getAdvertisementById(@PathVariable Long id) {
         return advertisementManagementService.getActiveAdvertisement(id);
     }
 
     @GetMapping("/{id}/info")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public AdvertisementInfoForChatService getAdvertisementByIdForChatService(@PathVariable Long id) {
         return advertisementManagementService.getAdvertisementShortInfo(id);
     }
@@ -75,7 +70,6 @@ public class AdvertisementController {
 
     @PutMapping("/{id}/change-status")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public StatusResponse<AdvertisementStatusResponse> enableAdvertisement(@PathVariable @Valid Long id) {
         return advertisementManagementService.setAdvertisementEnabledStatus(id);
     }

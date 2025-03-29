@@ -1,0 +1,38 @@
+package ua.everybuy.buisnesslogic.service.advertisement;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import ua.everybuy.buisnesslogic.service.integration.UserProfileService;
+import ua.everybuy.database.entity.Advertisement;
+import ua.everybuy.routing.dto.CategoryAdvertisementCount;
+import ua.everybuy.routing.dto.UserAdvertisementDto;
+import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
+import ua.everybuy.routing.mapper.AdvertisementFilterMapper;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class AdvertisementUserDtoBuilderService {
+    private final UserProfileService userService;
+    private final AdvertisementFilterMapper advertisementFilterMapper;
+
+    public UserAdvertisementDto buildUserAdvertisementDto(Long userId,
+                                                          Page<Advertisement> advertisementsPage,
+                                                          List<CategoryAdvertisementCount> categories) {
+        return UserAdvertisementDto.builder()
+                .user(userService.getShortUserInfo(userId))
+                .totalAdvertisements(advertisementsPage.getTotalElements())
+                .totalPages(advertisementsPage.getTotalPages())
+                .categories(categories)
+                .filteredAds(mapToFilteredResponses(advertisementsPage.getContent()))
+                .build();
+    }
+
+    private List<FilteredAdvertisementsResponse> mapToFilteredResponses(List<Advertisement> advertisements) {
+        return advertisements.stream()
+                .map(advertisementFilterMapper::mapToFilteredAdvertisementsResponse)
+                .toList();
+    }
+}
