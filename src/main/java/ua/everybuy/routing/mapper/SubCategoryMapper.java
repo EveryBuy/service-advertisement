@@ -5,6 +5,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import ua.everybuy.database.entity.LowLevelSubCategory;
 import ua.everybuy.database.entity.TopLevelSubCategory;
+import ua.everybuy.routing.dto.CategoryAdvertisementCount;
+import ua.everybuy.routing.dto.CategoryAdvertisementCountDto;
 import ua.everybuy.routing.dto.SubCategoryDto;
 
 @Mapper(componentModel = "spring")
@@ -20,4 +22,8 @@ public interface SubCategoryMapper {
     @Mapping(source = "subCategory.subCategoryName", target = "subCategoryName")
     @Mapping(source = "subCategory.subCategoryNameUkr", target = "subCategoryNameUkr")
     SubCategoryDto mapToSubCategoryDto(LowLevelSubCategory subCategory);
+
+    @Mapping(source = "categoryAdvertisementCount.category.id", target = "categoryId")
+    @Mapping(source = "categoryAdvertisementCount.category.nameUkr", target = "nameUkr")
+    CategoryAdvertisementCountDto mapToCategoryAdvertisementCountDto(CategoryAdvertisementCount categoryAdvertisementCount);
 }

@@ -53,8 +53,8 @@ public class AdvertisementUserService {
         return advertisements;
     }
 
-    public UserAdvertisementDto getUserActiveAdvertisements(Long userId, Long categoryId, int page, int size) {
-
+    public UserAdvertisementDto getUserActiveAdvertisements(Long userId, Long categoryId,
+                                                            int page, int size) {
 
         Page<Advertisement> advertisementsPage = findFilteredAdvertisements(
                 userId, categoryId, page, size);
@@ -80,7 +80,7 @@ public class AdvertisementUserService {
 
     private Pageable createPageable(int page, int size) {
         Sort sort = sortStrategyFactory.getSortStrategy(SortStrategyFactory.DATE_DESCENDING).getSortOrder();
-        return PageRequest.of(Math.max(0, page - 1), size, sort);
+        return PageRequest.of( page - 1, size, sort);
     }
 
     private void validCategory(Long categoryId) {

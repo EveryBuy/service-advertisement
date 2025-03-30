@@ -13,6 +13,6 @@ public class UserAdvertisementDto {
     private ShortUserInfoDto user;
     private long totalAdvertisements;
     private int totalPages;
-    private List<CategoryAdvertisementCount> categories;
+    private List<CategoryAdvertisementCountDto> categories;
     private List<FilteredAdvertisementsResponse> filteredAds;
 }
