@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import ua.everybuy.buisnesslogic.service.integration.UserProfileService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.CategoryAdvertisementCount;
+import ua.everybuy.routing.dto.CategoryAdvertisementCountDto;
 import ua.everybuy.routing.dto.UserAdvertisementDto;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
 import ua.everybuy.routing.mapper.AdvertisementFilterMapper;
+import ua.everybuy.routing.mapper.SubCategoryMapper;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 public class AdvertisementUserDtoBuilderService {
     private final UserProfileService userService;
     private final AdvertisementFilterMapper advertisementFilterMapper;
+    private final SubCategoryMapper subCategoryMapper;
 
     public UserAdvertisementDto buildUserAdvertisementDto(Long userId,
                                                           Page<Advertisement> advertisementsPage,
@@ -25,7 +28,7 @@ public class AdvertisementUserDtoBuilderService {
                 .user(userService.getShortUserInfo(userId))
                 .totalAdvertisements(advertisementsPage.getTotalElements())
                 .totalPages(advertisementsPage.getTotalPages())
-                .categories(categories)
+                .categories(mapToCategoryDto(categories))
                 .filteredAds(mapToFilteredResponses(advertisementsPage.getContent()))
                 .build();
     }
@@ -33,6 +36,12 @@ public class AdvertisementUserDtoBuilderService {
     private List<FilteredAdvertisementsResponse> mapToFilteredResponses(List<Advertisement> advertisements) {
         return advertisements.stream()
                 .map(advertisementFilterMapper::mapToFilteredAdvertisementsResponse)
+                .toList();
+    }
+
+    private List<CategoryAdvertisementCountDto> mapToCategoryDto(List<CategoryAdvertisementCount> categories) {
+        return categories.stream()
+                .map(subCategoryMapper::mapToCategoryAdvertisementCountDto)
                 .toList();
     }
 }
