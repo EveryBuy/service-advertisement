@@ -73,7 +73,7 @@ public class AdvertisementManagementService {
                         Long.parseLong(principal.getName()));
         photoService.deletePhotosByAdvertisementId(advertisement);
         advertisement.setIsEnabled(false);
-        pushAdvertisementChangeToChatService(advertisement);
+//        pushAdvertisementChangeToChatService(advertisement);
         advertisementStorageService.delete(advertisement);
     }
 
@@ -107,4 +107,5 @@ public class AdvertisementManagementService {
         T dto = mapper.apply(advertisement);
         return new StatusResponse<>(status.value(), dto);
     }
+
 }

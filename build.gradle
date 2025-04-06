@@ -32,7 +32,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	implementation 'org.flywaydb:flyway-core'
-	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'org.postgresql:postgresql:42.7.5'
 
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.11.388'
 	implementation 'org.mapstruct:mapstruct:1.5.2.Final'

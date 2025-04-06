@@ -15,7 +15,7 @@ public class PublicAvailableEndpoints {
             new AntPathRequestMatcher("/ad/*/active"),
             new AntPathRequestMatcher("/ad/*/info"),
             new AntPathRequestMatcher("/ad/filter"),
-            new AntPathRequestMatcher("/ad/user/*/advertisements/**")
+            new AntPathRequestMatcher("/ad/user/*/ads/**")
     );
 
     public static Set<RequestMatcher> getPublicEndpoints() {

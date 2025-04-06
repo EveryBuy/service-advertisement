@@ -2,6 +2,7 @@ package ua.everybuy.buisnesslogic.service.photo;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
@@ -53,8 +54,13 @@ public class PhotoService {
                 .build();
     }
 
+    @Transactional
     public void deletePhotosByAdvertisementId(Advertisement advertisement) throws IOException {
         List<AdvertisementPhoto> photos = findPhotosByAdvertisement(advertisement);
+        deleteAllPhotos(photos);
+    }
+
+    public void deleteAllPhotos(List<AdvertisementPhoto> photos) throws IOException {
         amazonS3Service.deletePhotos(photos);
         advertisementPhotoRepository.deleteAll(photos);
     }

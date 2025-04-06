@@ -1,8 +1,8 @@
-package ua.everybuy.buisnesslogic.service.advertisement;
+package ua.everybuy.routing;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ua.everybuy.buisnesslogic.service.integration.UserProfileService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.CategoryAdvertisementCount;
@@ -14,9 +14,9 @@ import ua.everybuy.routing.mapper.SubCategoryMapper;
 
 import java.util.List;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class AdvertisementUserDtoBuilderService {
+public class AdvertisementUserDtoBuilder {
     private final UserProfileService userService;
     private final AdvertisementFilterMapper advertisementFilterMapper;
     private final SubCategoryMapper subCategoryMapper;
