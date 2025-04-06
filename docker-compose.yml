@@ -1,13 +1,13 @@
 services:
   postgres:
     image: 'postgres:latest'
-    container_name: advertisement
+    container_name: advertisement_dev
     environment:
-      - POSTGRES_DB=advertisement
+      - POSTGRES_DB=advertisement_dev
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - "5432:5432"
+      - "5434:5432"
     restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data

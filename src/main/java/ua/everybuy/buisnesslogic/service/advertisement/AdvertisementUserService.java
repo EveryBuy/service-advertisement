@@ -1,6 +1,6 @@
 package ua.everybuy.buisnesslogic.service.advertisement;
 
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,25 +13,27 @@ import ua.everybuy.buisnesslogic.strategy.sort.SortStrategyFactory;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.repository.advertisement.AdvertisementRepository;
 import ua.everybuy.database.repository.advertisement.spec.factory.AdvertisementUserSpecificationFactory;
-import ua.everybuy.errorhandling.message.AdvertisementValidationMessages;
+import ua.everybuy.routing.AdvertisementUserDtoBuilder;
 import ua.everybuy.routing.dto.CategoryAdvertisementCount;
 import ua.everybuy.routing.dto.UserAdvertisementDto;
 import ua.everybuy.routing.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AdvertisementUserService {
+
     private final AdvertisementStorageService advertisementStorageService;
     private final AdvertisementResponseMapper advertisementResponseMapper;
-    private final AdvertisementUserDtoBuilderService userDtoBuilderService;
+    private final AdvertisementUserDtoBuilder userDtoBuilder;
     private final AdvertisementUserSpecificationFactory advertisementUserSpecificationFactory;
     private final SortStrategyFactory sortStrategyFactory;
     private final AdvertisementRepository advertisementRepository;
     private final CategoryService categoryService;
+    private final AdvertisementUserDeletionService advertisementUserDeletionService;
 
     public List<AdvertisementWithStatisticResponse> getUserAdvertisements(Long userId, boolean isEnabled,
                                                                           Advertisement.AdSection section,
@@ -48,13 +50,7 @@ public class AdvertisementUserService {
                                                        int page, int size) {
         Pageable pageable = createPageable(page, size);
 
-        List<Advertisement> advertisements = advertisementStorageService.findByUserId(userId, isEnabled, section, pageable);
-
-        return Optional.ofNullable(advertisements)
-                .filter(list -> !list.isEmpty())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        AdvertisementValidationMessages.NO_ADVERTISEMENTS_FOUND_MESSAGE + userId
-                ));
+        return advertisementStorageService.findByUserId(userId, isEnabled, section, pageable);
     }
 
     public UserAdvertisementDto getUserActiveAdvertisements(Long userId, Long categoryId,
@@ -63,7 +59,7 @@ public class AdvertisementUserService {
         Page<Advertisement> advertisementsPage = findFilteredAdvertisements(
                 userId, categoryId, page, size);
 
-        return userDtoBuilderService.buildUserAdvertisementDto(userId, advertisementsPage, getUserCategoryCounts(userId));
+        return userDtoBuilder.buildUserAdvertisementDto(userId, advertisementsPage, getUserCategoryCounts(userId));
     }
 
     private Page<Advertisement> findFilteredAdvertisements(Long userId, Long categoryId,
@@ -82,9 +78,13 @@ public class AdvertisementUserService {
         return advertisementRepository.findCategoryCountsByUserId(userId);
     }
 
+    public void deleteAllAndPushUserAdvertisements(Long userId, HttpServletRequest request) throws IOException {
+        advertisementUserDeletionService.deleteAllUserAdvertisements(userId, request);
+    }
+
     private Pageable createPageable(int page, int size) {
         Sort sort = sortStrategyFactory.getSortStrategy(SortStrategyFactory.DATE_DESCENDING).getSortOrder();
-        return PageRequest.of( page - 1, size, sort);
+        return PageRequest.of(page - 1, size, sort);
     }
 
     private void validCategory(Long categoryId) {
@@ -93,4 +93,5 @@ public class AdvertisementUserService {
         }
 
     }
+
 }

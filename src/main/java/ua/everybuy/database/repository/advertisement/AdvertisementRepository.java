@@ -32,4 +32,9 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
             "GROUP BY a.topSubCategory.category")
     List<CategoryAdvertisementCount> findCategoryCountsByUserId(@Param("userId") Long userId);
 
+    @Query("SELECT a FROM Advertisement a " +
+            "JOIN FETCH a.city " +
+            "WHERE a.userId = :userId ")
+    List<Advertisement> findAllByUserId(Long userId);
+
 }
