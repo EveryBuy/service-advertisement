@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 import ua.everybuy.database.entity.Advertisement;
-import ua.everybuy.database.entity.Category;
 import ua.everybuy.database.entity.City;
+import ua.everybuy.routing.dto.CategoryDto;
 import ua.everybuy.routing.dto.SubCategoryDto;
 import ua.everybuy.routing.dto.util.PriceSerializer;
 
@@ -27,5 +27,5 @@ public class FilteredAdvertisementsResponse {
     private City city;
     private SubCategoryDto topSubCategory;
     private SubCategoryDto lowSubCategory;
-    private Category category;
+    private CategoryDto category;
 }

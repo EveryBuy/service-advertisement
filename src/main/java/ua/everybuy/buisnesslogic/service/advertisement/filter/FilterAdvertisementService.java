@@ -10,13 +10,15 @@ import org.springframework.stereotype.Service;
 import ua.everybuy.buisnesslogic.strategy.sort.SortStrategyFactory;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.repository.advertisement.AdvertisementRepository;
+import ua.everybuy.database.repository.advertisement.spec.factory.AdvertisementDistinctTopCategorySpecificationFactory;
 import ua.everybuy.database.repository.advertisement.spec.factory.AdvertisementSearchSpecificationFactory;
+import ua.everybuy.routing.dto.CategoryDto;
 import ua.everybuy.routing.dto.PriceRangeDto;
 import ua.everybuy.routing.dto.request.AdvertisementSearchParametersDto;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
 import ua.everybuy.routing.dto.AdvertisementSearchResultDto;
 import ua.everybuy.routing.mapper.AdvertisementFilterMapper;
-
+import ua.everybuy.routing.mapper.SubCategoryMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +29,9 @@ import static ua.everybuy.buisnesslogic.strategy.sort.SortStrategyFactory.*;
 public class FilterAdvertisementService {
     private final AdvertisementRepository advertisementRepository;
     private final AdvertisementFilterMapper advertisementFilterMapper;
+    private final SubCategoryMapper subCategoryMapper;
     private final AdvertisementSearchSpecificationFactory filterAdSpecFactory;
+    private final AdvertisementDistinctTopCategorySpecificationFactory distinctTopCategorySpecFactory;
     private final SortStrategyFactory sortStrategyFactory;
     private final FilterValidator filterValidator;
     private final FilterPriceRangeService filterPriceRangeService;
@@ -43,8 +47,9 @@ public class FilterAdvertisementService {
         PriceRangeDto priceRange = filterPriceRangeService.getPriceRange(searchParametersDto);
         List<FilteredAdvertisementsResponse> advertisements = mapToResponse(filteredAds);
 
+        List<CategoryDto> distinctTopCategories = getDistinctTopCategories(searchParametersDto.getKeyword());
         return advertisementFilterMapper.mapToAdvertisementPaginationDto(totalAdvertisements, totalPages,
-                priceRange.getMinPrice(), priceRange.getMaxPrice(), advertisements);
+                priceRange.getMinPrice(), priceRange.getMaxPrice(), distinctTopCategories, advertisements);
 
     }
 
@@ -54,11 +59,9 @@ public class FilterAdvertisementService {
         filterValidator.validate(searchParametersDto);
 
         Specification<Advertisement> specs = filterAdSpecFactory.createSpecification(searchParametersDto);
-
         Sort sort = buildSort(searchParametersDto.getSortOrder());
         Pageable pageable = PageRequest.of(page - 1,
                 size, sort);
-
         return advertisementRepository.findAll(specs, pageable);
     }
 
@@ -74,4 +77,12 @@ public class FilterAdvertisementService {
         return priceSort.and(dateSort);
     }
 
+    private List<CategoryDto> getDistinctTopCategories(String keyword) {
+        Specification<Advertisement> spec = distinctTopCategorySpecFactory.createSpecification(keyword);
+        return advertisementRepository.findAll(spec)
+                .stream()
+                .map(a-> a.getTopSubCategory().getCategory())
+                .map(subCategoryMapper::mapToCategoryDto)
+                .toList();
+    }
 }

@@ -1,8 +1,12 @@
 package ua.everybuy.database.repository.advertisement.spec;
 
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 import ua.everybuy.database.entity.Advertisement;
+import ua.everybuy.database.entity.TopLevelSubCategory;
 
 public class AdvertisementSearchSpecifications {
     public static Specification<Advertisement> isEnabled() {
@@ -78,6 +82,18 @@ public class AdvertisementSearchSpecifications {
             );
 
             return cb.or(similarityCondition, ilikeCondition);
+        };
+    }
+    public static Specification<Advertisement> distinctByCategory() {
+        return (root, query, cb) -> {
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<Advertisement> subRoot = subquery.from(Advertisement.class);
+            Join<Advertisement, TopLevelSubCategory> subCategoryJoin = subRoot.join("topSubCategory");
+
+            subquery.select(cb.min(subRoot.get("id")))
+                    .groupBy(subCategoryJoin.get("id"));
+
+            return root.get("id").in(subquery);
         };
     }
 }

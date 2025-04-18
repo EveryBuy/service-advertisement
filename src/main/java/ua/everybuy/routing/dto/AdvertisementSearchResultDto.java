@@ -11,6 +11,7 @@ import ua.everybuy.routing.dto.util.PriceSerializer;
 @Getter
 @Setter
 public class AdvertisementSearchResultDto {
+    private List<CategoryDto> categories;
     private long totalAdvertisements;
     private int totalPages;
     @JsonSerialize(using = PriceSerializer.class)
