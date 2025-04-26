@@ -12,6 +12,7 @@ import java.util.List;
 public class UserAdvertisementDto {
     private ShortUserInfoDto user;
     private long totalAdvertisements;
+    private long totalFilteredAdvertisements;
     private int totalPages;
     private List<CategoryAdvertisementCountDto> categories;
     private List<FilteredAdvertisementsResponse> filteredAds;

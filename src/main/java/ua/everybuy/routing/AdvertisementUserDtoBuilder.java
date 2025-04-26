@@ -22,11 +22,13 @@ public class AdvertisementUserDtoBuilder {
     private final SubCategoryMapper subCategoryMapper;
 
     public UserAdvertisementDto buildUserAdvertisementDto(Long userId,
+                                                          long totalAdvertisements,
                                                           Page<Advertisement> advertisementsPage,
                                                           List<CategoryAdvertisementCount> categories) {
         return UserAdvertisementDto.builder()
                 .user(userService.getShortUserInfo(userId))
-                .totalAdvertisements(advertisementsPage.getTotalElements())
+                .totalAdvertisements(totalAdvertisements)
+                .totalFilteredAdvertisements(advertisementsPage.getTotalElements())
                 .totalPages(advertisementsPage.getTotalPages())
                 .categories(mapToCategoryDto(categories))
                 .filteredAds(mapToFilteredResponses(advertisementsPage.getContent()))

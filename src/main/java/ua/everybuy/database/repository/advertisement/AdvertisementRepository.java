@@ -28,9 +28,13 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
                                      Pageable pageable);
 
     @Query("SELECT new ua.everybuy.routing.dto.CategoryAdvertisementCount(a.topSubCategory.category, COUNT(a)) " +
-            "FROM Advertisement a WHERE a.userId = :userId " +
+            "FROM Advertisement a " +
+            "WHERE a.userId = :userId AND a.section = :section " +
             "GROUP BY a.topSubCategory.category")
-    List<CategoryAdvertisementCount> findCategoryCountsByUserId(@Param("userId") Long userId);
+    List<CategoryAdvertisementCount> findCategoryCountsByUserIdAndSection(
+            @Param("userId") Long userId,
+            @Param("section") Advertisement.AdSection section
+    );
 
     @Query("SELECT a FROM Advertisement a " +
             "JOIN FETCH a.city " +
