@@ -5,7 +5,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ua.everybuy.buisnesslogic.service.advertisement.AdvertisementUserService;
+import ua.everybuy.buisnesslogic.service.advertisement.user.AdvertisementUserDeletionService;
+import ua.everybuy.buisnesslogic.service.advertisement.user.AdvertisementUserProfileService;
+import ua.everybuy.buisnesslogic.service.advertisement.user.AdvertisementUserStatisticService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.UserAdvertisementDto;
 import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
@@ -19,7 +21,9 @@ import java.util.List;
 @RequestMapping("/ad/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final AdvertisementUserService advertisementUserService;
+    private final AdvertisementUserStatisticService advertisementUserStatisticService;
+    private final AdvertisementUserProfileService advertisementUserProfileService;
+    private final AdvertisementUserDeletionService advertisementUserDeletionService;
 
     @GetMapping("/active-ads")
     @ResponseStatus(HttpStatus.OK)
@@ -28,8 +32,8 @@ public class UserController {
             Principal principal, @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size) {
-        List<AdvertisementWithStatisticResponse> responseList = advertisementUserService
-                .getUserAdvertisements(Long.parseLong(principal.getName()), true, section, page, size);
+        List<AdvertisementWithStatisticResponse> responseList = advertisementUserStatisticService
+                .getUserAdvertisementsWithStatistic(Long.parseLong(principal.getName()), true, section, page, size);
         return new StatusResponse<>(HttpStatus.OK.value(), responseList);
     }
 
@@ -39,23 +43,26 @@ public class UserController {
             Principal principal, @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size) {
-        List<AdvertisementWithStatisticResponse> responseList = advertisementUserService
-                .getUserAdvertisements(Long.parseLong(principal.getName()), false, section, page, size);
+        List<AdvertisementWithStatisticResponse> responseList = advertisementUserStatisticService
+                .getUserAdvertisementsWithStatistic(Long.parseLong(principal.getName()), false, section, page, size);
         return new StatusResponse<>(HttpStatus.OK.value(), responseList);
     }
 
     @GetMapping("/{userId}/ads")
     @ResponseStatus(HttpStatus.OK)
     public UserAdvertisementDto getUserAds(@PathVariable Long userId, @RequestParam(required = false) Long categoryId,
-                                           @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+                                           @RequestParam(required = false, defaultValue = "SELL")
+                                           Advertisement.AdSection section,
+                                           @RequestParam(defaultValue = "1") int page,
+                                           @RequestParam(defaultValue = "20") int size) {
 
-        return advertisementUserService.getUserActiveAdvertisements(userId, categoryId, page, size);
+        return advertisementUserProfileService.getUserActiveFilteredAdvertisements(userId, categoryId, section, page, size);
     }
 
     @DeleteMapping("/{userId}/ads")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserAdvertisements(@PathVariable Long userId,
                                          HttpServletRequest request) throws IOException {
-        advertisementUserService.deleteAllAndPushUserAdvertisements(userId, request);
+        advertisementUserDeletionService.deleteAllAndPushUserAdvertisements(userId, request);
     }
 }
