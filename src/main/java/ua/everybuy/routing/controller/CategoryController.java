@@ -8,7 +8,7 @@ import ua.everybuy.database.entity.Category;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ad/category")
+@RequestMapping("/product/category")
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;

@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/ad/subcategory")
+@RequestMapping("/product/subcategory")
 public class LowLevelSubCategoryController {
     private final LowLevelSubCategoryService subCategoryService;
 

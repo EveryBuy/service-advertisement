@@ -18,7 +18,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ad/user")
+@RequestMapping("/product/user")
 @RequiredArgsConstructor
 public class UserController {
     private final AdvertisementUserStatisticService advertisementUserStatisticService;

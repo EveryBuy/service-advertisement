@@ -13,7 +13,7 @@ import ua.everybuy.routing.dto.AdvertisementSearchResultDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/ad")
+@RequestMapping("/product")
 @Validated
 public class FilterController {
     private final FilterAdvertisementService filterAdvertisementService;
