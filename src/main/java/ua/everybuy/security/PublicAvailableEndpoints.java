@@ -7,15 +7,15 @@ import java.util.Set;
 
 public class PublicAvailableEndpoints {
     private static final Set<RequestMatcher> PUBLIC_ENDPOINTS = Set.of(
-            new AntPathRequestMatcher("/ad/category/**"),
-            new AntPathRequestMatcher("/ad/subcategory/**"),
-            new AntPathRequestMatcher("/ad/city/**"),
-            new AntPathRequestMatcher("/ad/region/**"),
-            new AntPathRequestMatcher("/ad/keep-alive"),
-            new AntPathRequestMatcher("/ad/*/active"),
-            new AntPathRequestMatcher("/ad/*/info"),
-            new AntPathRequestMatcher("/ad/filter"),
-            new AntPathRequestMatcher("/ad/user/*/ads/**")
+            new AntPathRequestMatcher("/product/category/**"),
+            new AntPathRequestMatcher("/product/subcategory/**"),
+            new AntPathRequestMatcher("/product/city/**"),
+            new AntPathRequestMatcher("/product/region/**"),
+            new AntPathRequestMatcher("/product/keep-alive"),
+            new AntPathRequestMatcher("/product/*/active"),
+            new AntPathRequestMatcher("/product/*/info"),
+            new AntPathRequestMatcher("/product/filter"),
+            new AntPathRequestMatcher("/product/user/*/ads/**")
     );
 
     public static Set<RequestMatcher> getPublicEndpoints() {
