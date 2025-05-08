@@ -14,7 +14,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ad")
+@RequestMapping("/product")
 @RequiredArgsConstructor
 public class FavouriteAdvertisementController {
     private final FavouriteAdvertisementService favouriteAdvertisementService;

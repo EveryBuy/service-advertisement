@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("ad/city")
+@RequestMapping("/product/city")
 public class CityController {
     private final CityService cityService;
 

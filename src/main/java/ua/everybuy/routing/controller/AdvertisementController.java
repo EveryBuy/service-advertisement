@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/ad")
+@RequestMapping("/product")
 @RequiredArgsConstructor
 public class AdvertisementController {
     private final AdvertisementManagementService advertisementManagementService;
