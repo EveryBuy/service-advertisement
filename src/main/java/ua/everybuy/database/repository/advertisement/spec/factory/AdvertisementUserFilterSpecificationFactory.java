@@ -11,7 +11,7 @@ public class AdvertisementUserFilterSpecificationFactory {
         return Specification
                 .where(AdvertisementSearchSpecifications.isEnabled())
                 .and(AdvertisementSearchSpecifications.belongsToUser(userId))
-                .and(AdvertisementSearchSpecifications.fetchCityAndRegion())
+                .and(AdvertisementSearchSpecifications.fetchAllRelations())
                 .and(AdvertisementSearchSpecifications.hasSection(adSection))
                 .and(AdvertisementSearchSpecifications.belongsToCategory(categoryId));
     }

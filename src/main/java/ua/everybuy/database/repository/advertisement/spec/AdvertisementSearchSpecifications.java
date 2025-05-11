@@ -29,10 +29,12 @@ public class AdvertisementSearchSpecifications {
         return (root, query, cb) -> cityId == null ? null : cb.equal(root.get("city").get("id"), cityId);
     }
 
-    public static Specification<Advertisement> fetchCityAndRegion() {
+    public static Specification<Advertisement> fetchAllRelations() {
         return (root, query, cb) -> {
             if (query.getResultType() != Long.class) {
                 root.fetch("city", JoinType.LEFT).fetch("region", JoinType.LEFT);
+                root.fetch("topSubCategory", JoinType.LEFT).fetch("category", JoinType.LEFT);
+                root.fetch("lowSubCategory", JoinType.LEFT);
             }
             return null;
         };

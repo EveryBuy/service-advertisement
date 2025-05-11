@@ -11,6 +11,6 @@ public class AdvertisementUserSpecificationFactory {
         return Specification
                 .where(AdvertisementSearchSpecifications.isEnabled())
                 .and(AdvertisementSearchSpecifications.belongsToUser(userId))
-                .and(AdvertisementSearchSpecifications.fetchCityAndRegion());
+                .and(AdvertisementSearchSpecifications.fetchAllRelations());
     }
 }
