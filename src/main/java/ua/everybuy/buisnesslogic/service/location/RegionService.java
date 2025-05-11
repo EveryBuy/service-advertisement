@@ -20,7 +20,7 @@ public class RegionService {
         log.info("[CACHE INFO] Fetching all regions - Cache START");
         return regionRepository.findAll();
     }
-
+    @Cacheable(value = "regionCache", key = "#id")
     public Region findById(Long id) {
         return regionRepository.findById(id).orElseThrow(()
                 -> new EntityNotFoundException("Region not found"));

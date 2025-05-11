@@ -33,11 +33,13 @@ public class CityService {
         return cityRepository.findAllByRegionId(regionId);
     }
 
+    @Cacheable(value = "cityCache", key = "#id")
     public City findById(Long id) {
         return cityRepository.findByIdWithRegion(id)
                 .orElseThrow(() -> new EntityNotFoundException(CITY_NOT_FOUND_MESSAGE + id));
     }
 
+    @Cacheable(value = "cityByRegionCache", key = "{#id, #regionId}")
     public City getByIdAndRegionId(Long id, Long regionId) {
         return cityRepository.findByCityIdAndRegionId(id, regionId)
                 .orElseThrow(() -> new EntityNotFoundException(CITY_NOT_FOUND_BY_REGION_MESSAGE + regionId));
