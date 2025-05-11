@@ -47,9 +47,9 @@ public class FilterAdvertisementService {
         PriceRangeDto priceRange = filterPriceRangeService.getPriceRange(searchParametersDto);
         List<FilteredAdvertisementsResponse> advertisements = mapToResponse(filteredAds);
 
-        List<CategoryDto> distinctTopCategories = getDistinctTopCategories(searchParametersDto.getKeyword());
+//        List<CategoryDto> distinctTopCategories = getDistinctTopCategories(searchParametersDto.getKeyword());
         return advertisementFilterMapper.mapToAdvertisementPaginationDto(totalAdvertisements, totalPages,
-                priceRange.getMinPrice(), priceRange.getMaxPrice(), distinctTopCategories, advertisements);
+                priceRange.getMinPrice(), priceRange.getMaxPrice(), advertisements);
 
     }
 
@@ -79,6 +79,12 @@ public class FilterAdvertisementService {
 
     private List<CategoryDto> getDistinctTopCategories(String keyword) {
         Specification<Advertisement> spec = distinctTopCategorySpecFactory.createSpecification(keyword);
+        advertisementRepository.findAll(spec)
+                .stream()
+                .map(a-> a.getTopSubCategory().getCategory())
+                .map(subCategoryMapper::mapToCategoryDto)
+                .toList()
+                .forEach(c -> System.out.println(c.getCategoryName()));
         return advertisementRepository.findAll(spec)
                 .stream()
                 .map(a-> a.getTopSubCategory().getCategory())

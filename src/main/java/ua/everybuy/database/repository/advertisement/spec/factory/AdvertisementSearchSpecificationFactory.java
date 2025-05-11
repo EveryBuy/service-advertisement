@@ -13,7 +13,7 @@ public class AdvertisementSearchSpecificationFactory {
     public Specification<Advertisement> createSpecification(AdvertisementSearchParametersDto params) {
         return Specification
                 .where(AdvertisementSearchSpecifications.isEnabled())
-                .and(AdvertisementSearchSpecifications.fetchCityAndRegion())
+                .and(AdvertisementSearchSpecifications.fetchAllRelations())
                 .and(AdvertisementSearchSpecifications.hasMinPrice(params.getMinPrice()))
                 .and(AdvertisementSearchSpecifications.hasMaxPrice(params.getMaxPrice()))
                 .and(AdvertisementSearchSpecifications.belongsToCity(params.getCityId()))

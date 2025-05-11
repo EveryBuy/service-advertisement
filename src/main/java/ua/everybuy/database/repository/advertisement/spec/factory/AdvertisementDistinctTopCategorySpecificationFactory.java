@@ -12,7 +12,7 @@ public class AdvertisementDistinctTopCategorySpecificationFactory {
     public Specification<Advertisement> createSpecification(String keyword) {
         return Specification
                 .where(AdvertisementSearchSpecifications.isEnabled())
-                .and(AdvertisementSearchSpecifications.fetchCityAndRegion())
+                .and(AdvertisementSearchSpecifications.fetchAllRelations())
                 .and(AdvertisementSearchSpecifications.hasSimilarTitle(keyword, SIMILARITY_THRESHOLD))
                 .and(AdvertisementSearchSpecifications.distinctByCategory());
     }

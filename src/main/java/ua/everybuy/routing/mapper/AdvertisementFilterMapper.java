@@ -27,6 +27,6 @@ public interface AdvertisementFilterMapper {
 
     AdvertisementSearchResultDto mapToAdvertisementPaginationDto(long totalAdvertisements, int totalPages,
                                                                  Double minPrice, Double maxPrice,
-                                                                 List<CategoryDto> categories,
+//                                                                 List<CategoryDto> categories,
                                                                  List<FilteredAdvertisementsResponse> advertisements);
 }
