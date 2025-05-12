@@ -29,7 +29,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     @Query("SELECT new ua.everybuy.routing.dto.CategoryAdvertisementCount(a.topSubCategory.category, COUNT(a)) " +
             "FROM Advertisement a " +
-            "WHERE a.userId = :userId AND a.section = :section " +
+            "WHERE a.userId = :userId AND a.section = :section AND a.isEnabled = true " +
             "GROUP BY a.topSubCategory.category")
     List<CategoryAdvertisementCount> findCategoryCountsByUserIdAndSection(
             @Param("userId") Long userId,
