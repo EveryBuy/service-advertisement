@@ -12,6 +12,7 @@ import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.mapper.AdvertisementToDtoMapper;
 import ua.everybuy.routing.dto.response.*;
+
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -44,9 +45,7 @@ public class AdvertisementManagementService {
     }
 
     public Advertisement findActiveAdvertisementById(Long id) {
-        Advertisement advertisement = advertisementStorageService.findById(id);
-        advertisementValidationService.validateIsActive(advertisement);
-        return advertisement;
+        return advertisementStorageService.findActiveById(id);
     }
 
     public StatusResponse<AdvertisementDto> getActiveAdvertisement(Long id) {
@@ -73,7 +72,7 @@ public class AdvertisementManagementService {
                         Long.parseLong(principal.getName()));
         photoService.deletePhotosByAdvertisementId(advertisement);
         advertisement.setIsEnabled(false);
-//        pushAdvertisementChangeToChatService(advertisement);
+        pushAdvertisementChangeToChatService(advertisement);
         advertisementStorageService.delete(advertisement);
     }
 

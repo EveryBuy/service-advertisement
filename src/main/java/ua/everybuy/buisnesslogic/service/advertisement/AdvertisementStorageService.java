@@ -25,6 +25,13 @@ public class AdvertisementStorageService {
                         .ADVERTISEMENT_NOT_FOUND_MESSAGE));
     }
 
+    public Advertisement findActiveById(Long id) {
+        return advertisementRepository.findActiveById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        AdvertisementValidationMessages.ACTIVE_ADVERTISEMENT_NOT_FOUND_MESSAGE
+                ));
+    }
+
     public List<Advertisement> findByUserId(Long userId, boolean isEnabled, Advertisement.AdSection section,
                                             Pageable pageable) {
         return advertisementRepository.findByUserId(userId, isEnabled, section, pageable);

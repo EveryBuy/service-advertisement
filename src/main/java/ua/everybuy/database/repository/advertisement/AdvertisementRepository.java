@@ -15,6 +15,7 @@ import java.util.Optional;
 @Repository("advertisementRepository")
 public interface AdvertisementRepository extends JpaRepository<Advertisement, Long>,
         JpaSpecificationExecutor<Advertisement> {
+
     Optional<Advertisement> findByIdAndUserId(Long id, Long userId);
 
     @Query("SELECT a FROM Advertisement a " +
@@ -41,4 +42,15 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
             "WHERE a.userId = :userId ")
     List<Advertisement> findAllByUserId(Long userId);
 
+    @Query("""
+            SELECT a FROM Advertisement a
+            LEFT JOIN FETCH a.city
+            LEFT JOIN FETCH a.topSubCategory tsc
+            LEFT JOIN FETCH tsc.category
+            LEFT JOIN FETCH a.lowSubCategory
+            LEFT JOIN FETCH a.advertisementDeliveries
+            WHERE a.id = :id AND a.isEnabled = true
+            """)
+    Optional<Advertisement> findActiveById(@Param("id") Long id);
 }
+
