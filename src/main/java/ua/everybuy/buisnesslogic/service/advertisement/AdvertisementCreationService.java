@@ -48,7 +48,6 @@ public class AdvertisementCreationService {
         newAdvertisement = advertisementManagementService.saveAdvertisement(newAdvertisement);
 
         processAdvertisementPhotos(newAdvertisement, photos);
-
         processDeliveryMethods(newAdvertisement, createRequest.deliveryMethods());
 
         return newAdvertisement;

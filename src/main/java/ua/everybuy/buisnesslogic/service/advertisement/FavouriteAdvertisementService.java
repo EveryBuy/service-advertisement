@@ -72,8 +72,10 @@ public class FavouriteAdvertisementService {
                 .mapToFavouriteAdvertisementEntity(userId, advertisement);
 
         newFavouriteAdvertisement = favouriteAdvertisementRepository.save(newFavouriteAdvertisement);
+
         statisticsService.incrementFavouriteCountAndSave(advertisement);
-        AddToFavouriteResponse addToFavouriteResponse = favouriteAdvertisementMapper.mapToAddToFavouriteResponse(newFavouriteAdvertisement);
+        AddToFavouriteResponse addToFavouriteResponse = favouriteAdvertisementMapper
+                .mapToAddToFavouriteResponse(newFavouriteAdvertisement);
 
         return new StatusResponse<>(HttpStatus.CREATED.value(), addToFavouriteResponse);
     }
