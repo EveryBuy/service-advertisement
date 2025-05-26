@@ -14,6 +14,8 @@ import ua.everybuy.routing.dto.response.FavouriteAdvertisementResponse;
 public interface FavouriteAdvertisementMapper {
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "advertisement", target = "advertisement")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     FavouriteAdvertisement mapToFavouriteAdvertisementEntity(Long userId, Advertisement advertisement);
 
     @Mapping(source = "advertisement.userId", target = "userId")
@@ -31,4 +33,5 @@ public interface FavouriteAdvertisementMapper {
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "advertisement.id", target = "advertisementId")
     AddToFavouriteResponse mapToAddToFavouriteResponse(FavouriteAdvertisement favouriteAdvertisement);
+
 }

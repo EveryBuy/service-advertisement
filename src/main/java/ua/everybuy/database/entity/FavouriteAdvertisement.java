@@ -2,7 +2,6 @@ package ua.everybuy.database.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,7 +19,7 @@ public class FavouriteAdvertisement {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne()
