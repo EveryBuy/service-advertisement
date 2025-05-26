@@ -73,6 +73,7 @@ public class AdvertisementManagementService {
         photoService.deletePhotosByAdvertisementId(advertisement);
         advertisement.setIsEnabled(false);
         pushAdvertisementChangeToChatService(advertisement);
+
         advertisementStorageService.delete(advertisement);
     }
 
