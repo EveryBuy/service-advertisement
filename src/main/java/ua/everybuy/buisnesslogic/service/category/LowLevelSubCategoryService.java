@@ -2,6 +2,7 @@ package ua.everybuy.buisnesslogic.service.category;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.LowLevelSubCategory;
 import ua.everybuy.database.repository.category.LowLevelSubCategoryRepository;
@@ -19,6 +20,7 @@ public class LowLevelSubCategoryService {
     private final TopLevelSubCategoryService topLevelSubCategoryService;
     private final SubCategoryMapper mapper;
 
+    @Cacheable(value = "lowLevelSubCategoryCache", key = "#id")
     public LowLevelSubCategory findById(Long id) {
         return lowLevelSubCategoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -30,13 +32,15 @@ public class LowLevelSubCategoryService {
         return lowLevelSubCategoryRepository.findByTopLevelSubCategoryId(topLevelSubCategoryId);
     }
 
-    public List<SubCategoryDto> getSubCategoriesByCategoryId(Long categoryId) {
-        List<LowLevelSubCategory> subCategories = findByTopLevelSubCategoryId(categoryId);
+    @Cacheable(value = "subCategoriesByCategoryCache", key = "#topLevelSubCategoryId")
+    public List<SubCategoryDto> getSubCategoriesByCategoryId(Long topLevelSubCategoryId) {
+        List<LowLevelSubCategory> subCategories = findByTopLevelSubCategoryId(topLevelSubCategoryId);
         return subCategories.stream()
                 .map(mapper::mapToSubCategoryDto)
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "lowLevelSubCategoryByTopLevelCache", key = "#topLevelSubCategoryId + '_' + #lowLevelSubCategoryId")
     public LowLevelSubCategory findLowLevelSubCategoryByTopLevelId(Long topLevelSubCategoryId,
                                                                    Long lowLevelSubCategoryId) {
         topLevelSubCategoryService.findById(topLevelSubCategoryId);

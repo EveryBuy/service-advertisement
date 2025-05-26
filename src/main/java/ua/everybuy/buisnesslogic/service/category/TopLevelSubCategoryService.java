@@ -2,6 +2,7 @@ package ua.everybuy.buisnesslogic.service.category;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ua.everybuy.database.entity.TopLevelSubCategory;
 import ua.everybuy.database.repository.category.TopLevelSubCategoryRepository;
@@ -29,6 +30,7 @@ public class TopLevelSubCategoryService {
         return topLevelSubCategoryRepository.findByCategoryId(categoryId);
     }
 
+    @Cacheable(value = "subCategoriesByTopSubcategoryCache", key = "#subcategoryId")
     public List<SubCategoryDto> getSubCategoriesByTopSubcategoryId(Long subcategoryId) {
         List<TopLevelSubCategory> subCategories = findTopLevelSubCategoriesByCategoryId(subcategoryId);
         return subCategories.stream()
@@ -36,6 +38,7 @@ public class TopLevelSubCategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "topLevelSubCategoryByCategoryCache", key = "#categoryId + '_' + #subCategoryId")
     public TopLevelSubCategory findTopLevelSubCategoryByCategoryAndSubCategoryId(Long categoryId,
                                                                                  Long subCategoryId) {
         categoryService.findById(categoryId);
