@@ -20,6 +20,7 @@ public class TopLevelSubCategoryService {
     private final SubCategoryMapper mapper;
     private final CategoryService categoryService;
 
+    @Cacheable(value = "topLevelSubCategoryCache", key = "#id")
     public TopLevelSubCategory findById(Long id) {
         return topLevelSubCategoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(TOP_LEVEL_SUBCATEGORY_NOT_FOUND_MESSAGE));
@@ -38,7 +39,6 @@ public class TopLevelSubCategoryService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "topLevelSubCategoryByCategoryCache", key = "#categoryId + '_' + #subCategoryId")
     public TopLevelSubCategory findTopLevelSubCategoryByCategoryAndSubCategoryId(Long categoryId,
                                                                                  Long subCategoryId) {
         categoryService.findById(categoryId);

@@ -3,7 +3,6 @@ package ua.everybuy.database.repository.category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ua.everybuy.database.entity.LowLevelSubCategory;
-
 import java.util.List;
 
 @Repository
