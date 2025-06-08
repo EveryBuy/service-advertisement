@@ -8,5 +8,7 @@ import java.util.List;
 @Repository
 public interface TopLevelSubCategoryRepository extends JpaRepository<TopLevelSubCategory, Long> {
     List<TopLevelSubCategory> findByCategoryId(Long categoryId);
+
+    List<TopLevelSubCategory> findByIdIn(List<Long> ids);
 }
 

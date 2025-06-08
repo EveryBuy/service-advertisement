@@ -10,6 +10,7 @@ import ua.everybuy.routing.dto.CategoryAdvertisementCount;
 import ua.everybuy.routing.dto.CategoryAdvertisementCountDto;
 import ua.everybuy.routing.dto.CategoryDto;
 import ua.everybuy.routing.dto.SubCategoryDto;
+import ua.everybuy.routing.dto.TopCategorySearchResultDto;
 
 @Mapper(componentModel = "spring")
 public interface SubCategoryMapper {
@@ -32,4 +33,10 @@ public interface SubCategoryMapper {
 
     @Named("mapToCategoryDto")
     CategoryDto mapToCategoryDto(Category category);
+
+    @Mapping(source = "category.category.id", target = "categoryId")
+    @Mapping(source = "category.category.nameUkr", target = "categoryName")
+    @Mapping(source = "category.id", target = "topCategoryId")
+    @Mapping(source = "category.subCategoryNameUkr", target = "topCategoryName")
+    TopCategorySearchResultDto mapToTopCategoryUniqueDto(TopLevelSubCategory category, Long count);
 }

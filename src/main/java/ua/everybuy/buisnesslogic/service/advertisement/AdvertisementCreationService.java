@@ -33,7 +33,6 @@ public class AdvertisementCreationService {
                                                                            String userId) throws IOException {
 
         Advertisement newAdvertisement = createAdvertisementEntity(createRequest, photos, userId);
-
         CreateAdvertisementResponse advertisementResponse = advertisementResponseMapper
                 .mapToAdvertisementCreateResponse(newAdvertisement);
         return new StatusResponse<>(HttpStatus.CREATED.value(), advertisementResponse);
@@ -42,7 +41,6 @@ public class AdvertisementCreationService {
     private Advertisement createAdvertisementEntity(CreateAdvertisementRequest createRequest,
                                                     MultipartFile[] photos,
                                                     String userId) throws IOException {
-
         Advertisement newAdvertisement = toEntityMapper
                 .mapToEntity(createRequest, new AdvertisementStatistics(), Long.parseLong(userId));
         newAdvertisement = advertisementManagementService.saveAdvertisement(newAdvertisement);
