@@ -13,7 +13,7 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.repository.advertisement.AdvertisementRepository;
 import ua.everybuy.database.repository.advertisement.spec.factory.AdvertisementUserFilterSpecificationFactory;
 import ua.everybuy.database.repository.advertisement.spec.factory.AdvertisementUserSpecificationFactory;
-import ua.everybuy.routing.AdvertisementUserDtoBuilder;
+import ua.everybuy.routing.mapper.AdvertisementUserDtoBuilder;
 import ua.everybuy.routing.dto.CategoryAdvertisementCount;
 import ua.everybuy.routing.dto.UserAdvertisementDto;
 

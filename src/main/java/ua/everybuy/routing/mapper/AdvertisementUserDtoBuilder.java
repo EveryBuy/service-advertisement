@@ -1,4 +1,4 @@
-package ua.everybuy.routing;
+package ua.everybuy.routing.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,9 +9,6 @@ import ua.everybuy.routing.dto.CategoryAdvertisementCount;
 import ua.everybuy.routing.dto.CategoryAdvertisementCountDto;
 import ua.everybuy.routing.dto.UserAdvertisementDto;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
-import ua.everybuy.routing.mapper.AdvertisementFilterMapper;
-import ua.everybuy.routing.mapper.SubCategoryMapper;
-
 import java.util.List;
 
 @Component

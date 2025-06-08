@@ -49,4 +49,9 @@ public class TopLevelSubCategoryService {
         }
         return topSubCategory;
     }
+
+    @Cacheable(value = "topCategoriesByIdsCache", key = "#categoryIds")
+    public List<TopLevelSubCategory> getTopCategoriesById(List<Long> categoryIds) {
+        return topLevelSubCategoryRepository.findByIdIn(categoryIds);
+    }
 }

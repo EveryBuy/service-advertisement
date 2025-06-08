@@ -1,13 +1,13 @@
 services:
   postgres:
     image: 'postgres:latest'
-    container_name: advertisement_dev
+    container_name: advertisement
     environment:
-      - POSTGRES_DB=advertisement_dev
+      - POSTGRES_DB=advertisement
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - "5434:5432"
+      - "5435:5432"
     restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -19,7 +19,21 @@ services:
     restart: unless-stopped
     volumes:
       - redis_data:/data
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    container_name: elasticsearch
+    environment:
+     - discovery.type=single-node
+     - xpack.security.enabled=false
+     - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   redis_data:
-
+  elastic_data:
