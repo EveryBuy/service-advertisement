@@ -3,12 +3,17 @@ package ua.everybuy.database.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "top_level_subcategories")
+@NamedEntityGraph(
+        name = "TopLevelSubCategory.withLowLevels",
+        attributeNodes = @NamedAttributeNode("lowLevelSubCategories")
+)
 public class TopLevelSubCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,6 +29,6 @@ public class TopLevelSubCategory {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToMany(mappedBy = "topLevelSubCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "topLevelSubCategory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<LowLevelSubCategory> lowLevelSubCategories;
 }
