@@ -1,6 +1,5 @@
 package ua.everybuy.database.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +21,5 @@ public class LowLevelSubCategory {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "top_level_subcategory_id", nullable = false)
-    @JsonBackReference
     private TopLevelSubCategory topLevelSubCategory;
 }
