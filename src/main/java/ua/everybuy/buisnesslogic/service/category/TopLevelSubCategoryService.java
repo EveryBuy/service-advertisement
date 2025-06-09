@@ -10,7 +10,6 @@ import ua.everybuy.routing.dto.SubCategoryDto;
 import ua.everybuy.routing.dto.TopCategorySearchResultDto;
 import ua.everybuy.routing.mapper.SubCategoryMapper;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import static ua.everybuy.errorhandling.message.CategoryValidationMessages.TOP_LEVEL_SUBCATEGORY_INVALID_CATEGORY_MESSAGE;
 import static ua.everybuy.errorhandling.message.CategoryValidationMessages.TOP_LEVEL_SUBCATEGORY_NOT_FOUND_MESSAGE;
@@ -52,19 +51,17 @@ public class TopLevelSubCategoryService {
         return topSubCategory;
     }
 
-    private List<TopLevelSubCategory> getTopCategoriesById(List<Long> categoryIds) {
+    public List<TopLevelSubCategory> getTopCategoriesById(List<Long> categoryIds) {
         return topLevelSubCategoryRepository.findByIdIn(categoryIds);
     }
 
     @Cacheable(value = "topCategoriesDtoCache", key = "#ids")
-    public List<TopCategorySearchResultDto> getSearchResultDto(List<Long> ids, Map<Long, Long> categoryDistribution) {
+    public List<TopCategorySearchResultDto> getSearchResultDto(List<Long> ids) {
         List<TopLevelSubCategory> subCategories = getTopCategoriesById(ids);
 
         return subCategories.stream()
-                .map(subCategory -> {
-                    Long count = categoryDistribution.getOrDefault(subCategory.getId(), 0L);
-                    return mapper.mapToTopCategoryUniqueDto(subCategory, count);
-                })
+                .map(mapper::mapToTopCategoryUniqueDto)
                 .collect(Collectors.toList());
+
     }
 }

@@ -20,6 +20,7 @@ public class AdvertisementDocument {
     private Long userId;
     private String mainPhotoUrl;
     private Long cityId;
+    private Long categoryId;
     private Long topSubCategoryId;
     private Long lowSubCategoryId;
     private String productType;

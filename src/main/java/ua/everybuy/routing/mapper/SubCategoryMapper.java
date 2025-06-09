@@ -38,5 +38,5 @@ public interface SubCategoryMapper {
     @Mapping(source = "category.category.nameUkr", target = "categoryName")
     @Mapping(source = "category.id", target = "topCategoryId")
     @Mapping(source = "category.subCategoryNameUkr", target = "topCategoryName")
-    TopCategorySearchResultDto mapToTopCategoryUniqueDto(TopLevelSubCategory category, Long count);
+    TopCategorySearchResultDto mapToTopCategoryUniqueDto(TopLevelSubCategory category);
 }
