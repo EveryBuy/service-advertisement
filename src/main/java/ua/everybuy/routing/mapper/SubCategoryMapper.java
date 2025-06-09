@@ -34,9 +34,9 @@ public interface SubCategoryMapper {
     @Named("mapToCategoryDto")
     CategoryDto mapToCategoryDto(Category category);
 
-    @Mapping(source = "category.category.id", target = "categoryId")
-    @Mapping(source = "category.category.nameUkr", target = "categoryName")
-    @Mapping(source = "category.id", target = "topCategoryId")
-    @Mapping(source = "category.subCategoryNameUkr", target = "topCategoryName")
-    TopCategorySearchResultDto mapToTopCategoryUniqueDto(TopLevelSubCategory category);
+    @Mapping(source = "topLevelSubCategory.category.id", target = "categoryId")
+    @Mapping(source = "topLevelSubCategory.category.nameUkr", target = "categoryName")
+    @Mapping(source = "topLevelSubCategory.id", target = "topCategoryId")
+    @Mapping(source = "topLevelSubCategory.subCategoryNameUkr", target = "topCategoryName")
+    TopCategorySearchResultDto mapToTopCategoryUniqueDto(TopLevelSubCategory topLevelSubCategory);
 }
