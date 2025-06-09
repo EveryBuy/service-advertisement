@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ua.everybuy.buisnesslogic.service.advertisement.search.ElasticSearchCategoryService;
 import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
+import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.SubCategoryDto;
 import ua.everybuy.routing.dto.TopCategorySearchResultDto;
 
@@ -26,7 +27,11 @@ public class TopLevelSubCategoryController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<TopCategorySearchResultDto> getUniqueCategories(@RequestParam("keyword") String keyword) {
-        return elasticSearchCategoryService.findTopCategoriesByKeyword(keyword);
+    public List<TopCategorySearchResultDto> getUniqueCategories(
+            @RequestParam("keyword") String keyword,
+            @RequestParam(required = false) Advertisement.AdSection section) {
+        String sectionName = section != null ? section.name() : null;
+
+        return elasticSearchCategoryService.findTopCategoriesByKeyword(keyword, sectionName);
     }
 }
