@@ -1,7 +1,10 @@
 package ua.everybuy.database.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -14,6 +17,8 @@ import java.util.List;
         name = "TopLevelSubCategory.withLowLevels",
         attributeNodes = @NamedAttributeNode("lowLevelSubCategories")
 )
+@AllArgsConstructor
+@NoArgsConstructor
 public class TopLevelSubCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,5 +35,6 @@ public class TopLevelSubCategory {
     private Category category;
 
     @OneToMany(mappedBy = "topLevelSubCategory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<LowLevelSubCategory> lowLevelSubCategories;
 }
