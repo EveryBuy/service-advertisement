@@ -5,17 +5,12 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.Fuzziness;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Service;
 import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
 import ua.everybuy.errorhandling.custom.SearchServiceException;
 import ua.everybuy.routing.dto.TopCategorySearchResultDto;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -27,10 +22,9 @@ import java.util.stream.Collectors;
 public class ElasticSearchCategoryService {
     private static final String CATEGORY_AGG = "topCategories";
     private static final String SECTION_AGG = "by_section";
-    private static final String INDEX_NAME = "advertisements";
-    private static final int MAX_RESULTS = 20;
     private static final List<String> SECTIONS = List.of("SELL", "BUY");
 
+    private final ElasticSearchCategoryAggregationQueryBuilder queryBuilder;
     private final RestHighLevelClient esClient;
     private final TopLevelSubCategoryService topCategoryService;
 
@@ -53,33 +47,12 @@ public class ElasticSearchCategoryService {
 
     private Map<String, Map<Long, Long>> getSectionStats(String keyword) {
         try {
-            SearchRequest request = buildSearchRequest(keyword);
+            SearchRequest request = queryBuilder.buildSearchRequest(keyword, SECTIONS);
             SearchResponse response = esClient.search(request, RequestOptions.DEFAULT);
             return parseResponse(response);
         } catch (IOException e) {
             throw new SearchServiceException("Search failed for: " + keyword, e);
         }
-    }
-
-    private SearchRequest buildSearchRequest(String keyword) {
-        BoolQueryBuilder query = QueryBuilders.boolQuery()
-                .must(QueryBuilders.matchQuery("title", keyword).fuzziness(Fuzziness.AUTO))
-                .filter(QueryBuilders.termQuery("isEnabled", true));
-
-        TermsAggregationBuilder sectionAgg = AggregationBuilders.terms(SECTION_AGG)
-                .field("section")
-                .subAggregation(
-                        AggregationBuilders.terms(CATEGORY_AGG)
-                                .field("topSubCategoryId")
-                                .size(MAX_RESULTS)
-                )
-                .size(SECTIONS.size());
-
-        return new SearchRequest(INDEX_NAME)
-                .source(new SearchSourceBuilder()
-                        .query(query)
-                        .aggregation(sectionAgg)
-                        .size(0));
     }
 
     private Map<String, Map<Long, Long>> parseResponse(SearchResponse response) {
@@ -126,7 +99,14 @@ public class ElasticSearchCategoryService {
 
             List<TopCategorySearchResultDto> sectionCategories = categories.stream()
                     .filter(cat -> counts.containsKey(cat.getTopCategoryId()))
-                    .peek(cat -> cat.setCount(counts.get(cat.getTopCategoryId())))
+                    .map(cat -> TopCategorySearchResultDto.builder()
+                            .categoryId(cat.getCategoryId())
+                            .categoryName(cat.getCategoryName())
+                            .topCategoryId(cat.getTopCategoryId())
+                            .topCategoryName(cat.getTopCategoryName())
+                            .count(counts.get(cat.getTopCategoryId()))
+                            .build()
+                    )
                     .collect(Collectors.toList());
 
             result.put(section, sectionCategories);
