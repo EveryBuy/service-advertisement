@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class AdvertisementIndexService {
+public class ElasticSearchAdvertisementIndexService {
     private final RestHighLevelClient client;
     private final AdvertisementDocumentMapper mapper;
     private static final String INDEX_NAME = "advertisements";
