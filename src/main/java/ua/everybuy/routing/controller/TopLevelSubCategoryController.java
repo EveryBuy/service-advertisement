@@ -3,7 +3,7 @@ package ua.everybuy.routing.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ua.everybuy.buisnesslogic.service.advertisement.search.ElasticSearchCategoryService;
+import ua.everybuy.buisnesslogic.service.advertisement.search.category.ElasticSearchCategoryService;
 import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
 import ua.everybuy.routing.dto.SubCategoryDto;
 import ua.everybuy.routing.dto.TopCategorySearchResultDto;

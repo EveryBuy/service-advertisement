@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ua.everybuy.buisnesslogic.service.advertisement.search.ElasticSearchService;
+import ua.everybuy.buisnesslogic.service.advertisement.search.AdvertisementSearchService;
 import ua.everybuy.routing.dto.AdvertisementSearchResultDto;
 import ua.everybuy.routing.dto.request.AdvertisementSearchParametersDto;
 
@@ -14,9 +14,9 @@ import ua.everybuy.routing.dto.request.AdvertisementSearchParametersDto;
 @RequiredArgsConstructor
 @RequestMapping("/product/search")
 public class ElasticSearchController {
-    private final ElasticSearchService elasticSearchService;
+    private final AdvertisementSearchService elasticSearchService;
 
-    @GetMapping("")
+    @GetMapping()
     public AdvertisementSearchResultDto advancedSearchPost(
             @Valid AdvertisementSearchParametersDto searchParams,
             @RequestParam(defaultValue = "1") int page,
