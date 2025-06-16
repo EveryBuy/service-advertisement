@@ -1,0 +1,13 @@
+mode: review
+
+review:
+  strategy: thorough
+  comments: inline
+  approve: false
+  summarization: true
+
+rules:
+  - type: code_quality
+  - type: security
+  - type: readability
+  - type: maintainability
