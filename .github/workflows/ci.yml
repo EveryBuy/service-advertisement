@@ -2,8 +2,7 @@ name: Code Review (AI PR Reviewer)
 
 on:
   pull_request:
-  pull_request_review_comment:
-    types: [created]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
@@ -16,11 +15,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: AI PR Review and Summary
-        uses: coderabbitai/ai-pr-reviewer@latest
+        uses: coderabbitai/ai-pr-reviewer@v1.11.0
+        with:
+          debug: false
+          review_simple_changes: true
+          review_comment_lgtm: true
+          review_comment_in_diff: true
+          summarize_changes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        with:
-          debug: false
-          review_simple_changes: false
-          review_comment_lgtm: false
