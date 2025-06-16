@@ -3,7 +3,7 @@ package ua.everybuy.routing.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import ua.everybuy.buisnesslogic.service.integration.UserProfileService;
+import ua.everybuy.service.integration.UserProfileService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.CategoryAdvertisementCount;
 import ua.everybuy.routing.dto.CategoryAdvertisementCountDto;

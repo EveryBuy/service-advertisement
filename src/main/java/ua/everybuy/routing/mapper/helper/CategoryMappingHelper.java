@@ -3,7 +3,7 @@ package ua.everybuy.routing.mapper.helper;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
-import ua.everybuy.buisnesslogic.service.category.AdvertisementSubCategoryService;
+import ua.everybuy.service.category.AdvertisementSubCategoryService;
 import ua.everybuy.database.entity.LowLevelSubCategory;
 import ua.everybuy.database.entity.TopLevelSubCategory;
 import ua.everybuy.routing.dto.request.CategoryRequest;

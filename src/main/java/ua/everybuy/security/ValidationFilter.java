@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.client.HttpStatusCodeException;
-import ua.everybuy.buisnesslogic.service.integration.AuthValidationService;
+import ua.everybuy.service.integration.AuthValidationService;
 import ua.everybuy.errorhandling.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
