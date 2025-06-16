@@ -1,14 +1,13 @@
-name: CodeRabbit Review
+mode: review
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+review:
+  strategy: thorough
+  comments: inline
+  approve: false
+  summarization: true
 
-jobs:
-  review:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run CodeRabbit Review
-        uses: coderabbitai/coderabbit-action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+rules:
+  - type: code_quality
+  - type: security
+  - type: readability
+  - type: maintainability
