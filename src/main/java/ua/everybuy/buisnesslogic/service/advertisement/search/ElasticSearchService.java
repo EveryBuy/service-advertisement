@@ -10,6 +10,7 @@ import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.metrics.Max;
 import org.elasticsearch.search.aggregations.metrics.Min;
 import org.springframework.stereotype.Service;
+import ua.everybuy.buisnesslogic.service.advertisement.filter.FilterValidator;
 import ua.everybuy.database.entity.AdvertisementDocument;
 import ua.everybuy.routing.dto.AdvertisementSearchResultDto;
 import ua.everybuy.routing.dto.PriceRangeDto;
@@ -24,20 +25,24 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ElasticSearchService {
+public class ElasticSearchService implements AdvertisementSearchService {
     private final RestHighLevelClient client;
-    private final ElasticSearchQueryBuilder searchQueryBuilder;
+    private final QueryBuilder searchQueryBuilder;
     private final AdvertisementDocumentMapper mapper;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
+    private final FilterValidator validator;
+    private final PriceAggregationExtractor priceAggregationExtractor;
 
+    @Override
     public AdvertisementSearchResultDto searchAdvertisements(AdvertisementSearchParametersDto searchDto, int page, int size) {
+        validator.validate(searchDto);
         try {
             SearchRequest request = searchQueryBuilder.buildSearchRequest(searchDto, page, size);
             SearchResponse response = client.search(request, RequestOptions.DEFAULT);
 
             List<FilteredAdvertisementsResponse> advertisements = parseSearchHits(response);
             long totalHits = response.getHits().getTotalHits().value;
-            PriceRangeDto priceRange = extractPriceRange(response.getAggregations());
+            PriceRangeDto priceRange = priceAggregationExtractor.extractPriceRange(response.getAggregations());
 
             return buildSearchResultDto(advertisements, totalHits, size, priceRange);
 
@@ -57,18 +62,6 @@ public class ElasticSearchService {
                     }
                 })
                 .collect(Collectors.toList());
-    }
-
-    private PriceRangeDto extractPriceRange(Aggregations aggregations) {
-        if (aggregations == null) return new PriceRangeDto(null, null);
-
-        Min min = aggregations.get("min_price");
-        Max max = aggregations.get("max_price");
-
-        Double minPrice = (min != null && !Double.isNaN(min.getValue())) ? min.getValue() : null;
-        Double maxPrice = (max != null && !Double.isNaN(max.getValue())) ? max.getValue() : null;
-
-        return new PriceRangeDto(minPrice, maxPrice);
     }
 
     private AdvertisementSearchResultDto buildSearchResultDto(List<FilteredAdvertisementsResponse> ads,

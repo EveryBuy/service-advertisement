@@ -1,4 +1,4 @@
-package ua.everybuy.buisnesslogic.service.advertisement.search;
+package ua.everybuy.buisnesslogic.service.advertisement.search.category;
 
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.action.search.SearchRequest;
@@ -8,6 +8,8 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
+import ua.everybuy.buisnesslogic.service.advertisement.search.filters.processor.FilterAdvertisementCategoryProcessor;
+
 import java.util.List;
 
 @Component
@@ -19,8 +21,7 @@ public class ElasticSearchCategoryAggregationQueryBuilder {
     private static final String CATEGORY_AGG = "topCategories";
     private static final String SECTION_AGG = "by_section";
     private static final int MAX_RESULTS = 100;
-
-    private final ElasticSearchAdvertisementFilterAppender filterAppender;
+    private final FilterAdvertisementCategoryProcessor filterCategoryProcessor;
 
     public SearchRequest buildSearchRequest(String keyword, List<String> sections) {
         BoolQueryBuilder query = buildBoolQuery(keyword);
@@ -43,8 +44,7 @@ public class ElasticSearchCategoryAggregationQueryBuilder {
 
     private BoolQueryBuilder buildBoolQuery(String keyword) {
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-        filterAppender.appendKeywordQuery(boolQuery, keyword);
-        filterAppender.appendEnabledFilter(boolQuery);
+        filterCategoryProcessor.process(boolQuery,keyword);
         return boolQuery;
     }
 

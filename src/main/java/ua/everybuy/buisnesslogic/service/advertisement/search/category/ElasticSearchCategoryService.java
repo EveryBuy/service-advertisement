@@ -1,4 +1,4 @@
-package ua.everybuy.buisnesslogic.service.advertisement.search;
+package ua.everybuy.buisnesslogic.service.advertisement.search.category;
 
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.action.search.SearchRequest;
