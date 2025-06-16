@@ -1,37 +1,26 @@
-name: Code Review & Build
+name: Code Review (AI PR Reviewer)
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
+  pull_request_review_comment:
+    types: [created]
 
 permissions:
   contents: read
   pull-requests: write
 
 jobs:
-  build:
+  review:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: AI PR Review and Summary
+        uses: coderabbitai/ai-pr-reviewer@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Make Gradle wrapper executable
-        run: chmod +x gradlew
-
-      - name: Build without tests
-        run: ./gradlew build -x test
-
-      - name: CodeRabbit Review
-        uses: coderabbitai/coderabbit-action@v0.9.14
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          debug: false
+          review_simple_changes: false
+          review_comment_lgtm: false
