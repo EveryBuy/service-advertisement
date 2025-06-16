@@ -30,3 +30,8 @@ jobs:
 
       - name: Build without tests
         run: ./gradlew build -x test
+
+      - name: CodeRabbit Review
+        uses: coderabbitai/coderabbit-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
