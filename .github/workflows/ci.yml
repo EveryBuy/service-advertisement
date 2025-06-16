@@ -32,6 +32,6 @@ jobs:
         run: ./gradlew build -x test
 
       - name: CodeRabbit Review
-        uses: coderabbitai/coderabbit-action@v1
+        uses: coderabbitai/coderabbit-action@v0.9.14
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
