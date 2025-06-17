@@ -1,32 +1,27 @@
-name: Code Review & Build
+name: Code Review (AI PR Reviewer)
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
   pull-requests: write
 
 jobs:
-  build:
+  review:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: AI PR Review and Summary
+        uses: fluxninja/openai-pr-reviewer@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Make Gradle wrapper executable
-        run: chmod +x gradlew
-
-      - name: Build without tests
-        run: ./gradlew build -x test
+          debug: false
+          review_simple_changes: true
+          review_comment_lgtm: true
+          review_comment_in_diff: true
+          summarize_changes: true

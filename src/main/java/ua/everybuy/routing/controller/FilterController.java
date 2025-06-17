@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ua.everybuy.buisnesslogic.service.advertisement.filter.FilterAdvertisementService;
+import ua.everybuy.service.advertisement.filter.FilterAdvertisementService;
 import org.springframework.web.bind.annotation.RestController;
 import ua.everybuy.routing.dto.request.AdvertisementSearchParametersDto;
 import ua.everybuy.routing.dto.AdvertisementSearchResultDto;

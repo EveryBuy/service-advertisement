@@ -2,11 +2,10 @@ package ua.everybuy.routing.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ua.everybuy.buisnesslogic.service.category.AdvertisementSubCategoryService;
-import ua.everybuy.buisnesslogic.service.category.CategoryService;
-import ua.everybuy.buisnesslogic.service.category.LowLevelSubCategoryService;
-import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
-import ua.everybuy.buisnesslogic.service.location.CityService;
+import ua.everybuy.service.category.CategoryService;
+import ua.everybuy.service.category.LowLevelSubCategoryService;
+import ua.everybuy.service.category.TopLevelSubCategoryService;
+import ua.everybuy.service.location.CityService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementDocument;
 import ua.everybuy.database.entity.Category;
@@ -21,7 +20,6 @@ import java.util.Date;
 @Component
 @RequiredArgsConstructor
 public class AdvertisementDocumentMapper {
-    private final AdvertisementSubCategoryService subCategoryService;
     private final CategoryService categoryService;
     private final CityService cityService;
     private final TopLevelSubCategoryService topLevelSubCategoryService;

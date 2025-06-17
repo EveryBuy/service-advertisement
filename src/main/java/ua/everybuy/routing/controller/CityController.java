@@ -3,7 +3,7 @@ package ua.everybuy.routing.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ua.everybuy.buisnesslogic.service.location.CityService;
+import ua.everybuy.service.location.CityService;
 import ua.everybuy.database.entity.City;
 import ua.everybuy.routing.dto.response.StatusResponse;
 import java.util.List;

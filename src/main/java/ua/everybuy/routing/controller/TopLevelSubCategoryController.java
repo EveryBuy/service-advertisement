@@ -3,8 +3,8 @@ package ua.everybuy.routing.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ua.everybuy.buisnesslogic.service.advertisement.search.category.ElasticSearchCategoryService;
-import ua.everybuy.buisnesslogic.service.category.TopLevelSubCategoryService;
+import ua.everybuy.service.advertisement.search.category.SearchCategoryService;
+import ua.everybuy.service.category.TopLevelSubCategoryService;
 import ua.everybuy.routing.dto.SubCategoryDto;
 import ua.everybuy.routing.dto.TopCategorySearchResultDto;
 
@@ -16,7 +16,7 @@ import java.util.Map;
 @RequestMapping("/product/category")
 public class TopLevelSubCategoryController {
     private final TopLevelSubCategoryService topLevelSubCategoryService;
-    private final ElasticSearchCategoryService elasticSearchCategoryService;
+    private final SearchCategoryService searchCategoryService;
 
     @GetMapping("/{categoryId}/top-level-subcategories")
     @ResponseStatus(HttpStatus.OK)
@@ -29,6 +29,6 @@ public class TopLevelSubCategoryController {
     @ResponseStatus(HttpStatus.OK)
     public Map <String, List<TopCategorySearchResultDto>>getUniqueCategories(
             @RequestParam("keyword") String keyword) {
-        return elasticSearchCategoryService.findTopCategoriesByKeyword(keyword);
+        return searchCategoryService.findTopCategoriesByKeyword(keyword);
     }
 }

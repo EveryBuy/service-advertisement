@@ -3,7 +3,7 @@ package ua.everybuy.routing.mapper.helper;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
-import ua.everybuy.buisnesslogic.service.location.CityService;
+import ua.everybuy.service.location.CityService;
 import ua.everybuy.database.entity.City;
 
 @Component
