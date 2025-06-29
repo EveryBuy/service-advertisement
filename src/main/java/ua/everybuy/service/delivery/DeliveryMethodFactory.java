@@ -1,4 +1,4 @@
-package ua.everybuy.service.advertisement.delivery;
+package ua.everybuy.service.delivery;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;

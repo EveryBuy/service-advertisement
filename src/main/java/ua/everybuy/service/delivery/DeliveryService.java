@@ -1,10 +1,8 @@
-package ua.everybuy.service.advertisement;
+package ua.everybuy.service.delivery;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.everybuy.service.advertisement.delivery.DeliveryMethod;
-import ua.everybuy.service.advertisement.delivery.DeliveryMethodFactory;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementDelivery;
 import ua.everybuy.database.repository.advertisement.AdvertisementDeliveryRepository;

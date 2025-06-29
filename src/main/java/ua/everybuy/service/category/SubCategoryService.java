@@ -8,7 +8,7 @@ import ua.everybuy.routing.dto.request.CategoryRequest;
 
 @Service
 @RequiredArgsConstructor
-public class AdvertisementSubCategoryService {
+public class SubCategoryService {
     private final TopLevelSubCategoryService topSubCategoryService;
     private final LowLevelSubCategoryService lowSubCategoryService;
 

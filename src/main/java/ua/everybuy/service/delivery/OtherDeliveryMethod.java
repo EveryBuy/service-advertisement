@@ -1,4 +1,4 @@
-package ua.everybuy.service.advertisement.delivery;
+package ua.everybuy.service.delivery;
 
 public class OtherDeliveryMethod implements DeliveryMethod {
     @Override
