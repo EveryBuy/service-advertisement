@@ -13,7 +13,7 @@ import ua.everybuy.service.advertisement.search.SearchService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/product/search")
-public class ElasticSearchController {
+public class SearchController {
     private final SearchService searchService;
 
     @GetMapping()
