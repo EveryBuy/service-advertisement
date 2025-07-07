@@ -22,4 +22,13 @@ public interface CityRepository extends JpaRepository<City, Long> {
     @Query("SELECT c FROM City c JOIN FETCH c.region WHERE c.id = :cityId AND c.region.id = :regionId")
     Optional<City> findByCityIdAndRegionId(@Param("cityId") Long cityId, @Param("regionId") Long regionId);
 
+    @Query(value = """
+        SELECT * 
+        FROM cities c 
+        WHERE similarity(c.city_name, :keyword) > 0.3
+        ORDER BY similarity(c.city_name, :keyword) DESC
+        LIMIT 10
+        """, nativeQuery = true)
+    List<City> findSimilarCities(@Param("keyword") String keyword);
+
 }

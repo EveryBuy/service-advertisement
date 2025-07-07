@@ -21,4 +21,9 @@ public class CityController {
         List<City> cityList = cityService.getAllCitiesWithRegions();
         return new StatusResponse<>(HttpStatus.OK.value(), cityList);
     }
+
+    @GetMapping("/search")
+    public List <City> searchCities(@RequestParam String keyword) {
+        return cityService.smartSearchByName(keyword);
+    }
 }
