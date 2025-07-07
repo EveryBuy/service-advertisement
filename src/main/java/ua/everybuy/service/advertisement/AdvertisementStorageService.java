@@ -4,7 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ua.everybuy.service.advertisement.search.ElasticSearchAdvertisementIndexService;
+import ua.everybuy.service.advertisement.search.AdvertisementIndexingService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.repository.advertisement.AdvertisementRepository;
 import ua.everybuy.errorhandling.message.AdvertisementValidationMessages;
@@ -14,10 +14,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdvertisementStorageService {
     private final AdvertisementRepository advertisementRepository;
-    private final ElasticSearchAdvertisementIndexService elasticSearchAdvertisementIndexService;
+    private final AdvertisementIndexingService advertisementIndexingService;
 
     public Advertisement save(Advertisement advertisement) {
-        elasticSearchAdvertisementIndexService.indexAdvertisement(advertisement);
+        advertisementIndexingService.indexAdvertisement(advertisement);
         return advertisementRepository.save(advertisement);
     }
 
@@ -47,7 +47,7 @@ public class AdvertisementStorageService {
     }
 
     public void delete(Advertisement advertisement) {
-        elasticSearchAdvertisementIndexService.deleteFromIndex(advertisement.getId());
+        advertisementIndexingService.deleteFromIndex(advertisement.getId());
         advertisementRepository.delete(advertisement);
     }
 }

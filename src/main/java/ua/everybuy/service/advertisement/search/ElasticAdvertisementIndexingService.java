@@ -15,13 +15,14 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class ElasticSearchAdvertisementIndexService {
+public class ElasticAdvertisementIndexingService implements AdvertisementIndexingService {
     private final RestHighLevelClient client;
     private final AdvertisementDocumentMapper mapper;
     private static final String INDEX_NAME = "advertisements";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Override
     public void indexAdvertisement(Advertisement advertisement) {
         try {
             AdvertisementDocument doc = mapper.mapToDocument(advertisement);
@@ -37,6 +38,7 @@ public class ElasticSearchAdvertisementIndexService {
         }
     }
 
+    @Override
     public void deleteFromIndex(Long id) {
         try {
             DeleteRequest request = new DeleteRequest(INDEX_NAME, String.valueOf(id));

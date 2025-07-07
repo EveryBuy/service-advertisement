@@ -22,7 +22,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ElasticsearchReindexService {
+public class ElasticAdvertisementReindexingService implements AdvertisementReindexingService {
+
     private final AdvertisementRepository advertisementRepository;
     private final AdvertisementDocumentMapper mapper;
     private final RestHighLevelClient restHighLevelClient;
@@ -30,6 +31,7 @@ public class ElasticsearchReindexService {
 
     private static final String INDEX_NAME = "advertisements";
 
+    @Override
     public String reindexAllAdvertisements() throws IOException {
         createIndexIfNotExists();
         deleteAllDocuments();
