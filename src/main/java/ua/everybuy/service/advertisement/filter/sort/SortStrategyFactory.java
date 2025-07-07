@@ -3,6 +3,12 @@ package ua.everybuy.service.advertisement.filter.sort;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import ua.everybuy.errorhandling.message.FilterAdvertisementValidationMessages;
+import ua.everybuy.service.advertisement.filter.strategy.DateAscendingSortStrategy;
+import ua.everybuy.service.advertisement.filter.strategy.DateDescendingSortStrategy;
+import ua.everybuy.service.advertisement.filter.strategy.DefaultSortStrategy;
+import ua.everybuy.service.advertisement.filter.strategy.PriceAscendingSortStrategy;
+import ua.everybuy.service.advertisement.filter.strategy.PriceDescendingSortStrategy;
+
 import java.util.HashMap;
 import java.util.Map;
 

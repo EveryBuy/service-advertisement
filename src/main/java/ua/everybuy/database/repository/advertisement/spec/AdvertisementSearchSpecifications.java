@@ -86,6 +86,7 @@ public class AdvertisementSearchSpecifications {
             return cb.or(similarityCondition, ilikeCondition);
         };
     }
+
     public static Specification<Advertisement> distinctByCategory() {
         return (root, query, cb) -> {
             Subquery<Long> subquery = query.subquery(Long.class);

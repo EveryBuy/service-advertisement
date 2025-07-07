@@ -44,4 +44,9 @@ public class CityService {
         return cityRepository.findByCityIdAndRegionId(id, regionId)
                 .orElseThrow(() -> new EntityNotFoundException(CITY_NOT_FOUND_BY_REGION_MESSAGE + regionId));
     }
+
+    @Cacheable(value = "citySmartSearchCache", key = "#keyword")
+    public List<City> smartSearchByName(String keyword) {
+        return cityRepository.findSimilarCities(keyword.trim());
+    }
 }
