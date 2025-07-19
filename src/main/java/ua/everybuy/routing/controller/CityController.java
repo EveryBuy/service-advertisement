@@ -1,5 +1,6 @@
 package ua.everybuy.routing.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class CityController {
     }
 
     @GetMapping("/search")
-    public List <City> searchCities(@RequestParam String keyword) {
+    public List <City> searchCities(@RequestParam @Valid String keyword) {
         return cityService.smartSearchByName(keyword);
     }
 }
