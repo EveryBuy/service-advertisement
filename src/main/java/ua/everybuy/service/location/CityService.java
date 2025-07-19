@@ -42,11 +42,26 @@ public class CityService {
     @Cacheable(value = "cityByRegionCache", key = "{#id, #regionId}")
     public City getByIdAndRegionId(Long id, Long regionId) {
         return cityRepository.findByCityIdAndRegionId(id, regionId)
-                .orElseThrow(() -> new EntityNotFoundException(CITY_NOT_FOUND_BY_REGION_MESSAGE + regionId));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(CITY_NOT_FOUND_BY_REGION_MESSAGE + regionId));
     }
 
     @Cacheable(value = "citySmartSearchCache", key = "#keyword")
     public List<City> smartSearchByName(String keyword) {
-        return cityRepository.findSimilarCities(keyword.trim());
+        if (!isValidKeyword(keyword)) {
+            throw new IllegalArgumentException("Keyword must contain at least 3 characters.");
+        }
+
+        String trimmed = keyword.trim();
+
+        if (trimmed.length() == 3 || trimmed.length() == 4 || trimmed.length() == 5) {
+            return cityRepository.findCitiesByPrefix(trimmed);
+        }
+
+        return cityRepository.findSimilarCities(trimmed);
+    }
+
+    private boolean isValidKeyword(String keyword) {
+        return keyword != null && keyword.trim().length() >= 3;
     }
 }
