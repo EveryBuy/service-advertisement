@@ -7,12 +7,13 @@ import java.util.Set;
 public record UpdateAdvertisementRequest(
         @NotNull(message = "Product section is required")
         Advertisement.AdSection section,
+
         @NotBlank(message = "Title is required")
         @Size(max = 255, message = "Title must be less than 255 characters")
         String title,
 
         @NotBlank(message = "Description is required")
-        @Size(max = 3000, message = "Description must be less than 3000 characters")
+        @Size(min = 30, max = 3000, message = "Description must be between 30 and 3000 characters")
         String description,
 
         @NotNull(message = "Price is required")
@@ -27,6 +28,7 @@ public record UpdateAdvertisementRequest(
         @NotNull(message = "Subcategory ID is required")
         Long topSubCategoryId,
         Long lowSubCategoryId,
+
         @NotNull(message = "Product type is required")
         Advertisement.ProductType productType,
 
