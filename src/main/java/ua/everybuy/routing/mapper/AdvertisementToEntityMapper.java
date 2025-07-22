@@ -36,5 +36,6 @@ public interface AdvertisementToEntityMapper {
     @Mapping(source = "request.section", target = "section")
     @Mapping(target = "updateDate", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "isEnabled", constant = "true")
+    @Mapping(source = "request.isNegotiable", target = "isNegotiable")
     Advertisement mapToEntity(UpdateAdvertisementRequest request, Advertisement advertisement);
 }

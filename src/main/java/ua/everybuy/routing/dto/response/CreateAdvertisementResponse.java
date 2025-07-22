@@ -1,12 +1,9 @@
 package ua.everybuy.routing.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 import ua.everybuy.routing.dto.util.PriceSerializer;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +18,7 @@ public class CreateAdvertisementResponse {
     private Double price;
     private LocalDateTime creationDate;
     private Boolean isEnabled;
+    private Boolean isNegotiable;
     private Long userId;
     private String mainPhotoUrl;
     private List<String> photoUrls;

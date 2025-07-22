@@ -20,6 +20,7 @@ public class UpdateAdvertisementResponse {
     private LocalDateTime creationDate;
     private LocalDateTime updateDate;
     private Boolean isEnabled;
+    private Boolean isNegotiable;
     private Long userId;
     private String mainPhotoUrl;
     private List<String> photoUrls;

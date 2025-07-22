@@ -22,6 +22,7 @@ public class AdvertisementDto {
     private Double price;
     private LocalDateTime creationDate;
     private Boolean isEnabled;
+    private Boolean isNegotiable;
     private Long userId;
     private String mainPhotoUrl;
     private List<String> photoUrls;

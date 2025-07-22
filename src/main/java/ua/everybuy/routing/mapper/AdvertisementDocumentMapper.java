@@ -35,6 +35,7 @@ public class AdvertisementDocumentMapper {
                 .creationDate(convertToDate(ad.getCreationDate()))
                 .updateDate(convertToDate(ad.getUpdateDate()))
                 .isEnabled(ad.getIsEnabled())
+                .isNegotiable(ad.getIsNegotiable())
                 .userId(ad.getUserId())
                 .mainPhotoUrl(ad.getMainPhotoUrl())
                 .cityId(ad.getCity().getId())
@@ -61,6 +62,7 @@ public class AdvertisementDocumentMapper {
         response.setTitle(doc.getTitle());
         response.setDescription(doc.getDescription());
         response.setPrice(doc.getPrice());
+        response.setIsNegotiable(doc.getIsNegotiable());
         response.setUpdateDate(LocalDateTime.ofInstant(doc.getUpdateDate().toInstant(), ZoneId.systemDefault()));
         response.setProductType(Advertisement.ProductType.valueOf(doc.getProductType()));
         response.setSection(doc.getSection());

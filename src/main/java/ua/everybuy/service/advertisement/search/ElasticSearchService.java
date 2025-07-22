@@ -14,7 +14,6 @@ import ua.everybuy.routing.dto.PriceRangeDto;
 import ua.everybuy.routing.dto.request.AdvertisementSearchParametersDto;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
 import ua.everybuy.routing.mapper.AdvertisementDocumentMapper;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +38,9 @@ public class ElasticSearchService implements SearchService {
 
             List<FilteredAdvertisementsResponse> advertisements = parseSearchHits(response);
             long totalHits = response.getHits().getTotalHits().value;
-            PriceRangeDto priceRange = elasticSearchPriceAggregationExtractor.extractPriceRange(response.getAggregations());
+
+            PriceRangeDto priceRange = elasticSearchPriceAggregationExtractor
+                    .extractPriceRange(response.getAggregations());
 
             return buildSearchResultDto(advertisements, totalHits, size, priceRange);
 
