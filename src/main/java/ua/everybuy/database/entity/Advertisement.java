@@ -40,6 +40,9 @@ public class Advertisement {
     @Column(name = "is_enabled")
     private Boolean isEnabled;
 
+    @Column(name = "is_negotiable", nullable = false)
+    private Boolean isNegotiable = false;
+
     @Column(name = "user_id", nullable = false)
     private Long userId;
 

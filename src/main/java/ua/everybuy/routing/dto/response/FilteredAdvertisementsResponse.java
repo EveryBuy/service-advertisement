@@ -23,6 +23,7 @@ public class FilteredAdvertisementsResponse {
     @JsonSerialize(using = PriceSerializer.class)
     private Double price;
     private String description;
+    private Boolean isNegotiable;
     private LocalDateTime updateDate;
     private City city;
     private SubCategoryDto topSubCategory;

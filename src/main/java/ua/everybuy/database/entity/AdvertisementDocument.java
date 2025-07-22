@@ -17,6 +17,7 @@ public class AdvertisementDocument {
     private Date creationDate;
     private Date updateDate;
     private Boolean isEnabled;
+    private Boolean isNegotiable;
     private Long userId;
     private String mainPhotoUrl;
     private Long cityId;

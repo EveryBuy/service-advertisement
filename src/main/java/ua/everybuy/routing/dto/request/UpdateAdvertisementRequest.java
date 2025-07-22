@@ -31,6 +31,9 @@ public record UpdateAdvertisementRequest(
 
         @NotNull(message = "Product type is required")
         Advertisement.ProductType productType,
+        
+        @NotNull(message = "Negotiable status is required")
+        Boolean isNegotiable,
 
         @NotEmpty(message = "Delivery methods are required")
         Set<String> deliveryMethods

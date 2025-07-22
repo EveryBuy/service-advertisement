@@ -23,13 +23,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ElasticAdvertisementReindexingService implements AdvertisementReindexingService {
-
+    private static final String INDEX_NAME = "advertisements";
     private final AdvertisementRepository advertisementRepository;
     private final AdvertisementDocumentMapper mapper;
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
-
-    private static final String INDEX_NAME = "advertisements";
 
     @Override
     public String reindexAllAdvertisements() throws IOException {
@@ -63,7 +61,8 @@ public class ElasticAdvertisementReindexingService implements AdvertisementReind
         restHighLevelClient.deleteByQuery(deleteRequest, RequestOptions.DEFAULT);
     }
 
-    private BulkRequest createBulkIndexRequest(List<Advertisement> advertisements) throws JsonProcessingException {
+    private BulkRequest createBulkIndexRequest(List<Advertisement> advertisements)
+            throws JsonProcessingException {
         BulkRequest bulkRequest = new BulkRequest();
 
         for (Advertisement ad : advertisements) {
@@ -123,6 +122,7 @@ public class ElasticAdvertisementReindexingService implements AdvertisementReind
                   "creationDate": { "type": "date" },
                   "updateDate": { "type": "date" },
                   "isEnabled": { "type": "boolean" },
+                  "isNegotiable": { "type": "boolean" },
                   "userId": { "type": "long" },
                   "mainPhotoUrl": { "type": "text" },
                   "cityId": { "type": "long" },
