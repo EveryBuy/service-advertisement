@@ -55,15 +55,4 @@ public class WakeUpService {
             log.error("Failed to send request to gateway service: {}", e.getMessage());
         }
     }
-
-    @Scheduled(fixedRate = 300000)
-    public void sendEmptyRequestToWakeService() {
-        String userServiceWakeUpUrl = "https://service-advertisement-r8dt.onrender.com/ad/keep-alive";
-        ResponseEntity<String> response = exchangeService
-                .exchangeGetRequest(userServiceWakeUpUrl, String.class);
-
-        log.info("Send request to advertisement service");
-        log.info(response.getBody());
-    }
-
 }
