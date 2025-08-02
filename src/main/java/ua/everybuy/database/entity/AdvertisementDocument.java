@@ -13,7 +13,7 @@ public class AdvertisementDocument {
     private Long id;
     private String title;
     private String description;
-    private Double price;
+    private Long price;
     private Date creationDate;
     private Date updateDate;
     private Boolean isEnabled;

@@ -15,9 +15,9 @@ import ua.everybuy.database.entity.Advertisement;
 @ToString
 public class AdvertisementSearchParametersDto {
     @Min(0)
-    private Double minPrice;
+    private Long minPrice;
     @Min(0)
-    private Double maxPrice;
+    private Long maxPrice;
     private Long regionId;
     private Long cityId;
     private Long topSubCategoryId;

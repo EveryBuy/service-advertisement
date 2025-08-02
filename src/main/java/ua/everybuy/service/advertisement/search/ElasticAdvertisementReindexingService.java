@@ -17,6 +17,7 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementDocument;
 import ua.everybuy.database.repository.advertisement.AdvertisementRepository;
 import ua.everybuy.routing.mapper.AdvertisementDocumentMapper;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -81,58 +82,58 @@ public class ElasticAdvertisementReindexingService implements AdvertisementReind
 
     private String getIndexMapping() {
         return """
-            {
-              "settings": {
-                "analysis": {
-                  "analyzer": {
-                    "ukrainian": {
-                      "type": "custom",
-                      "tokenizer": "standard",
-                      "filter": [
-                        "lowercase",
-                        "ukrainian_stop",
-                        "ukrainian_stemmer"
-                      ]
+                {
+                  "settings": {
+                    "analysis": {
+                      "analyzer": {
+                        "ukrainian": {
+                          "type": "custom",
+                          "tokenizer": "standard",
+                          "filter": [
+                            "lowercase",
+                            "ukrainian_stop",
+                            "ukrainian_stemmer"
+                          ]
+                        }
+                      },
+                      "filter": {
+                        "ukrainian_stop": {
+                          "type": "stop",
+                          "stopwords": "_ukrainian_"
+                        },
+                        "ukrainian_stemmer": {
+                          "type": "stemmer",
+                          "language": "ukrainian"
+                        }
+                      }
                     }
                   },
-                  "filter": {
-                    "ukrainian_stop": {
-                      "type": "stop",
-                      "stopwords": "_ukrainian_"
-                    },
-                    "ukrainian_stemmer": {
-                      "type": "stemmer",
-                      "language": "ukrainian"
+                  "mappings": {
+                    "properties": {
+                      "id": { "type": "long" },
+                      "title": { 
+                        "type": "text", 
+                        "analyzer": "ukrainian",
+                        "fields": {
+                          "exact": { "type": "keyword" }
+                        }
+                      },
+                      "description": { "type": "text" },
+                      "price": { "type": "long" }, 
+                      "creationDate": { "type": "date" },
+                      "updateDate": { "type": "date" },
+                      "isEnabled": { "type": "boolean" },
+                      "isNegotiable": { "type": "boolean" },
+                      "userId": { "type": "long" },
+                      "mainPhotoUrl": { "type": "text" },
+                      "cityId": { "type": "long" },
+                      "topSubCategoryId": { "type": "long" },
+                      "lowSubCategoryId": { "type": "long" },
+                      "productType": { "type": "keyword" },
+                      "section": { "type": "keyword" }
                     }
                   }
                 }
-              },
-              "mappings": {
-                "properties": {
-                  "id": { "type": "long" },
-                  "title": { 
-                    "type": "text", 
-                    "analyzer": "ukrainian",
-                    "fields": {
-                      "exact": { "type": "keyword" }
-                    }
-                  },
-                  "description": { "type": "text" },
-                  "price": { "type": "double" },
-                  "creationDate": { "type": "date" },
-                  "updateDate": { "type": "date" },
-                  "isEnabled": { "type": "boolean" },
-                  "isNegotiable": { "type": "boolean" },
-                  "userId": { "type": "long" },
-                  "mainPhotoUrl": { "type": "text" },
-                  "cityId": { "type": "long" },
-                  "topSubCategoryId": { "type": "long" },
-                  "lowSubCategoryId": { "type": "long" },
-                  "productType": { "type": "keyword" },
-                  "section": { "type": "keyword" }
-                }
-              }
-            }
-            """;
+                """;
     }
 }
