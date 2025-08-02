@@ -17,8 +17,9 @@ public class AdvertisementStorageService {
     private final AdvertisementIndexingService advertisementIndexingService;
 
     public Advertisement save(Advertisement advertisement) {
-        advertisementIndexingService.indexAdvertisement(advertisement);
-        return advertisementRepository.save(advertisement);
+        Advertisement savedAdvertisement = advertisementRepository.save(advertisement);
+        advertisementIndexingService.indexAdvertisement(savedAdvertisement);
+        return savedAdvertisement;
     }
 
     public Advertisement findById(Long id) {
