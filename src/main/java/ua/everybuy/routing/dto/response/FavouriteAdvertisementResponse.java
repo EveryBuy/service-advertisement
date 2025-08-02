@@ -1,14 +1,11 @@
 package ua.everybuy.routing.dto.response;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.Category;
 import ua.everybuy.database.entity.City;
-import ua.everybuy.routing.dto.util.PriceSerializer;
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,8 +18,7 @@ public class FavouriteAdvertisementResponse {
     private String mainPhotoUrl;
     private String title;
     private Advertisement.ProductType productType;
-    @JsonSerialize(using = PriceSerializer.class)
-    private Double price;
+    private Long price;
     private LocalDateTime updateDate;
     private Category category;
     private City city;

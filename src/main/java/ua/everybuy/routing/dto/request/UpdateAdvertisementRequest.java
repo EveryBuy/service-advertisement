@@ -17,8 +17,8 @@ public record UpdateAdvertisementRequest(
         String description,
 
         @NotNull(message = "Price is required")
-        @DecimalMin(value = "0.0", inclusive = true, message = "Price must be a positive number")
-        Double price,
+        @Min(value = 0, message = "Price must be a positive number")
+        Long price,
 
         @NotNull(message = "City ID is required")
         Long cityId,

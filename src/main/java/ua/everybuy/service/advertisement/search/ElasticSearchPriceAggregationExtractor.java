@@ -9,7 +9,7 @@ import ua.everybuy.routing.dto.PriceRangeDto;
 @Service
 public class ElasticSearchPriceAggregationExtractor {
     public PriceRangeDto extractPriceRange(Aggregations aggregations) {
-        if (aggregations == null) return new PriceRangeDto(0.0, 0.0);
+        if (aggregations == null) return new PriceRangeDto(0L, 0L);
 
         return PriceRangeDto.builder()
                 .minPrice(extractMinPrice(aggregations))
@@ -17,19 +17,19 @@ public class ElasticSearchPriceAggregationExtractor {
                 .build();
     }
 
-    private double extractMinPrice(Aggregations aggregations) {
+    private long extractMinPrice(Aggregations aggregations) {
         Min min = aggregations.get("min_price");
-        if (min == null) return 0.0;
-
-        double value = min.getValue();
-        return (!Double.isInfinite(value) && !Double.isNaN(value)) ? value : 0.0;
+        if (min == null) return 0L;
+        if (min.getValue() == Double.POSITIVE_INFINITY) return 0L;
+        return (long) min.getValue();
     }
 
-    private double extractMaxPrice(Aggregations aggregations) {
+    private long extractMaxPrice(Aggregations aggregations) {
         Max max = aggregations.get("max_price");
-        if (max == null) return 0.0;
+        if (max == null) return 0L;
 
-        double value = max.getValue();
-        return (!Double.isInfinite(value) && !Double.isNaN(value)) ? value : 0.0;
+        if (max.getValue() == Double.NEGATIVE_INFINITY) return 0L;
+
+        return (long) max.getValue();
     }
 }

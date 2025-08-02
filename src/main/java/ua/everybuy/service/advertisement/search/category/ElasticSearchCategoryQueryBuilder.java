@@ -14,7 +14,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ElasticSearchCategoryAggregationQueryBuilder implements QueryBuilder {
+public class ElasticSearchCategoryQueryBuilder implements QueryBuilder {
     private static final String SECTION_FIELD = "section";
     private static final String CATEGORY_FIELD = "topSubCategoryId";
     private static final String INDEX_NAME = "advertisements";

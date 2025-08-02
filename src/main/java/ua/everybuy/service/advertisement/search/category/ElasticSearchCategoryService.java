@@ -24,7 +24,7 @@ public class ElasticSearchCategoryService implements SearchCategoryService {
     private static final String SECTION_AGG = "by_section";
     private static final List<String> SECTIONS = List.of("SELL", "BUY");
 
-    private final ElasticSearchCategoryAggregationQueryBuilder queryBuilder;
+    private final ElasticSearchCategoryQueryBuilder queryBuilder;
     private final RestHighLevelClient esClient;
     private final TopLevelSubCategoryService topCategoryService;
 
@@ -32,7 +32,7 @@ public class ElasticSearchCategoryService implements SearchCategoryService {
      * Finds top categories by keyword, grouped by section (SELL/BUY)
      *
      * @param keyword Search term
-     * @return Map where key is section, value is list of categories with counts
+     * @return Map where key is section, value is list of categories with counts advertisements
      */
     @Override
     public Map<String, List<TopCategorySearchResultDto>> findTopCategoriesByKeyword(String keyword) {
