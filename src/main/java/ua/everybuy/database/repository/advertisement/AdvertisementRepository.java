@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.dto.CategoryAdvertisementCount;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -52,5 +51,10 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
             WHERE a.id = :id AND a.isEnabled = true
             """)
     Optional<Advertisement> findActiveById(@Param("id") Long id);
-}
 
+    @Query("SELECT a.city.id FROM Advertisement a " +
+            "WHERE a.userId = :userId " +
+            "ORDER BY a.updateDate DESC LIMIT 1")
+    Optional<Long> findFirstCityIdByUserId(@Param("userId") Long userId);
+
+}

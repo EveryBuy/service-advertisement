@@ -1,10 +1,11 @@
-package ua.everybuy.service.advertisement.user;
+package ua.everybuy.service.advertisement.user.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.everybuy.service.advertisement.AdvertisementManagementService;
+import ua.everybuy.service.advertisement.user.UserDeletionService;
 import ua.everybuy.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
@@ -15,13 +16,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdvertisementUserDeletionService {
+public class AdvertisementUserDeletionService implements UserDeletionService {
     private final AdvertisementRepository advertisementRepository;
     private final AdvertisementManagementService advertisementManagementService;
     private final PhotoService photoService;
     private final SecurityValidationService securityValidationService;
 
     @Transactional
+    @Override
     public void deleteAllAndPushUserAdvertisements(Long userId, HttpServletRequest request) throws IOException {
         securityValidationService.validatePassword(request);
 
