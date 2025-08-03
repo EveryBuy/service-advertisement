@@ -1,4 +1,4 @@
-package ua.everybuy.service.advertisement.user;
+package ua.everybuy.service.advertisement.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -10,15 +10,18 @@ import ua.everybuy.service.advertisement.filter.sort.SortStrategyFactory;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.routing.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
+import ua.everybuy.service.advertisement.user.UserStatisticService;
+
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdvertisementUserStatisticService {
+public class AdvertisementUserStatisticService implements UserStatisticService {
     private final AdvertisementStorageService advertisementStorageService;
     private final AdvertisementResponseMapper advertisementResponseMapper;
     private final SortStrategyFactory sortStrategyFactory;
 
+    @Override
     public List<AdvertisementWithStatisticResponse> getUserAdvertisementsWithStatistic(Long userId, boolean isEnabled,
                                                                                        Advertisement.AdSection section,
                                                                                        int page, int size) {

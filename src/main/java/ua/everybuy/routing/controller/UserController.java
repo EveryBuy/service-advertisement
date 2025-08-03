@@ -5,14 +5,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ua.everybuy.service.advertisement.user.AdvertisementUserDeletionService;
-import ua.everybuy.service.advertisement.user.AdvertisementUserProfileService;
-import ua.everybuy.service.advertisement.user.AdvertisementUserStatisticService;
 import ua.everybuy.database.entity.Advertisement;
+import ua.everybuy.database.entity.City;
 import ua.everybuy.routing.dto.UserAdvertisementDto;
 import ua.everybuy.routing.dto.response.AdvertisementWithStatisticResponse;
 import ua.everybuy.routing.dto.response.StatusResponse;
-
+import ua.everybuy.service.advertisement.user.UserDeletionService;
+import ua.everybuy.service.advertisement.user.UserLastLocationService;
+import ua.everybuy.service.advertisement.user.UserProfileService;
+import ua.everybuy.service.advertisement.user.UserStatisticService;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
@@ -21,9 +22,10 @@ import java.util.List;
 @RequestMapping("/product/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final AdvertisementUserStatisticService advertisementUserStatisticService;
-    private final AdvertisementUserProfileService advertisementUserProfileService;
-    private final AdvertisementUserDeletionService advertisementUserDeletionService;
+    private final UserStatisticService userStatisticService;
+    private final UserProfileService userProfileService;
+    private final UserDeletionService userDeletionService;
+    private final UserLastLocationService userLastLocationService;
 
     @GetMapping("/active-ads")
     @ResponseStatus(HttpStatus.OK)
@@ -32,7 +34,7 @@ public class UserController {
             Principal principal, @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size) {
-        List<AdvertisementWithStatisticResponse> responseList = advertisementUserStatisticService
+        List<AdvertisementWithStatisticResponse> responseList = userStatisticService
                 .getUserAdvertisementsWithStatistic(Long.parseLong(principal.getName()), true, section, page, size);
         return new StatusResponse<>(HttpStatus.OK.value(), responseList);
     }
@@ -43,7 +45,7 @@ public class UserController {
             Principal principal, @RequestParam(required = false, defaultValue = "SELL") @Valid Advertisement.AdSection section,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "8") int size) {
-        List<AdvertisementWithStatisticResponse> responseList = advertisementUserStatisticService
+        List<AdvertisementWithStatisticResponse> responseList = userStatisticService
                 .getUserAdvertisementsWithStatistic(Long.parseLong(principal.getName()), false, section, page, size);
         return new StatusResponse<>(HttpStatus.OK.value(), responseList);
     }
@@ -56,13 +58,19 @@ public class UserController {
                                            @RequestParam(defaultValue = "1") int page,
                                            @RequestParam(defaultValue = "20") int size) {
 
-        return advertisementUserProfileService.getUserActiveFilteredAdvertisements(userId, categoryId, section, page, size);
+        return userProfileService.getUserActiveFilteredAdvertisements(userId, categoryId, section, page, size);
     }
 
     @DeleteMapping("/{userId}/ads")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserAdvertisements(@PathVariable Long userId,
                                          HttpServletRequest request) throws IOException {
-        advertisementUserDeletionService.deleteAllAndPushUserAdvertisements(userId, request);
+        userDeletionService.deleteAllAndPushUserAdvertisements(userId, request);
+    }
+
+    @GetMapping("/last-location")
+    @ResponseStatus(HttpStatus.OK)
+    public City getUserLastLocation(Principal principal) {
+        return userLastLocationService.getLastLocationForUser(Long.parseLong(principal.getName()));
     }
 }

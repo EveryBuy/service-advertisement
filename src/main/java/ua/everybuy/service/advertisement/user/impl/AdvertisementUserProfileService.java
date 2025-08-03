@@ -1,4 +1,4 @@
-package ua.everybuy.service.advertisement.user;
+package ua.everybuy.service.advertisement.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import ua.everybuy.service.advertisement.user.UserProfileService;
 import ua.everybuy.service.category.CategoryService;
 import ua.everybuy.service.advertisement.filter.sort.SortStrategyFactory;
 import ua.everybuy.database.entity.Advertisement;
@@ -21,7 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdvertisementUserProfileService {
+public class AdvertisementUserProfileService implements UserProfileService {
     private final AdvertisementUserDtoBuilder userDtoBuilder;
     private final AdvertisementUserFilterSpecificationFactory advertisementUserSpecificationFactory;
     private final AdvertisementUserSpecificationFactory advertisementSpecificationFactory;
@@ -29,6 +30,7 @@ public class AdvertisementUserProfileService {
     private final CategoryService categoryService;
     private final SortStrategyFactory sortStrategyFactory;
 
+    @Override
     public UserAdvertisementDto getUserActiveFilteredAdvertisements(Long userId, Long categoryId,
                                                                     Advertisement.AdSection section,
                                                                     int page, int size) {
