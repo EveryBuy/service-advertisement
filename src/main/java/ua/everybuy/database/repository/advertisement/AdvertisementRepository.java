@@ -1,6 +1,7 @@
 package ua.everybuy.database.repository.advertisement;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -41,15 +42,8 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
             "WHERE a.userId = :userId ")
     List<Advertisement> findAllByUserId(Long userId);
 
-    @Query("""
-            SELECT a FROM Advertisement a
-            LEFT JOIN FETCH a.city
-            LEFT JOIN FETCH a.topSubCategory tsc
-            LEFT JOIN FETCH tsc.category
-            LEFT JOIN FETCH a.lowSubCategory
-            LEFT JOIN FETCH a.advertisementDeliveries
-            WHERE a.id = :id AND a.isEnabled = true
-            """)
+    @EntityGraph(attributePaths = {"topSubCategory.category", "lowSubCategory", "advertisementDeliveries"})
+    @Query("SELECT a FROM Advertisement a WHERE a.id = :id AND a.isEnabled = true")
     Optional<Advertisement> findActiveById(@Param("id") Long id);
 
     @Query("SELECT a.city.id FROM Advertisement a " +
