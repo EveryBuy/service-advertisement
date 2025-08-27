@@ -72,7 +72,7 @@ public class AdvertisementManagementService {
                         Long.parseLong(principal.getName()));
         photoService.deletePhotosByAdvertisementId(advertisement);
         advertisement.setIsEnabled(false);
-//        pushAdvertisementChangeToChatService(advertisement);
+        pushAdvertisementChangeToChatService(advertisement);
 
         advertisementStorageService.delete(advertisement);
     }
