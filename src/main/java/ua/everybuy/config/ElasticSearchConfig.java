@@ -25,7 +25,7 @@ public class ElasticSearchConfig {
     public RestHighLevelClient restHighLevelClient() throws Exception {
         URI uri = new URI(elasticsearchUrl);
 
-        String userInfo = uri.getUserInfo(); // e.g., "username:password"
+        String userInfo = uri.getUserInfo();
         String[] credentials = userInfo.split(":");
 
         final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
