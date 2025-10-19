@@ -55,7 +55,7 @@ public class AdvertisementUpdateService {
 
         existingAdvertisement = advertisementManagementService.saveAdvertisement(existingAdvertisement);
 
-        processAdvertisementPhotos(existingAdvertisement, photos);
+        processAdvertisementPhotos(existingAdvertisement, photos, updateRequest.rotations());
 
         processDeliveryMethods(existingAdvertisement, updateRequest.deliveryMethods());
 
@@ -64,10 +64,11 @@ public class AdvertisementUpdateService {
     }
 
     private void processAdvertisementPhotos(Advertisement advertisement,
-                                            MultipartFile[] photos) throws IOException {
+                                            MultipartFile[] photos,
+                                            List<Byte> rotations) throws IOException {
         photoService.deletePhotosByAdvertisementId(advertisement);
         List<AdvertisementPhoto> advertisementPhotos = photoService
-                .uploadAndLinkPhotos(photos, advertisement,
+                .uploadAndLinkPhotos(photos, advertisement, rotations,
                         advertisement.getTopSubCategory().getSubCategoryName());
         advertisementManagementService.setMainPhoto(advertisement, advertisementPhotos);
     }

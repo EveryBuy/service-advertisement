@@ -18,6 +18,8 @@ public interface S3Service {
      */
     String uploadPhoto(MultipartFile photo, String subcategory) throws IOException;
 
+    String uploadPhoto(byte[] photo, String formatType, String subcategory) throws IOException;
+
     /**
      * Deletes a list of photos from S3.
      *

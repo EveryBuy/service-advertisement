@@ -47,6 +47,26 @@ public class AmazonS3ServiceV2 implements S3Service {
     }
 
     @Override
+    public String uploadPhoto(byte[] photoBytes, String formatType, String subcategory) throws IOException {
+        String photoKey = generatePhotoKey(subcategory);
+        String photoUrl = awsUrl + photoKey;
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(photoKey)
+                .contentType(formatType)
+                .contentLength((long) photoBytes.length)
+                .build();
+
+        try {
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(photoBytes));
+        } catch (S3Exception e) {
+            throw new IOException("Failed to upload photo to S3: " + e.getMessage(), e);
+        }
+
+        return photoUrl;
+    }
+    @Override
     public void deletePhotos(List<AdvertisementPhoto> photos) throws IOException {
         for (AdvertisementPhoto photo : photos) {
             String s3Key = photo.getPhotoUrl().replace(awsUrl, "");
