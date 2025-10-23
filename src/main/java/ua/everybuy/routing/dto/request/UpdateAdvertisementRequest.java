@@ -2,6 +2,8 @@ package ua.everybuy.routing.dto.request;
 
 import jakarta.validation.constraints.*;
 import ua.everybuy.database.entity.Advertisement;
+
+import java.util.List;
 import java.util.Set;
 
 public record UpdateAdvertisementRequest(
@@ -36,7 +38,10 @@ public record UpdateAdvertisementRequest(
         Boolean isNegotiable,
 
         @NotEmpty(message = "Delivery methods are required")
-        Set<String> deliveryMethods
+        Set<String> deliveryMethods,
+
+        @NotEmpty(message = "Rotations are required")
+        List<Byte> rotations
 
 ) implements CategoryRequest {
 }

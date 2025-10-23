@@ -46,14 +46,15 @@ public class AdvertisementCreationService {
                 .mapToEntity(createRequest, new AdvertisementStatistics(), Long.parseLong(userId));
         newAdvertisement = advertisementManagementService.saveAdvertisement(newAdvertisement);
 
-        processAdvertisementPhotos(newAdvertisement, photos);
+        processAdvertisementPhotos(newAdvertisement, photos, createRequest.rotations());
         processDeliveryMethods(newAdvertisement, createRequest.deliveryMethods());
 
         return newAdvertisement;
     }
 
-    private void processAdvertisementPhotos(Advertisement newAdvertisement, MultipartFile[] photos) throws IOException {
-        List<AdvertisementPhoto> advertisementPhotos = photoService.uploadAndLinkPhotos(photos, newAdvertisement,
+    private void processAdvertisementPhotos(Advertisement newAdvertisement, MultipartFile[] photos,
+                                            List<Byte> rotations) throws IOException {
+        List<AdvertisementPhoto> advertisementPhotos = photoService.uploadAndLinkPhotos(photos, newAdvertisement, rotations,
                 newAdvertisement.getTopSubCategory().getSubCategoryName());
         advertisementManagementService.setMainPhoto(newAdvertisement, advertisementPhotos);
     }

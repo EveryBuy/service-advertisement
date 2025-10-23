@@ -31,6 +31,7 @@ dependencies {
 	implementation 'org.elasticsearch.client:elasticsearch-rest-client:7.10.2'
 
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.15.3'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -39,8 +40,14 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 
 	implementation("software.amazon.awssdk:s3:2.32.24")
-	implementation 'org.mapstruct:mapstruct:1.5.2.Final'
+	implementation 'net.coobird:thumbnailator:0.4.19'
+
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+	implementation 'org.mapstruct:mapstruct:1.5.2.Final'
+
+
+//	implementation 'org.apache.kafka:kafka-clients'
+//	implementation 'org.springframework.kafka:spring-kafka'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'

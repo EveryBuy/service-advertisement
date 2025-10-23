@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ua.everybuy.service.integration.ChatService;
+import ua.everybuy.service.integration.chat.AdvertisementSender;
 import ua.everybuy.service.photo.PhotoService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.AdvertisementPhoto;
@@ -12,7 +12,6 @@ import ua.everybuy.routing.dto.AdvertisementDto;
 import ua.everybuy.routing.mapper.AdvertisementResponseMapper;
 import ua.everybuy.routing.mapper.AdvertisementToDtoMapper;
 import ua.everybuy.routing.dto.response.*;
-
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -29,7 +28,7 @@ public class AdvertisementManagementService {
     private final StatisticsService statisticsService;
     private final AdvertisementResponseMapper responseMapper;
     private final AdvertisementToDtoMapper dtoMapper;
-    private final ChatService chatService;
+    private final AdvertisementSender advertisementSender;
 
     public Advertisement saveAdvertisement(Advertisement advertisement) {
         advertisementValidationService.validate(advertisement);
@@ -72,7 +71,7 @@ public class AdvertisementManagementService {
                         Long.parseLong(principal.getName()));
         photoService.deletePhotosByAdvertisementId(advertisement);
         advertisement.setIsEnabled(false);
-//        pushAdvertisementChangeToChatService(advertisement);
+        pushAdvertisementChangeToChatService(advertisement);
 
         advertisementStorageService.delete(advertisement);
     }
@@ -99,7 +98,7 @@ public class AdvertisementManagementService {
     public void pushAdvertisementChangeToChatService(Advertisement advertisement) {
         AdvertisementInfoForChatService advertisementInfoForChatService = responseMapper
                 .mapToAdvertisementInfoForChatService(advertisement);
-        chatService.sendInfoAboutChange(advertisementInfoForChatService);
+        advertisementSender.sendAdvertisementChange(advertisementInfoForChatService);
     }
 
     private <T> StatusResponse<T> buildStatusResponse(HttpStatus status, Advertisement advertisement,
