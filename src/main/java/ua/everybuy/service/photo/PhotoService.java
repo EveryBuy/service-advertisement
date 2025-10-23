@@ -1,7 +1,6 @@
 package ua.everybuy.service.photo;
 
 import lombok.RequiredArgsConstructor;
-import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,9 +10,6 @@ import ua.everybuy.database.repository.photo.AdvertisementPhotoRepository;
 import ua.everybuy.errorhandling.custom.FileFormatException;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +25,7 @@ public class PhotoService {
     private static final int MAX_PHOTOS = 10;
     private final AdvertisementPhotoRepository advertisementPhotoRepository;
     private final S3Service s3Service;
+    private final ImageRotationService imageRotationService;
 
     public List<AdvertisementPhoto> uploadAndLinkPhotos(MultipartFile[] photos,
                                                         Advertisement advertisement,
@@ -55,12 +52,8 @@ public class PhotoService {
         if (rotation == 0) {
             photoUrl = s3Service.uploadPhoto(photo, subCategoryName);
         } else {
-            String fileFormat = getFormatName(photo);
-            BufferedImage originalImage = ImageIO.read(photo.getInputStream());
-            BufferedImage rotatedImage = rotateImage(originalImage, rotation);
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ImageIO.write(rotatedImage, fileFormat, os);
-            byte[] rotatedBytes = os.toByteArray();
+            String fileFormat = imageRotationService.getFormatName(photo);
+            byte[] rotatedBytes = imageRotationService.rotateImage(photo, rotation);
             photoUrl = s3Service.uploadPhoto(rotatedBytes, fileFormat, subCategoryName);
         }
         return AdvertisementPhoto.builder().photoUrl(photoUrl).creationDate(LocalDateTime.now()).advertisement(advertisement).build();
@@ -113,47 +106,10 @@ public class PhotoService {
     private void validateRotations(MultipartFile[] photos, List<Byte> rotations) {
         if (rotations == null || rotations.size() != photos.length) {
             throw new IllegalArgumentException(String.format(
-                    "Invalid rotations count: expected %d but got %d",
+                    INVALID_ROTATIONS_COUNT_ERROR,
                     photos.length,
                     rotations == null ? 0 : rotations.size()
             ));
         }
     }
-
-    private BufferedImage rotateImage(BufferedImage originalImage, int rotation) {
-        if (rotation < 0 || rotation > 3) return originalImage;
-
-        double radians = Math.toRadians(rotation * 90);
-        int width = originalImage.getWidth();
-        int height = originalImage.getHeight();
-
-        int newWidth = (rotation % 2 == 0) ? width : height;
-        int newHeight = (rotation % 2 == 0) ? height : width;
-
-        BufferedImage rotated = new BufferedImage(newWidth, newHeight, originalImage.getType());
-        Graphics2D g2d = rotated.createGraphics();
-        g2d.rotate(radians, newWidth / 2.0, newHeight / 2.0);
-        g2d.drawImage(originalImage, (newWidth - width) / 2, (newHeight - height) / 2, null);
-        g2d.dispose();
-
-        return rotated;
-    }
-
-    private String getFormatName(MultipartFile file) throws IOException {
-        String originalFilename = file.getOriginalFilename();
-        if (originalFilename != null && originalFilename.contains(".")) {
-            String ext = originalFilename.substring(originalFilename.lastIndexOf('.') + 1).toLowerCase();
-            switch (ext) {
-                case "png":
-                case "jpg":
-                case "jpeg":
-                case "bmp":
-                case "gif":
-                case "webp":
-                    return ext.equals("jpeg") ? "jpg" : ext;
-            }
-        }
-        throw new FileFormatException("Unsupported image format");
-    }
-
 }

@@ -52,7 +52,8 @@ public class AdvertisementCreationService {
         return newAdvertisement;
     }
 
-    private void processAdvertisementPhotos(Advertisement newAdvertisement, MultipartFile[] photos, List<Byte> rotations) throws IOException {
+    private void processAdvertisementPhotos(Advertisement newAdvertisement, MultipartFile[] photos,
+                                            List<Byte> rotations) throws IOException {
         List<AdvertisementPhoto> advertisementPhotos = photoService.uploadAndLinkPhotos(photos, newAdvertisement, rotations,
                 newAdvertisement.getTopSubCategory().getSubCategoryName());
         advertisementManagementService.setMainPhoto(newAdvertisement, advertisementPhotos);
