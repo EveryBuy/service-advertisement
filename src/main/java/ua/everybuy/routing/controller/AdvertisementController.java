@@ -68,7 +68,7 @@ public class AdvertisementController {
         advertisementManagementService.deleteAdvertisement(id, principal);
     }
 
-    @PutMapping("/{id}/change-status")
+    @PatchMapping("/{id}/change-status")
     @ResponseStatus(HttpStatus.OK)
     public StatusResponse<AdvertisementStatusResponse> enableAdvertisement(@PathVariable @Valid Long id) {
         return advertisementManagementService.setAdvertisementEnabledStatus(id);

@@ -1,0 +1,49 @@
+package ua.everybuy.config;
+
+import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.SaslConfigs;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
+import ua.everybuy.routing.dto.response.AdvertisementInfoForChatService;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Configuration
+@EnableKafka
+public class KafkaProducerConfig {
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String bootstrapServer;
+    @Value("${spring.kafka.properties.security.protocol}")
+    private String protocol;
+    @Value(("${spring.kafka.properties.sasl.mechanism}"))
+    private String mechanism;
+    @Value("${spring.kafka.properties.sasl.jaas.config}")
+    private String jaasConfig;
+
+
+    @Bean
+    public ProducerFactory<String, AdvertisementInfoForChatService> producerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, protocol);
+        props.put(SaslConfigs.SASL_MECHANISM, mechanism);
+        props.put(SaslConfigs.SASL_JAAS_CONFIG, jaasConfig);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(props);
+    }
+
+    @Bean
+    public KafkaTemplate<String, AdvertisementInfoForChatService> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+}
