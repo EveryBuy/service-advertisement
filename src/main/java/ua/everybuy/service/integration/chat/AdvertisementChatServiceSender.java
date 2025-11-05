@@ -11,7 +11,6 @@ import ua.everybuy.routing.dto.response.AdvertisementInfoForChatService;
 
 @Service
 @RequiredArgsConstructor
-@Primary
 public class AdvertisementChatServiceSender implements AdvertisementSender {
     private static final String CHANGE_INFO_ENDPOINT = "/advertisement/change";
     @Value("${chat.service.url}")
