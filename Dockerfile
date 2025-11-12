@@ -8,7 +8,7 @@ COPY . .
 RUN chmod +x gradlew
 RUN ./gradlew bootJar --no-daemon
 
-FROM openjdk:17-alpine
+FROM eclipse-temurin:17-jdk-alpine
 
 COPY --from=build /build/libs/service-advertisement-0.0.1.jar /app/service-advertisement-0.0.1.jar
 
