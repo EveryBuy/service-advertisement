@@ -18,9 +18,8 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     Optional<Advertisement> findByIdAndUserId(Long id, Long userId);
 
+    @EntityGraph(attributePaths = {"city"})
     @Query("SELECT a FROM Advertisement a " +
-            "JOIN FETCH a.advertisementDeliveries " +
-            "JOIN FETCH a.city " +
             "WHERE a.userId = :userId " +
             "AND (:section IS NULL OR a.section = :section) " +
             "AND (a.isEnabled = :isEnabled) ")
