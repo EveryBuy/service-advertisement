@@ -3,7 +3,6 @@ package ua.everybuy.service.photo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.everybuy.errorhandling.custom.FileFormatException;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -50,7 +49,7 @@ public class ImageRotationService {
      * Performs the actual image rotation using affine transformations.
      *
      * @param originalImage the source image to rotate
-     * @param rotation      the number of 90-degree increments (0-3)
+     * @param rotation the number of 90-degree increments (0-3)
      * @return the rotated BufferedImage
      */
     private BufferedImage rotateImage(BufferedImage originalImage, int rotation) {
