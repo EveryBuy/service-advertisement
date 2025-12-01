@@ -10,7 +10,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Set;
 
-
 /**
  * Service for rotating images by 90-degree increments.
  * Supports common image formats: PNG, JPG, JPEG, BMP, GIF.
