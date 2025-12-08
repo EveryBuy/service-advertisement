@@ -14,10 +14,17 @@ import ua.everybuy.routing.mapper.AdvertisementToEntityMapper;
 import ua.everybuy.routing.dto.request.UpdateAdvertisementRequest;
 import ua.everybuy.routing.dto.response.StatusResponse;
 import ua.everybuy.routing.dto.response.UpdateAdvertisementResponse;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+
+/**
+ * Service responsible for handling advertisement update operations.
+ * This service manages the complete lifecycle of updating existing advertisements,
+ * including photo management, delivery method updates, and synchronization with related services.
+ * All operations are performed within a transactional context to ensure data consistency.
+ *
+ */
 
 @RequiredArgsConstructor
 @Service
