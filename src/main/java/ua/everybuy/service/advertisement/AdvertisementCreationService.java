@@ -19,6 +19,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Service responsible for handling advertisement creation operations.
+ * This service coordinates multiple components to create advertisements,
+ * process photos, and manage delivery methods in a transactional context.
+ *
+ */
+
 @RequiredArgsConstructor
 @Service
 public class AdvertisementCreationService {
