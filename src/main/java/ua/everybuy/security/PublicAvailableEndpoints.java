@@ -17,8 +17,8 @@ public class PublicAvailableEndpoints {
             new AntPathRequestMatcher("/product/filter"),
             new AntPathRequestMatcher("/product/user/*/ads/**"),
             new AntPathRequestMatcher("/product/search/**"),
-            new AntPathRequestMatcher("/ad/keep-alive")
-    );
+            new AntPathRequestMatcher("/ad/keep-alive"),
+            new AntPathRequestMatcher("/actuator/health"));
 
     public static Set<RequestMatcher> getPublicEndpoints() {
         return PUBLIC_ENDPOINTS;
