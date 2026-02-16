@@ -6,7 +6,6 @@ import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.entity.City;
 import ua.everybuy.routing.dto.CategoryDto;
 import ua.everybuy.routing.dto.SubCategoryDto;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,7 +19,7 @@ public class FilteredAdvertisementsResponse {
     private Long price;
     private String description;
     private Boolean isNegotiable;
-    private LocalDateTime updateDate;
+    private String updateDate;
     private City city;
     private SubCategoryDto topSubCategory;
     private SubCategoryDto lowSubCategory;

@@ -13,10 +13,6 @@ import ua.everybuy.database.entity.LowLevelSubCategory;
 import ua.everybuy.database.entity.TopLevelSubCategory;
 import ua.everybuy.routing.dto.response.FilteredAdvertisementsResponse;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-
 @Component
 @RequiredArgsConstructor
 public class AdvertisementDocumentMapper {
@@ -32,8 +28,8 @@ public class AdvertisementDocumentMapper {
                 .title(ad.getTitle())
                 .description(ad.getDescription())
                 .price(ad.getPrice())
-                .creationDate(convertToDate(ad.getCreationDate()))
-                .updateDate(convertToDate(ad.getUpdateDate()))
+                .creationDate(String.valueOf(ad.getCreationDate()))
+                .updateDate(String.valueOf(ad.getUpdateDate()))
                 .isEnabled(ad.getIsEnabled())
                 .isNegotiable(ad.getIsNegotiable())
                 .userId(ad.getUserId())
@@ -48,11 +44,6 @@ public class AdvertisementDocumentMapper {
                 .build();
     }
 
-    private Date convertToDate(LocalDateTime localDateTime) {
-        if (localDateTime == null) return null;
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-    }
-
     public FilteredAdvertisementsResponse mapToFilteredAdvertisementsResponse(AdvertisementDocument doc) {
         FilteredAdvertisementsResponse response = new FilteredAdvertisementsResponse();
 
@@ -63,7 +54,7 @@ public class AdvertisementDocumentMapper {
         response.setDescription(doc.getDescription());
         response.setPrice(doc.getPrice());
         response.setIsNegotiable(doc.getIsNegotiable());
-        response.setUpdateDate(LocalDateTime.ofInstant(doc.getUpdateDate().toInstant(), ZoneId.systemDefault()));
+        response.setUpdateDate(String.valueOf(doc.getUpdateDate()));
         response.setProductType(Advertisement.ProductType.valueOf(doc.getProductType()));
         response.setSection(doc.getSection());
         response.setCity(cityService.findById(doc.getCityId()));

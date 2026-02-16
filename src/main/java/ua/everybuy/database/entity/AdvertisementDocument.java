@@ -2,8 +2,6 @@ package ua.everybuy.database.entity;
 
 import lombok.*;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,8 +12,8 @@ public class AdvertisementDocument {
     private String title;
     private String description;
     private Long price;
-    private Date creationDate;
-    private Date updateDate;
+    private String creationDate;
+    private String updateDate;
     private Boolean isEnabled;
     private Boolean isNegotiable;
     private Long userId;
