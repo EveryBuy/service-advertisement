@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ua.everybuy.service.advertisement.search.AdvertisementReindexingService;
+import ua.everybuy.service.advertisement.search.AdvertisementIndexingService;
 import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/product/search")
 public class ElasticSearchIndexController {
-    private final AdvertisementReindexingService reindexService;
+    private final AdvertisementIndexingService reindexService;
 
     @PostMapping("/reindex")
     @ResponseStatus(HttpStatus.ACCEPTED)
