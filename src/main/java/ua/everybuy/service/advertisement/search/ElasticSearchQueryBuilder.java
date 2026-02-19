@@ -11,6 +11,11 @@ import org.springframework.stereotype.Component;
 import ua.everybuy.service.advertisement.search.filters.processors.FilterAdvertisementProcessor;
 import ua.everybuy.routing.dto.request.AdvertisementSearchParametersDto;
 
+/*
+    "from": 20 (skip first 20 documents)
+    "size": 10 (show 10 documents)
+ */
+
 @Component
 @RequiredArgsConstructor
 public class ElasticSearchQueryBuilder implements QueryBuilder {

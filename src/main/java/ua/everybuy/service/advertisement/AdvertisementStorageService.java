@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-import ua.everybuy.service.advertisement.search.AdvertisementIndexingService;
 import ua.everybuy.database.entity.Advertisement;
 import ua.everybuy.database.repository.advertisement.AdvertisementRepository;
 import ua.everybuy.errorhandling.message.AdvertisementValidationMessages;
+import ua.everybuy.service.advertisement.search.AdvertisementIndexingService;
 import java.util.List;
 
 @Service
