@@ -29,23 +29,16 @@ public class ElasticAdvertisementIndexingService implements AdvertisementIndexin
 
     @Override
     public void indexAdvertisement(Advertisement advertisement) {
-        try {
-            AdvertisementDocument doc = mapper.mapToDocument(advertisement);
-            adDocElasticRepository.save(doc);
-            log.info("Indexing advertisement {}", advertisement.getId());
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to index advertisement", e);
-        }
+        AdvertisementDocument doc = mapper.mapToDocument(advertisement);
+        adDocElasticRepository.save(doc);
+        log.info("Indexing advertisement {}", advertisement.getId());
+
     }
 
     @Override
     public void deleteFromIndex(Long id) {
-        try {
-            adDocElasticRepository.deleteById(id);
-            log.info("Deleting advertisement {}", id);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to delete advertisement from index", e);
-        }
+        adDocElasticRepository.deleteById(id);
+        log.info("Deleting advertisement {}", id);
     }
 
     @Override
@@ -55,7 +48,7 @@ public class ElasticAdvertisementIndexingService implements AdvertisementIndexin
 
         List<Advertisement> allAds = advertisementRepository.findAll();
 
-        List <AdvertisementDocument> documents = allAds.stream()
+        List<AdvertisementDocument> documents = allAds.stream()
                 .map(mapper::mapToDocument)
                 .collect(Collectors.toList());
 
