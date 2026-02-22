@@ -5,9 +5,9 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EnabledFilter implements SearchFilter<Object> {
+public class EnabledFilter implements SearchFilter<Boolean> {
     @Override
-    public void apply(BoolQueryBuilder query, Object value) {
-        query.filter(QueryBuilders.termQuery("isEnabled", true));
+    public void apply(BoolQueryBuilder query, Boolean value) {
+        query.filter(QueryBuilders.termQuery("isEnabled", value));
     }
 }

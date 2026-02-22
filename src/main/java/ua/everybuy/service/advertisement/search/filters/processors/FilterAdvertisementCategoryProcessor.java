@@ -13,7 +13,7 @@ public class FilterAdvertisementCategoryProcessor {
     private final KeywordFilter keywordFilter;
 
     public void process(BoolQueryBuilder query, String keyword) {
-        enabledFilter.apply(query, new Object());
+        enabledFilter.apply(query, true);
         keywordFilter.apply(query,keyword);
 
     }

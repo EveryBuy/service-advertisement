@@ -33,7 +33,7 @@ public class FilterAdvertisementProcessor {
     public void process(BoolQueryBuilder query, AdvertisementSearchParametersDto dto) {
         categoryFilter.apply(query, dto.getCategoryId());
         cityFilter.apply(query, dto.getCityId());
-        enabledFilter.apply(query, new Object());
+        enabledFilter.apply(query, true);
         keywordFilter.apply(query, dto.getKeyword());
         lowSubCategoryFilter.apply(query, dto.getLowSubCategoryId());
         priceFilter.apply(query, new PriceRangeDto(dto.getMinPrice(), dto.getMaxPrice()));
