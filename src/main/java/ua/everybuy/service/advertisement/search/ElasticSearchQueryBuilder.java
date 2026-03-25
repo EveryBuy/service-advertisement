@@ -20,6 +20,8 @@ import ua.everybuy.routing.dto.request.AdvertisementSearchParametersDto;
 @RequiredArgsConstructor
 public class ElasticSearchQueryBuilder implements QueryBuilder {
     private static final String INDEX_NAME = "advertisements";
+    public static final String AGG_MIN_PRICE = "min_price";
+    public static final String AGG_MAX_PRICE = "max_price";
     private final FilterAdvertisementProcessor filterAdvertisementProcessor;
     private final SortBuilder sortBuilder;
 
@@ -29,8 +31,8 @@ public class ElasticSearchQueryBuilder implements QueryBuilder {
                 .query(buildBoolQuery(dto))
                 .from((page - 1) * size)
                 .size(size)
-                .aggregation(AggregationBuilders.min("min_price").field("price"))
-                .aggregation(AggregationBuilders.max("max_price").field("price"))
+                .aggregation(AggregationBuilders.min(AGG_MIN_PRICE).field("price"))
+                .aggregation(AggregationBuilders.max(AGG_MAX_PRICE).field("price"))
                 .sort("creationDate", SortOrder.DESC);
 
         sortBuilder.applySorting(dto, sourceBuilder);
