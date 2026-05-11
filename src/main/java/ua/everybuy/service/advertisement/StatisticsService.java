@@ -12,6 +12,7 @@ import ua.everybuy.database.repository.advertisement.AdvertisementRepository;
  * for advertisements, such as view counts and favorite counts.
  *
  */
+
 @Service
 @RequiredArgsConstructor
 public class StatisticsService {
